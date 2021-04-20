@@ -1,0 +1,11 @@
+*Tutte le specifiche sono confermate*
+
+- Esiste una pagina di default contenente la form di login visibile a tutti.
+- Ogni utente viene identificato dalla sua matricola e mail.
+- Per credenziali di login si intendono matricola e password.
+- In qualsiasi pagina , se l'utente è loggato, è possibile fare logout e tornare alla pagina di login.
+- Se l'utente è loggato e tenta di accedere alla pagina di LOGIN, verrà reindirizzato automaticamente alla HOME.
+- Se l'utente non è loggato e tenta di accedere a zone che richiedono autenticazione, verrà reindirizzato alla pagina di LOGIN.
+- Se in un qualsiasi momento si verificano azioni impreviste , per esempio attributi della richiesta invalidi, l’utente viene indirizzato a una pagina di ERRORE contenente il motivo dell’errore e dalla quale può tornare al LOGIN se non loggato, altrimenti alla HOME.
+- Il bottone VERBALIZZA viene mostrato solo se almeno un voto si trova nello stato “pubblicato” o "rifiutato", di conseguenza non possono essere creati verbali qualora nessun voto si trovasse in uno dei due stati.
+- Ciascun corso è associato ad un solo docente.
