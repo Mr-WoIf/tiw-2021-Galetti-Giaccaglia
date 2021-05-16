@@ -183,7 +183,7 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-INSERT INTO `student` VALUES (1,'fogell.mclovin@stud.unimail.com','fogell.mclovin','Fogell','McLovin','Empire State University'),(2,'greg.heffley@stud.unimail.com','greg.heffley','Greg','Heffley','Empire State University'),(3,'lisa.simpson@stud.unimail.com','lisa.simpson','Lisa','Simpson','Empire State University'),(4,'martin.mcfly@stud.unimail.com','martin.mcfly','Marin','McFly','Empire State University'),(5,'sarah.connor@stud.unimail.com','sarah.connor','Sarah','Connor','Empire State University');
+INSERT INTO `student` VALUES (1,'fogell.mclovin@stud.unimail.com','fogell.mclovin','Fogell','McLovin','Empire State University'),(2,'greg.heffley@stud.unimail.com','greg.heffley','Greg','Heffley','Empire State University'),(3,'lisa.simpson@stud.unimail.com','lisa.simpson','Lisa','Simpson','Empire State University'),(4,'martin.mcfly@stud.unimail.com','martin.mcfly','Martin','McFly','Empire State University'),(5,'sarah.connor@stud.unimail.com','sarah.connor','Sarah','Connor','Empire State University');
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 
