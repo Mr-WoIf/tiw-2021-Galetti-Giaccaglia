@@ -30,7 +30,7 @@ CREATE TABLE `course` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `professor_id` (`professor_id`),
   CONSTRAINT `course_ibfk_1` FOREIGN KEY (`professor_id`) REFERENCES `professor` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,6 +39,7 @@ CREATE TABLE `course` (
 
 LOCK TABLES `course` WRITE;
 /*!40000 ALTER TABLE `course` DISABLE KEYS */;
+INSERT INTO `course` VALUES (1,2,'Biochemistry'),(2,3,'Biology'),(3,1,'Introductory Psychology'),(4,5,'English Literature'),(5,4,'Web Applications');
 /*!40000 ALTER TABLE `course` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -55,9 +56,9 @@ CREATE TABLE `exam` (
   `date` date NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `course_id` (`course_id`),
-  CONSTRAINT `exam_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `course_id_idx` (`course_id`),
+  CONSTRAINT `course_id` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,6 +67,7 @@ CREATE TABLE `exam` (
 
 LOCK TABLES `exam` WRITE;
 /*!40000 ALTER TABLE `exam` DISABLE KEYS */;
+INSERT INTO `exam` VALUES (1,5,'2021-07-02'),(2,5,'2021-07-21'),(3,1,'2021-07-08'),(4,1,'2021-07-19'),(5,3,'2021-07-01'),(6,3,'2021-07-09'),(7,4,'2021-07-26'),(8,4,'2021-07-03'),(9,2,'2021-07-10'),(10,2,'2021-07-29');
 /*!40000 ALTER TABLE `exam` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,7 +118,7 @@ CREATE TABLE `professor` (
   `department` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,6 +127,7 @@ CREATE TABLE `professor` (
 
 LOCK TABLES `professor` WRITE;
 /*!40000 ALTER TABLE `professor` DISABLE KEYS */;
+INSERT INTO `professor` VALUES (1,'norman.bates@unimail.com','norman.bates','Norman','Bates','Psychology'),(2,'walter.white@unimail.com','walter.white','Walter','White','Chemistry'),(3,'leslie.artz@unimail.com','leslie.artz','Leslie','Artz','Natural Sciences'),(4,'carlo.lesti@unimail.com','carlo.lesti','Carlo','Lesti','Computer Science'),(5,'john.keating@unimail.com','john.keating','John','Keating','English Literature');
 /*!40000 ALTER TABLE `professor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,7 +174,7 @@ CREATE TABLE `student` (
   `school` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -180,6 +183,7 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
+INSERT INTO `student` VALUES (1,'fogell.mclovin@stud.unimail.com','fogell.mclovin','Fogell','McLovin','Empire State University'),(2,'greg.heffley@stud.unimail.com','greg.heffley','Greg','Heffley','Empire State University'),(3,'lisa.simpson@stud.unimail.com','lisa.simpson','Lisa','Simpson','Empire State University'),(4,'martin.mcfly@stud.unimail.com','martin.mcfly','Marin','McFly','Empire State University'),(5,'sarah.connor@stud.unimail.com','sarah.connor','Sarah','Connor','Empire State University');
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -191,14 +195,12 @@ DROP TABLE IF EXISTS `study_plan`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `study_plan` (
-  `student_id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `student_id` bigint unsigned NOT NULL,
   `course_id` bigint unsigned NOT NULL,
-  `school` varchar(45) NOT NULL,
   PRIMARY KEY (`student_id`,`course_id`),
-  UNIQUE KEY `student_id` (`student_id`),
-  UNIQUE KEY `course_id` (`course_id`),
-  CONSTRAINT `study_plan_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `study_plan_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON UPDATE CASCADE
+  KEY `id` (`course_id`),
+  CONSTRAINT `id` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
+  CONSTRAINT `study_plan_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -208,6 +210,7 @@ CREATE TABLE `study_plan` (
 
 LOCK TABLES `study_plan` WRITE;
 /*!40000 ALTER TABLE `study_plan` DISABLE KEYS */;
+INSERT INTO `study_plan` VALUES (1,1),(2,1),(4,1),(1,2),(3,2),(4,2),(1,3),(3,3),(5,3),(2,4),(3,4),(5,4),(2,5),(4,5),(5,5);
 /*!40000 ALTER TABLE `study_plan` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -220,4 +223,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-09 18:32:43
+-- Dump completed on 2021-05-16 12:42:08
