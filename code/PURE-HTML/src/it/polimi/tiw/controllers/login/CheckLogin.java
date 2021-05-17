@@ -15,9 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 
 import it.polimi.tiw.beans.*;
+import it.polimi.tiw.controllers.ForwardHandler;
 import it.polimi.tiw.dao.UserDAO;
 import it.polimi.tiw.utils.*;
 
@@ -76,25 +76,25 @@ public class CheckLogin extends HttpServlet {
 		
 		if(id_param == null){
 			request.setAttribute("warning", "Null id");		
-			forward(request, response, PathUtils.pathToLoginPage);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
 			return;
 		}
 		
 		if(password_param == null){
 			request.setAttribute("warning", "Null password");		
-			forward(request, response, PathUtils.pathToLoginPage);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
 			return;
 		}
 		
 		if(id_param.isEmpty()) {
 			request.setAttribute("warning", "Empty id field!");		
-			forward(request, response, PathUtils.pathToLoginPage);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
 			return;
 		}
 		
 		if(password_param.isEmpty()) {
 			request.setAttribute("warning", "Empty email field");		
-			forward(request, response, PathUtils.pathToLoginPage);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
 			return;
 		}
 		
@@ -110,7 +110,7 @@ public class CheckLogin extends HttpServlet {
 			
 		} catch (NumberFormatException e) {
 			request.setAttribute( "warning", "Parameter id with format number is required");
-			forward(request, response, PathUtils.pathToLoginPage);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
 			return;
 		}
 		
@@ -126,13 +126,13 @@ public class CheckLogin extends HttpServlet {
 			
 		} catch (SQLException e) {
 			
-			forwardToErrorPage(request, response, e.getMessage());
+			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), getServletContext(), templateEngine);
 			return;
 		}
 		
 		if(optUser.isEmpty()) {
 			request.setAttribute("warning", "Email or password incorrect!");
-			forward(request, response, PathUtils.pathToLoginPage);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
 			return;
 		}
 		
@@ -142,18 +142,5 @@ public class CheckLogin extends HttpServlet {
 		response.sendRedirect(getServletContext().getContextPath() + PathUtils.goToHomeServletPath);		
 	}
 	
-	private void forwardToErrorPage(HttpServletRequest request, HttpServletResponse response, String error) throws ServletException, IOException{
-		
-		request.setAttribute("error", error);
-		forward(request, response, PathUtils.pathToErrorPage);
-		return;
-	}
-	
-	private void forward(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException{
-		
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		templateEngine.process(path, ctx, response.getWriter());
-		
-	}
+
 }

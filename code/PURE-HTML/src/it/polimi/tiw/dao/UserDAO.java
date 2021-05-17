@@ -24,11 +24,11 @@ public class UserDAO {
 		Optional<User> optUser;
 		
 		try {	
-			optUser = executeCredentialsQuery(id, pwd, "student", studentQuery);
+			optUser = executeCredentialsQuery(id, pwd, "student", studentQuery, "school");
 			if(optUser.isPresent())
 				return optUser;
 			
-			else return executeCredentialsQuery(id, pwd, "professor", professorQuery);	
+			else return executeCredentialsQuery(id, pwd, "professor", professorQuery, "department");	
 			
 		}
 		finally{
@@ -37,7 +37,7 @@ public class UserDAO {
 			
 	}
 	
-	private Optional<User> executeCredentialsQuery(int id, int pwd, String role, String query) throws SQLException {
+	private Optional<User> executeCredentialsQuery(int id, int pwd, String role, String query, String info) throws SQLException {
 		
 		String action = "finding a user by id and password";
 		
@@ -54,11 +54,7 @@ public class UserDAO {
 				else {
 					
 					result.next();
-					User user = new User();
-					user.setId(result.getInt("id"));
-					user.setName(result.getString("name"));
-					user.setSurname(result.getString("surname"));
-					user.setRole(role);
+					User user = new User(result.getInt("id"), result.getString("email"), result.getString("name"), result.getString("surname"), role, result.getString(info));
 					return Optional.ofNullable(user);
 					
 				}
@@ -72,29 +68,25 @@ public class UserDAO {
 			}
 			
 	}
-	
 		
 	public Optional<User> getUserById(int id) throws SQLException{
+
 			
-			String studentQuery = "SELECT  name, , surname FROM student WHERE id = ?";
-			String professorQuery = "Select name, surname FROM professor WHERE id = ?";
+			String studentQuery = "SELECT  * FROM student WHERE id = ?";
+			String professorQuery = "Select * FROM professor WHERE id = ?";
 			Optional<User> optUser;
 			
-			try {	
-				optUser = executeIdQuery(id , "student", studentQuery);
-				if(optUser.isPresent())
+			optUser = executeIdQuery(id , "student", "school", studentQuery);
+				
+			if(optUser.isPresent())
 					return optUser;
 				
-				else return executeIdQuery(id, "professor", professorQuery);	
+			else return executeIdQuery(id, "professor", "department", professorQuery);	
 				
-			}
-			finally{
-				
-			}
 				
 		}
 
-	private Optional<User> executeIdQuery(int id, String role, String query) throws SQLException {
+	private Optional<User> executeIdQuery(int id, String role, String info, String query) throws SQLException {
 
 		
 		String action = "finding a user by id";
@@ -111,11 +103,7 @@ public class UserDAO {
 				else {
 					
 					result.next();
-					User user = new User();
-					user.setId(result.getInt("id"));
-					user.setName(result.getString("name"));
-					user.setSurname(result.getString("surname"));
-					user.setRole(role);
+					User user = new User(result.getInt("id"), result.getString("email"), result.getString("name"), result.getString("surname"), role, result.getString(info));
 					return Optional.ofNullable(user);
 					
 				}
