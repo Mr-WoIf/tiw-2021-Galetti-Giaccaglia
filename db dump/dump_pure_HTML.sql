@@ -39,7 +39,7 @@ CREATE TABLE `course` (
 
 LOCK TABLES `course` WRITE;
 /*!40000 ALTER TABLE `course` DISABLE KEYS */;
-INSERT INTO `course` VALUES (1,2,'Biochemistry'),(2,3,'Biology'),(3,1,'Introductory Psychology'),(4,5,'English Literature'),(5,4,'Web Applications');
+INSERT INTO `course` VALUES (1,10728479,'Biochemistry'),(2,10728480,'Biology'),(3,10728478,'Introductory Psychology'),(4,10728482,'English Literature'),(5,10728481,'Web Applications');
 /*!40000 ALTER TABLE `course` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,7 +118,7 @@ CREATE TABLE `professor` (
   `department` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10728483 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `professor` (
 
 LOCK TABLES `professor` WRITE;
 /*!40000 ALTER TABLE `professor` DISABLE KEYS */;
-INSERT INTO `professor` VALUES (1,'norman.bates@unimail.com','norman.bates','Norman','Bates','Psychology'),(2,'walter.white@unimail.com','walter.white','Walter','White','Chemistry'),(3,'leslie.artz@unimail.com','leslie.artz','Leslie','Artz','Natural Sciences'),(4,'carlo.lesti@unimail.com','carlo.lesti','Carlo','Lesti','Computer Science'),(5,'john.keating@unimail.com','john.keating','John','Keating','English Literature');
+INSERT INTO `professor` VALUES (10728478,'norman.bates@unimail.com','norman.bates','Norman','Bates','Psychology'),(10728479,'walter.white@unimail.com','walter.white','Walter','White','Chemistry'),(10728480,'leslie.artz@unimail.com','leslie.artz','Leslie','Artz','Natural Sciences'),(10728481,'carlo.lesti@unimail.com','carlo.lesti','Carlo','Lesti','Computer Science'),(10728482,'john.keating@unimail.com','john.keating','John','Keating','English Literature');
 /*!40000 ALTER TABLE `professor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,7 +174,7 @@ CREATE TABLE `student` (
   `school` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10626494 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -183,7 +183,11 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
+<<<<<<< HEAD
+INSERT INTO `student` VALUES (10626489,'fogell.mclovin@stud.unimail.com','fogell.mclovin','Fogell','McLovin','Empire State University'),(10626490,'greg.heffley@stud.unimail.com','greg.heffley','Greg','Heffley','Empire State University'),(10626491,'lisa.simpson@stud.unimail.com','lisa.simpson','Lisa','Simpson','Empire State University'),(10626492,'martin.mcfly@stud.unimail.com','martin.mcfly','Marin','McFly','Empire State University'),(10626493,'sarah.connor@stud.unimail.com','sarah.connor','Sarah','Connor','Empire State University');
+=======
 INSERT INTO `student` VALUES (1,'fogell.mclovin@stud.unimail.com','fogell.mclovin','Fogell','McLovin','Empire State University'),(2,'greg.heffley@stud.unimail.com','greg.heffley','Greg','Heffley','Empire State University'),(3,'lisa.simpson@stud.unimail.com','lisa.simpson','Lisa','Simpson','Empire State University'),(4,'martin.mcfly@stud.unimail.com','martin.mcfly','Martin','McFly','Empire State University'),(5,'sarah.connor@stud.unimail.com','sarah.connor','Sarah','Connor','Empire State University');
+>>>>>>> branch 'main' of https://github.com/Mr-WoIf/tiw-2021-Galetti-Giaccaglia
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,7 +214,7 @@ CREATE TABLE `study_plan` (
 
 LOCK TABLES `study_plan` WRITE;
 /*!40000 ALTER TABLE `study_plan` DISABLE KEYS */;
-INSERT INTO `study_plan` VALUES (1,1),(2,1),(4,1),(1,2),(3,2),(4,2),(1,3),(3,3),(5,3),(2,4),(3,4),(5,4),(2,5),(4,5),(5,5);
+INSERT INTO `study_plan` VALUES (10626489,1),(10626490,1),(10626492,1),(10626489,2),(10626491,2),(10626492,2),(10626489,3),(10626491,3),(10626493,3),(10626490,4),(10626491,4),(10626493,4),(10626490,5),(10626492,5),(10626493,5);
 /*!40000 ALTER TABLE `study_plan` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -223,4 +227,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-16 12:42:08
+-- Dump completed on 2021-05-16 13:13:46
