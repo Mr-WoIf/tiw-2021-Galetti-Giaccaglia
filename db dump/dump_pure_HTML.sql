@@ -82,11 +82,12 @@ CREATE TABLE `exam_register` (
   `student_id` bigint unsigned NOT NULL,
   `exam_id` bigint unsigned NOT NULL,
   `grade` int DEFAULT NULL,
-  `id_report` bigint unsigned NOT NULL,
+  `id_report` bigint unsigned DEFAULT NULL,
+  `state` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`student_id`,`exam_id`),
   UNIQUE KEY `student_id` (`student_id`),
   UNIQUE KEY `exam_id` (`exam_id`),
-  UNIQUE KEY `id_report` (`id_report`),
+  KEY `exam_register_ibfk_3` (`id_report`),
   CONSTRAINT `exam_register_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `exam_register_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `exam_register_ibfk_3` FOREIGN KEY (`id_report`) REFERENCES `report` (`id`) ON UPDATE CASCADE
@@ -172,6 +173,7 @@ CREATE TABLE `student` (
   `name` varchar(45) NOT NULL,
   `surname` varchar(45) NOT NULL,
   `school` varchar(45) NOT NULL,
+  `degree` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10626494 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -183,11 +185,7 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-<<<<<<< HEAD
-INSERT INTO `student` VALUES (10626489,'fogell.mclovin@stud.unimail.com','fogell.mclovin','Fogell','McLovin','Empire State University'),(10626490,'greg.heffley@stud.unimail.com','greg.heffley','Greg','Heffley','Empire State University'),(10626491,'lisa.simpson@stud.unimail.com','lisa.simpson','Lisa','Simpson','Empire State University'),(10626492,'martin.mcfly@stud.unimail.com','martin.mcfly','Marin','McFly','Empire State University'),(10626493,'sarah.connor@stud.unimail.com','sarah.connor','Sarah','Connor','Empire State University');
-=======
-INSERT INTO `student` VALUES (1,'fogell.mclovin@stud.unimail.com','fogell.mclovin','Fogell','McLovin','Empire State University'),(2,'greg.heffley@stud.unimail.com','greg.heffley','Greg','Heffley','Empire State University'),(3,'lisa.simpson@stud.unimail.com','lisa.simpson','Lisa','Simpson','Empire State University'),(4,'martin.mcfly@stud.unimail.com','martin.mcfly','Martin','McFly','Empire State University'),(5,'sarah.connor@stud.unimail.com','sarah.connor','Sarah','Connor','Empire State University');
->>>>>>> branch 'main' of https://github.com/Mr-WoIf/tiw-2021-Galetti-Giaccaglia
+INSERT INTO `student` VALUES (10626489,'fogell.mclovin@stud.unimail.com','fogell.mclovin','Fogell','McLovin','Empire State University','Engineering Management'),(10626490,'greg.heffley@stud.unimail.com','greg.heffley','Greg','Heffley','Empire State University','Chemical Engineering'),(10626491,'lisa.simpson@stud.unimail.com','lisa.simpson','Lisa','Simpson','Empire State University','Psychology'),(10626492,'martin.mcfly@stud.unimail.com','martin.mcfly','Marin','McFly','Empire State University','Bioengineering'),(10626493,'sarah.connor@stud.unimail.com','sarah.connor','Sarah','Connor','Empire State University','Computer Science');
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -227,4 +225,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-16 13:13:46
+-- Dump completed on 2021-05-17 21:08:58

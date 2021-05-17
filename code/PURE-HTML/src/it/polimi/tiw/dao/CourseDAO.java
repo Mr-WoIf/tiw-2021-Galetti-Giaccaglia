@@ -33,7 +33,7 @@ public class CourseDAO {
 		
 		String performedAction = " finding courses by professor id";
 		
-		String query = "SELECT id, name FROM course WHERE professor_id = ? ORDER BY id ASC";
+		String query = "SELECT id, name FROM course WHERE professor_id = ? ORDER BY name DESC";
 		
 		return executeQuery(performedAction, query, professorId);
 		
