@@ -76,25 +76,25 @@ public class CheckLogin extends HttpServlet {
 		
 		if(id_param == null){
 			request.setAttribute("warning", "Null id");		
-			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
 		if(password_param == null){
 			request.setAttribute("warning", "Null password");		
-			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
 		if(id_param.isEmpty()) {
 			request.setAttribute("warning", "Empty id field!");		
-			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
 		if(password_param.isEmpty()) {
 			request.setAttribute("warning", "Empty email field");		
-			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
@@ -110,7 +110,7 @@ public class CheckLogin extends HttpServlet {
 			
 		} catch (NumberFormatException e) {
 			request.setAttribute( "warning", "Parameter id with format number is required");
-			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
@@ -126,13 +126,13 @@ public class CheckLogin extends HttpServlet {
 			
 		} catch (SQLException e) {
 			
-			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), getServletContext(), templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;
 		}
 		
 		if(optUser.isEmpty()) {
 			request.setAttribute("warning", "Email or password incorrect!");
-			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, getServletContext(), templateEngine);
+			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		

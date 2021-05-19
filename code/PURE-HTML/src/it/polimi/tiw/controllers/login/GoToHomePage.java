@@ -76,12 +76,12 @@ public class GoToHomePage extends HttpServlet {
 			else
 				courses = courseDAO.getCoursesByStudentId(currentUser.getId());
 		}catch(SQLException e) {
-			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), getServletContext(), templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;	
 		}
 		
 		request.setAttribute("courses", courses);
-		ForwardHandler.forward(request, response, PathUtils.pathToHomePage, getServletContext(), templateEngine);
+		ForwardHandler.forward(request, response, PathUtils.pathToHomePage, templateEngine);
 	}
 	
 	

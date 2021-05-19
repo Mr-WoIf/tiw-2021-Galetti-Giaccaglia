@@ -55,7 +55,7 @@ public class CheckProfessor implements Filter {
 			String error = "You are not authorized to access this page";
 			HttpServletRequest httpRequest = (HttpServletRequest) request;
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
-			ForwardHandler.forwardToErrorPage(httpRequest, httpResponse, error, request.getServletContext(), templateEngine);
+			ForwardHandler.forwardToErrorPage(httpRequest, httpResponse, error, templateEngine);
 			
 			return;
 		}

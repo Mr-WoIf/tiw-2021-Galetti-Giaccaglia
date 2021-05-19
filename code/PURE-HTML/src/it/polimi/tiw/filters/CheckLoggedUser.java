@@ -58,7 +58,7 @@ public class CheckLoggedUser implements Filter {
 		} 
 		
 		String error = ("You are not authorized to access this page");
-		ForwardHandler.forwardToErrorPage(httpRequest, httpResponse, error, httpRequest.getServletContext(), templateEngine);
+		ForwardHandler.forwardToErrorPage(httpRequest, httpResponse, error, templateEngine);
 
 	}
 
