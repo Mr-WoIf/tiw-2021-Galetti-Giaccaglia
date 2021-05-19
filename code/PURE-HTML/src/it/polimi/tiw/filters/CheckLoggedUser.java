@@ -15,8 +15,8 @@ import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
 
+import it.polimi.tiw.controllers.ForwardHandler;
 import it.polimi.tiw.utils.FilterHandler;
-import it.polimi.tiw.utils.PathUtils;
 
 /**
  * Servlet Filter implementation class UserFilter
@@ -57,8 +57,8 @@ public class CheckLoggedUser implements Filter {
 			}
 		} 
 		
-		httpRequest.setAttribute("error", "You are not authorized to access this page");
-		FilterHandler.forwardHandler(httpRequest, httpResponse, PathUtils.pathToErrorPage, templateEngine);
+		String error = ("You are not authorized to access this page");
+		ForwardHandler.forwardToErrorPage(httpRequest, httpResponse, error, httpRequest.getServletContext(), templateEngine);
 
 	}
 
@@ -69,7 +69,5 @@ public class CheckLoggedUser implements Filter {
 		this.templateEngine = FilterHandler.initHandler(filterConfig);
 		
 	}
-	
-
 
 }

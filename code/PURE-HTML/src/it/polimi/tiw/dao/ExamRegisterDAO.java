@@ -1,6 +1,8 @@
 package it.polimi.tiw.dao;
 
 import java.sql.*;
+import java.util.AbstractMap;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +16,6 @@ public class ExamRegisterDAO {
 	public ExamRegisterDAO(Connection connection) {
 		this.connection = connection;
 	}
-	
 
 	public void setGradeByStudentId(int studentId, int examId, int grade) throws SQLException {
 		
@@ -33,13 +34,17 @@ public class ExamRegisterDAO {
 			preparedStatementAddUser.setInt(3, grade);
 			preparedStatementAddUser.executeUpdate();
 			
+			
 		}catch(SQLException e) {
+			
 			throw new SQLException("Error accessing the DB when" + performedAction);
 			
 		}finally {
 			
 			try {
+				
 				preparedStatementAddUser.close();
+				
 			}catch (Exception e) {
 				
 				throw new SQLException("Error closing the statement when" + performedAction);
@@ -48,8 +53,8 @@ public class ExamRegisterDAO {
 		}
 	}
 	
-	
 	public void setGradeStateByExamID(int studentId, int examId, String gradeState) throws SQLException {
+
 		
 		String performedAction = " setting student grade state in the database";
 		
@@ -134,6 +139,123 @@ public class ExamRegisterDAO {
 		return students;
 	}
 	
+	public void publishGradeByExamID(int examId) throws SQLException {
+		
+		String performedAction = " changing all students grade state in the database from insterted to published";
+		
+		String queryAddGrade =  "UPDATE exam_register SET state = 'published' WHERE state = 'inserted'";
+		
+		
+		PreparedStatement preparedStatementAddUser = null;	
+		
+		try {
+			
+			preparedStatementAddUser = connection.prepareStatement(queryAddGrade);
+			preparedStatementAddUser.executeUpdate();
+			
+		}catch(SQLException e) {
+			throw new SQLException("Error accessing the DB when" + performedAction);
+			
+		}finally {
+			
+			try {
+				
+				preparedStatementAddUser.close();
+				
+			}catch (Exception e) {
+				
+				throw new SQLException("Error closing the statement when" + performedAction);
+				
+			}
+		}
+		
+	}
 	
+	public SimpleImmutableEntry<Integer, String> getExamRegisterByStudentID(int studentId, int examId) throws SQLException {
+		
+
+		String performedAction = " finding student's exam grade and state by exam id and student id";
+		
+		String query = "SELECT grade, state FROM exam_register WHERE student_id = ? AND exam_id = ? ";
+			
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		AbstractMap.SimpleImmutableEntry<Integer, String> examRegister = null;
+		
+		try {
+			
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, examId);
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next()) {
+		
+				examRegister = new SimpleImmutableEntry<>(resultSet.getInt("grade"), resultSet.getString("state"));
+					
+			}
+			
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error accessing the DB when" + performedAction);
+			
+		} finally {
+			try {
+				resultSet.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the result set when" + performedAction);
+			}
+			try {
+				preparedStatement.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the statement when" + performedAction);
+			}
+		}
+		
+		return examRegister;
+		
+		
+	}
+		
+	public void reportGradeByExamID(int reportId, int examId) throws SQLException {
+		
+		String performedAction = " changing student's exam state from 'published'/'refused' to 'recorded' and adding report id by exam id and student id";
+		
+		String query = "UPDATE exam_register "
+				+ "SET state = 'recorded' AND report_id = ? "
+				+ "WHERE exam_id = ? "
+				+ "AND (state = 'published' OR state = 'refused')";
+			
+			
+		
+		PreparedStatement preparedStatement = null;
+		
+		
+		try {
+			
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.executeUpdate();
+			
+		}catch(SQLException e) {
+			throw new SQLException("Error accessing the DB when" + performedAction);
+			
+		}finally {
+			
+			try {
+				
+				preparedStatement.close();
+				
+			}catch (Exception e) {
+				
+				throw new SQLException("Error closing the statement when" + performedAction);
+				
+			}
+		}
+		
+		
+		
+	}
 	
 }

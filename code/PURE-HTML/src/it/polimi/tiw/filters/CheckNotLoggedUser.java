@@ -21,7 +21,6 @@ import it.polimi.tiw.utils.PathUtils;
 
 public class CheckNotLoggedUser implements Filter {
 	
-	
     /**
      * Default constructor. 
      */
@@ -51,14 +50,14 @@ public class CheckNotLoggedUser implements Filter {
 		if(session != null) {
 			Object user = session.getAttribute("user");
 			if(user != null) {
-				httpResponse.sendRedirect(request.getServletContext().getContextPath() + PathUtils.goToHomeServletPath);
+				chain.doFilter(request, response);
 				return;
 			}
 		} 
 
 		System.out.println("user is not logged");
 		
-		chain.doFilter(request, response);
+		httpResponse.sendRedirect(request.getServletContext().getContextPath() + PathUtils.pathToLoginPage);
 		
 	
 	}

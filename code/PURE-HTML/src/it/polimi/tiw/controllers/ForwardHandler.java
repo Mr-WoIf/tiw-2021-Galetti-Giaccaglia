@@ -14,7 +14,6 @@ import it.polimi.tiw.utils.PathUtils;
 
 public final class ForwardHandler {
 	
-	
 	public static void forwardToErrorPage(HttpServletRequest request, HttpServletResponse response, String error, ServletContext servletContext, TemplateEngine templateEngine) throws ServletException, IOException{
 		
 		request.setAttribute("error", error);
@@ -24,10 +23,9 @@ public final class ForwardHandler {
 	
 	public static void forward(HttpServletRequest request, HttpServletResponse response, String path, ServletContext servletContext, TemplateEngine templateEngine) throws ServletException, IOException{
 		
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		templateEngine.process(path, ctx, response.getWriter());
 		
 	}
-
 
 }

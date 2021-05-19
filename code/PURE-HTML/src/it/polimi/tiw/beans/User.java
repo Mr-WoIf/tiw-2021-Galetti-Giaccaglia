@@ -8,15 +8,13 @@ public class User {
 	private final String name;
 	private final String surname;
 	private final String role;
-	private final String info;
 	
-	public User(int id, String email, String name, String surname, String role, String info) {
+	public User(int id, String email, String name, String surname, String role) {
 		this.id = id;
 		this.email = email;
 		this.name = name;
 		this.surname = surname;
 		this.role = role;
-		this.info = info;
 	}
 	
 	public int getId() {
@@ -37,10 +35,6 @@ public class User {
 
 	public String getRole() {
 		return role;
-	}
-	
-	public String getInfo() {
-		return info;
 	}
 	
 	

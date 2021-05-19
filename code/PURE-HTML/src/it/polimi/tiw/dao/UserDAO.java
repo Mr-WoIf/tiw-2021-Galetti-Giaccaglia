@@ -24,11 +24,11 @@ public class UserDAO {
 		Optional<User> optUser;
 		
 		try {	
-			optUser = executeCredentialsQuery(id, pwd, "student", studentQuery, "school");
+			optUser = executeCredentialsQuery(id, pwd, "student", studentQuery);
 			if(optUser.isPresent())
 				return optUser;
 			
-			else return executeCredentialsQuery(id, pwd, "professor", professorQuery, "department");	
+			else return executeCredentialsQuery(id, pwd, "professor", professorQuery);	
 			
 		}
 		finally{
@@ -37,7 +37,7 @@ public class UserDAO {
 			
 	}
 	
-	private Optional<User> executeCredentialsQuery(int id, int pwd, String role, String query, String info) throws SQLException {
+	private Optional<User> executeCredentialsQuery(int id, int pwd, String role, String query) throws SQLException {
 		
 		String action = "finding a user by id and password";
 		
@@ -54,7 +54,7 @@ public class UserDAO {
 				else {
 					
 					result.next();
-					User user = new User(result.getInt("id"), result.getString("email"), result.getString("name"), result.getString("surname"), role, result.getString(info));
+					User user = new User(result.getInt("id"), result.getString("email"), result.getString("name"), result.getString("surname"), role);
 					return Optional.ofNullable(user);
 					
 				}
@@ -76,19 +76,18 @@ public class UserDAO {
 			String professorQuery = "Select * FROM professor WHERE id = ?";
 			Optional<User> optUser;
 			
-			optUser = executeIdQuery(id , "student", "school", studentQuery);
+			optUser = executeIdQuery(id , "student", studentQuery);
 				
 			if(optUser.isPresent())
 					return optUser;
 				
-			else return executeIdQuery(id, "professor", "department", professorQuery);	
+			else return executeIdQuery(id, "professor", professorQuery);	
 				
 				
 		}
 
-	private Optional<User> executeIdQuery(int id, String role, String info, String query) throws SQLException {
-
-		
+	private Optional<User> executeIdQuery(int id, String role, String query) throws SQLException {
+	
 		String action = "finding a user by id";
 		
 		try (PreparedStatement preparedStatement = con.prepareStatement(query);) {
@@ -103,7 +102,7 @@ public class UserDAO {
 				else {
 					
 					result.next();
-					User user = new User(result.getInt("id"), result.getString("email"), result.getString("name"), result.getString("surname"), role, result.getString(info));
+					User user = new User(result.getInt("id"), result.getString("email"), result.getString("name"), result.getString("surname"), role);
 					return Optional.ofNullable(user);
 					
 				}
@@ -117,6 +116,49 @@ public class UserDAO {
 			}
 			
 	}
+	
+	public Student findStudentById(int studentId) throws SQLException{
+		
 
+		String performedAction = " finding student by id";
+		
+		String query = "SELECT mail, name, surname,school, degree FROM students WHERE id = ?";
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Student student = null;
+		
+		try {
+			
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, studentId);
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next()) {
+		
+				
+				student = new Student(resultSet.getInt("student_id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "student", resultSet.getString("school"), resultSet.getString("degree"));
+			}
+			
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error accessing the DB when" + performedAction);
+			
+		} finally {
+			try {
+				resultSet.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the result set when" + performedAction);
+			}
+			try {
+				preparedStatement.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the statement when" + performedAction);
+			}
+		}
+		
+		return student;
+	}
 	
 }
