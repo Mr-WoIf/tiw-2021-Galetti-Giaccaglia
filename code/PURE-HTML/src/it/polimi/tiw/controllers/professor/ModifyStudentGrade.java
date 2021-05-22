@@ -103,7 +103,7 @@ public class GoToModifyStudentGrade extends HttpServlet {
 		try {
 			studentGrade = Integer.parseInt(studentGradeString);
 		}catch (NumberFormatException e) {
-			ForwardHandler.forwardToErrorPage(request, response, "Submitted grade is not a number, when accessing exam details", templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, "Submitted grade is not a number", templateEngine);
 			return;
 		}
 		

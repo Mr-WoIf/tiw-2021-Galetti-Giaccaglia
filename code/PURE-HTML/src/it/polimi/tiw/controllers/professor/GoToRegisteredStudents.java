@@ -24,6 +24,7 @@ import it.polimi.tiw.beans.Professor;
 import it.polimi.tiw.beans.Student;
 import it.polimi.tiw.dao.ExamDAO;
 import it.polimi.tiw.dao.ExamRegisterDAO;
+import it.polimi.tiw.dao.ReportDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.ForwardHandler;
 import it.polimi.tiw.utils.PathUtils;
@@ -83,7 +84,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 		Exam exam = null;
 		Optional<Exam> optExam = null;
 		List<Student> students = null;
-		
+
 		Map<Student, SimpleImmutableEntry<Integer, String>> registerMap = null;
 
 		try {
@@ -108,16 +109,16 @@ public class GoToRegisteredStudents extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Exam not existing", templateEngine);
 			return;
 		}
-		
+
 		exam = optExam.get();
-		
+
 		if(professor.getCourseById(exam.getCourseId()).isEmpty()) {
 			ForwardHandler.forwardToErrorPage(request, response, "Exam's course not hold by you!", templateEngine);
 			return;
 		}
-		
-		
-		
+
+
+
 		try {
 			students = examRegisterDAO.getStudentsByExamId(examId);
 		} catch (SQLException e) {
@@ -125,47 +126,117 @@ public class GoToRegisteredStudents extends HttpServlet {
 			return;		
 		}
 
-		
+
 
 		registerMap = students.stream()
-					.collect(Collectors.toMap(
-							student -> student, student -> getExamRegister(examRegisterDAO, student.getId(), examId, request, response)));
-		
+				.collect(Collectors.toMap(
+						student -> student, student -> getExamRegister(examRegisterDAO, student.getId(), examId, request, response)));
+
 		request.setAttribute("registerMap", registerMap);
 		ForwardHandler.forward(request, response, PathUtils.pathToRegisteredStudents, templateEngine);
-			
-		
+
+
 	}
-	
+
 	private SimpleImmutableEntry<Integer, String> getExamRegister(ExamRegisterDAO examRegisterDAO, int studentId, int examId, HttpServletRequest request, HttpServletResponse response){
-		
-	
+
+
+		try {
+			return examRegisterDAO.getExamRegisterByStudentID(studentId, examId);
+		} catch (SQLException e) {
+
+			// TODO Auto-generated catch block
 			try {
-				return examRegisterDAO.getExamRegisterByStudentID(studentId, examId);
-			} catch (SQLException e) {
-				
+				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+			} catch (ServletException e1) {
 				// TODO Auto-generated catch block
-				try {
-					ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-				} catch (ServletException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				return null;	
-				
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
-		
+			return null;	
+
+		}
+
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+
+
+		String examIdString = request.getParameter("examId");
+		String requestType = request.getParameter("requestType");
+
+		if(examIdString == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Null examId, when accessing exam details", templateEngine);
+		}
+
+		int examId;
+
+		ExamDAO examDAO = new ExamDAO(connection);
+		Exam exam = null;
+		Optional<Exam> optExam = null;
+
+
+		try {
+			examId = Integer.parseInt(examIdString);
+		}catch (NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam id is not a number, when accessing exam details", templateEngine);
+			return;
+		}
+
+		HttpSession session = request.getSession(false);
+		Professor professor = (Professor)session.getAttribute("professor");
+
+		//fetching professor courses to get updated courses list
+		try {
+			optExam = examDAO.getExamById(examId);
+		} catch (SQLException e) {
+			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+			return;		
+		}
+
+		if(optExam.isEmpty()) {
+			ForwardHandler.forwardToErrorPage(request, response, "Exam not existing", templateEngine);
+			return;
+		}
+
+		exam = optExam.get();
+
+		if(professor.getCourseById(exam.getCourseId()).isEmpty()) {
+			ForwardHandler.forwardToErrorPage(request, response, "Exam's course not hold by you!", templateEngine);
+			return;
+		}
+
+		if(requestType.equals("publish")) {
+			try {
+				ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
+				examRegisterDAO.publishGradeByExamID(examId);
+			}catch (SQLException e) {
+				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+				return;
+			}
+		}else if(requestType.equals("record")) {
+
+			try {
+				ReportDAO reportDAO = new ReportDAO(connection);
+				reportDAO.createReport(examId);
+			}catch (SQLException e) {
+				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+				return;
+			} 
+			
+		}else{
+			ForwardHandler.forwardToErrorPage(request, response, "Invalid POST method", templateEngine);
+			return;
+		}
+
+
+		response.sendRedirect(getServletContext().getContextPath() + PathUtils.pathToRegisteredStudents);
+
 	}
 
 }

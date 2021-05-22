@@ -20,7 +20,7 @@ public class ExamRegisterDAO {
 		
 		String performedAction = " setting student grade in the database";
 		
-		String queryAddGrade = "UPDATE  SET balance = balance - ? WHERE id = ?";
+		String queryAddGrade = "UPDATE exam_register SET grade = ?, state = 'inserted' WHERE exam_id = ? AND student_id = ?";
 		
 		
 		PreparedStatement preparedStatementAddUser = null;	
@@ -28,9 +28,9 @@ public class ExamRegisterDAO {
 		try {
 			
 			preparedStatementAddUser = connection.prepareStatement(queryAddGrade);
-			preparedStatementAddUser.setInt(1, studentId);
+			preparedStatementAddUser.setInt(1, grade);
 			preparedStatementAddUser.setInt(2, examId);
-			preparedStatementAddUser.setInt(3, grade);
+			preparedStatementAddUser.setInt(3, studentId);
 			preparedStatementAddUser.executeUpdate();
 			
 			
