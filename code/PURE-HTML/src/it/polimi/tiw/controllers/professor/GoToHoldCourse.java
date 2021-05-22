@@ -82,7 +82,7 @@ public class GoToHoldCourse extends HttpServlet {
 		try {
 			courseId = Integer.parseInt(courseIdString);
 		}catch (NumberFormatException e) {
-			ForwardHandler.forwardToErrorPage(request, response, "Chosen account id is not a number, when accessing courses details", templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen course id is not a number, when accessing courses details", templateEngine);
 			return;
 		}
 

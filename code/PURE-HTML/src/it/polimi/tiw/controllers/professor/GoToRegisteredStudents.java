@@ -118,16 +118,12 @@ public class GoToRegisteredStudents extends HttpServlet {
 			return;
 		}
 
-
-
 		try {
 			students = examRegisterDAO.getStudentsByExamId(examId);
 		} catch (SQLException e) {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;		
 		}
-
-
 
 		registerMap = students.stream()
 				.collect(Collectors.toMap(
