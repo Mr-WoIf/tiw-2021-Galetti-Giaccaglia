@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import it.polimi.tiw.beans.*;
 
@@ -39,7 +40,7 @@ public class ExamDAO {
 				
 				while(resultSet.next()) {
 			
-					Exam exam = new Exam(new Date(resultSet.getDate("name").getTime()), resultSet.getInt("id"));
+					Exam exam = new Exam(new Date(resultSet.getDate("name").getTime()), resultSet.getInt("id"), courseId);
 					exams.add(exam);
 				}
 				
@@ -102,6 +103,50 @@ public class ExamDAO {
 			}
 			
 			
+	 }
+	 
+	 public Optional<Exam> getExamById(int examId) throws SQLException {
+		 
+		 String performedAction = " finding exam by id";
+			
+			String query = "SELECT date, course_id  FROM exam WHERE id = ?";
+			
+			PreparedStatement preparedStatement = null;
+			ResultSet resultSet = null;
+			
+			Exam exam = null;
+			
+			try {
+				
+				preparedStatement = connection.prepareStatement(query);
+				preparedStatement.setInt(1, examId);
+				
+				resultSet = preparedStatement.executeQuery();
+				
+				if(!resultSet.isBeforeFirst())
+					return Optional.ofNullable(exam);
+				
+				exam = new Exam(new Date(resultSet.getDate("name").getTime()), examId, resultSet.getInt("courseId"));
+				
+			} catch(SQLException e) {
+				throw new SQLException("Error accessing the DB when" + performedAction);
+				
+			} finally {
+				try {
+					resultSet.close();
+				}catch (Exception e) {
+					throw new SQLException("Error closing the result set when" + performedAction);
+				}
+				try {
+					preparedStatement.close();
+				}catch (Exception e) {
+					throw new SQLException("Error closing the statement when" + performedAction);
+				}
+			}
+			
+			return Optional.ofNullable(exam);
+		 
+		 
 	 }
 	 
 

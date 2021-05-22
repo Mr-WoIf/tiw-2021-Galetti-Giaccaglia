@@ -15,8 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.thymeleaf.TemplateEngine;
 
 import it.polimi.tiw.beans.Student;
-import it.polimi.tiw.controllers.ForwardHandler;
 import it.polimi.tiw.utils.FilterHandler;
+import it.polimi.tiw.utils.ForwardHandler;
 import it.polimi.tiw.utils.TemplateHandler;
 
 /**

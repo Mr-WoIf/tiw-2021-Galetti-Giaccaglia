@@ -15,8 +15,8 @@ import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
 
-import it.polimi.tiw.controllers.ForwardHandler;
 import it.polimi.tiw.utils.FilterHandler;
+import it.polimi.tiw.utils.ForwardHandler;
 
 /**
  * Servlet Filter implementation class UserFilter

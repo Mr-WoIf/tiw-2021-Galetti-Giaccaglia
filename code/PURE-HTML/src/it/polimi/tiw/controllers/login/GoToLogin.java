@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
 
-import it.polimi.tiw.controllers.ForwardHandler;
 import it.polimi.tiw.utils.*;
 /**
  * Servlet implementation class GoToLoginPage

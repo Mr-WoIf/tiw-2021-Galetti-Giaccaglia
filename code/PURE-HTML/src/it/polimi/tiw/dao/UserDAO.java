@@ -138,7 +138,7 @@ public class UserDAO {
 			while(resultSet.next()) {
 		
 				
-				student = new Student(resultSet.getInt("student_id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "student", resultSet.getString("school"), resultSet.getString("degree"));
+				student = new Student(resultSet.getInt("id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "student", resultSet.getString("school"), resultSet.getString("degree"));
 			}
 			
 			
@@ -160,5 +160,50 @@ public class UserDAO {
 		
 		return student;
 	}
+	
+	public Professor findProfessorById(int professorId) throws SQLException{
+		
+
+		String performedAction = " finding professor by id";
+		
+		String query = "SELECT mail, name, surname, department, degree FROM professor WHERE id = ?";
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		Professor professor = null;
+		
+		try {
+			
+			preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, professorId);
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next()) {
+		
+				
+				professor = new Professor(resultSet.getInt("professor_id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "professor", resultSet.getString("department"));
+			}
+			
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error accessing the DB when" + performedAction);
+			
+		} finally {
+			try {
+				resultSet.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the result set when" + performedAction);
+			}
+			try {
+				preparedStatement.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the statement when" + performedAction);
+			}
+		}
+		
+		return professor;
+	}
+	
 	
 }

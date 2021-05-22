@@ -1,5 +1,70 @@
 package it.polimi.tiw.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.*;
+
 public class ReportDAO {
+	
+	private Connection connection;
+
+	public ReportDAO(Connection connection) {
+		this.connection = connection;
+	}
+	
+	public void createReport(int examId) throws SQLException {
+		
+		Date date = new Date();
+
+		Object sqlDatetime = new Timestamp(date.getTime());
+
+		String performedAction = "creating report in the database";
+		
+		String queryCreateReport = "INSERT INTO report (id, exam_id,date_recorded) VALUES (?, ?, ?)";
+		
+		int reportId = new Random(System.nanoTime()).nextInt();
+		
+		
+		
+		PreparedStatement preparedStatement = null;	
+		ExamRegisterDAO registerDAO = new ExamRegisterDAO(connection);
+		
+		//Delimit the transaction explicitly, not to leave the db in inconsistent state
+		connection.setAutoCommit(false);
+		
+		try {
+			
+			preparedStatement = connection.prepareStatement(queryCreateReport);
+			preparedStatement.setInt(1, reportId);
+			preparedStatement.setInt(2, examId);
+			preparedStatement.setObject(3, sqlDatetime); 
+			
+			registerDAO.reportGradeByExamID(examId, reportId);
+			
+			connection.commit();
+			
+		}catch(SQLException e) {
+			
+			connection.rollback();
+			
+			throw new SQLException("Error accessing the DB when" + performedAction);
+			
+		}finally {
+			
+			try {
+				
+				preparedStatement.close();
+				
+			}catch (Exception e) {
+				
+				throw new SQLException("Error closing the statement when" + performedAction);
+				
+			}
+		}
+	}
+
+	
 
 }

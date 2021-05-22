@@ -139,6 +139,58 @@ public class ExamRegisterDAO {
 		return students;
 	}
 	
+	public List<Student> getStudentsByReportId(int examId, int reportId) throws SQLException {
+		
+
+		String performedAction = " finding students by exam id";
+		
+		String query = "SELECT student.id, student.mail, student.name, student.surname, student.school, student.degree, exam_register.grade, exam_register.state"
+				+ "FROM exam_register JOIN student "
+				+ "ON student.id = exam_register.student_id"
+				+ "WHERE exam_register.id = ? "
+				+ "AND id_report = ?"
+				+ "ORDER BY student.surname DESC";
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		List<Student> students = new ArrayList<>();
+		
+		try {
+			
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, examId);
+			preparedStatement.setInt(2, reportId);
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next()) {
+		
+				
+				Student student = new Student(resultSet.getInt("student_id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "student", resultSet.getString("school"), resultSet.getString("degree"));
+				students.add(student);
+			}
+			
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error accessing the DB when" + performedAction);
+			
+		} finally {
+			try {
+				resultSet.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the result set when" + performedAction);
+			}
+			try {
+				preparedStatement.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the statement when" + performedAction);
+			}
+		}
+		
+		return students;
+	}
+	
 	public void publishGradeByExamID(int examId) throws SQLException {
 		
 		String performedAction = " changing all students grade state in the database from insterted to published";

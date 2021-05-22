@@ -17,9 +17,11 @@ import javax.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 
 import it.polimi.tiw.beans.Course;
+import it.polimi.tiw.beans.Professor;
+import it.polimi.tiw.beans.Student;
 import it.polimi.tiw.beans.User;
-import it.polimi.tiw.controllers.ForwardHandler;
 import it.polimi.tiw.dao.CourseDAO;
+import it.polimi.tiw.dao.UserDAO;
 import it.polimi.tiw.utils.*;
 
 
@@ -67,14 +69,26 @@ public class GoToHomePage extends HttpServlet {
 		
 		List<Course> courses;
 		CourseDAO courseDAO = new CourseDAO(connection);
+		UserDAO userDAO = new UserDAO(connection);
+		int id = currentUser.getId();
 		
 		String role = currentUser.getRole();
 		
 		try {
-			if(role.equals("professor"))
-				courses =  courseDAO.getCoursesByProfessorId(currentUser.getId());
-			else
-				courses = courseDAO.getCoursesByStudentId(currentUser.getId());
+			if(role.equals("professor")) {
+				
+				courses =  courseDAO.getCoursesByProfessorId(id);
+				Professor professor = userDAO.findProfessorById(id);
+				session.setAttribute("professor", professor);
+			}
+				
+			else {
+				
+				courses = courseDAO.getCoursesByStudentId(id);
+				Student student = userDAO.findStudentById(id);
+				session.setAttribute("student", student);
+			}
+			
 		}catch(SQLException e) {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;	

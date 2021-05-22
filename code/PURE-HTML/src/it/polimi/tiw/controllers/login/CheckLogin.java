@@ -17,7 +17,6 @@ import javax.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 
 import it.polimi.tiw.beans.*;
-import it.polimi.tiw.controllers.ForwardHandler;
 import it.polimi.tiw.dao.UserDAO;
 import it.polimi.tiw.utils.*;
 

@@ -1,4 +1,4 @@
-package it.polimi.tiw.controllers;
+package it.polimi.tiw.utils;
 
 import java.io.IOException;
 
@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
-
-import it.polimi.tiw.utils.PathUtils;
 
 public final class ForwardHandler {
 	
