@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import it.polimi.tiw.beans.*;
 
@@ -45,7 +47,7 @@ public class CourseDAO {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		
-		List<Course> accounts = new ArrayList<>();
+		List<Course> courses = new ArrayList<>();
 		
 		try {
 			preparedStatement = connection.prepareStatement(query);
@@ -53,8 +55,8 @@ public class CourseDAO {
 			resultSet = preparedStatement.executeQuery();
 			
 			while(resultSet.next()) {
-				Course account = new Course(resultSet.getInt("id"), resultSet.getString("name") );
-				accounts.add(account);
+				Course course = new Course(resultSet.getInt("id"), resultSet.getString("name") );
+				courses.add(course);
 			}
 			
 			
@@ -74,11 +76,51 @@ public class CourseDAO {
 			}
 		}
 		
-		return accounts;
+		return courses;
 		
 	}
 	
+	public boolean isCourseIdValid(int courseId) throws SQLException {
+		
+			String performedAction = " finding course by id";
+			
+			String query = "SELECT * FROM course WHERE id = ?";
+			
+			PreparedStatement preparedStatement = null;
+			ResultSet resultSet = null;
+			
+			try {
+				
+				preparedStatement = connection.prepareStatement(query);
+				preparedStatement.setInt(1, courseId);
+				
+				resultSet = preparedStatement.executeQuery();
+				
+				if(resultSet.isBeforeFirst())
+					return true;
+				
+				
+				
+			} catch(SQLException e) {
+				throw new SQLException("Error accessing the DB when" + performedAction);
+				
+			} finally {
+				try {
+					resultSet.close();
+				}catch (SQLException e) {
+					throw new SQLException("Error closing the result set when" + performedAction);
+				}
+				try {
+					preparedStatement.close();
+				}catch (SQLException e) {
+					throw new SQLException("Error closing the statement when" + performedAction);
+				}
+			}
+			
+			return false;
+		 
+	 }
+	}
+
 	
-	
-	
-}
+

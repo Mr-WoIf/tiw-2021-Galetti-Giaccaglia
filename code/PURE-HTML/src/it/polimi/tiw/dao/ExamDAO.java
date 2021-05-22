@@ -61,29 +61,34 @@ public class ExamDAO {
 				}
 			}
 			
+			
 			return exams;
 		 
 	 }
 	 
-	 public boolean getSubscribedExamByStudentID(int studentid, int examid) throws SQLException {
+	 public List<Exam> getSubscribedExamsByStudentID(int studentId, int courseId) throws SQLException {
 		 
 			String performedAction = " error while determining student subscription to exam";
 			
-			String query = "SELECT * FROM exam_register WHERE exam_id = ? AND student_id = ?";
+			String query = "SELECT * FROM exam_register WHERE course_id = ? AND student_id = ?";
 			
 			PreparedStatement preparedStatement = null;
 			ResultSet resultSet = null;
+			List<Exam> exams = new ArrayList<>();
 			
-			
-			try {
+	try 	{
 				
 				preparedStatement = connection.prepareStatement(query);
-				preparedStatement.setInt(1, examid);
-				preparedStatement.setInt(2, studentid);
+				preparedStatement.setInt(1, courseId);
+				preparedStatement.setInt(2, studentId);
 				
 				resultSet = preparedStatement.executeQuery();
 				
-				return resultSet.isBeforeFirst() ? true : false;
+				while(resultSet.next()) {
+			
+					Exam exam = new Exam(new Date(resultSet.getDate("name").getTime()), resultSet.getInt("id"), resultSet.getInt("course_id"));
+					exams.add(exam);
+				}
 				
 				
 			} catch(SQLException e) {
@@ -92,15 +97,18 @@ public class ExamDAO {
 			} finally {
 				try {
 					resultSet.close();
-				}catch (Exception e) {
+				}catch (SQLException e) {
 					throw new SQLException("Error closing the result set when" + performedAction);
 				}
 				try {
 					preparedStatement.close();
-				}catch (Exception e) {
+				}catch (SQLException e) {
 					throw new SQLException("Error closing the statement when" + performedAction);
 				}
 			}
+	
+	
+		return exams;
 			
 			
 	 }
@@ -134,12 +142,12 @@ public class ExamDAO {
 			} finally {
 				try {
 					resultSet.close();
-				}catch (Exception e) {
+				}catch (SQLException e) {
 					throw new SQLException("Error closing the result set when" + performedAction);
 				}
 				try {
 					preparedStatement.close();
-				}catch (Exception e) {
+				}catch (SQLException e) {
 					throw new SQLException("Error closing the statement when" + performedAction);
 				}
 			}

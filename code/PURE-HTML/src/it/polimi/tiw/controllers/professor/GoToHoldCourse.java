@@ -96,9 +96,19 @@ public class GoToHoldCourse extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;		
 		}
+		
+		try {
+			if(!courseDAO.isCourseIdValid(courseId)) {
+				ForwardHandler.forwardToErrorPage(request, response,  "Course id doesn't match any currently active course" , templateEngine);
+				return;
+			}
+		} catch (SQLException e) {
+			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+			return;		
+		}
 
 		if(currentProfessor.getCourseById(courseId).isEmpty()) {
-			ForwardHandler.forwardToErrorPage(request, response, "Course not existing or not held by you", templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, "Course is not held by you", templateEngine);
 			return;
 		}
 
