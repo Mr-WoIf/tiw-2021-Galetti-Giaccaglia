@@ -1,7 +1,6 @@
 package it.polimi.tiw.dao;
 
 import java.sql.*;
-import java.util.AbstractMap;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.List;
@@ -234,7 +233,7 @@ public class ExamRegisterDAO {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		
-		AbstractMap.SimpleImmutableEntry<Integer, String> examRegister = null;
+		SimpleImmutableEntry<Integer, String> examRegister = null;
 		
 		try {
 			
