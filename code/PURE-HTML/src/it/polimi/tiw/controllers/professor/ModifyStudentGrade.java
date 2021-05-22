@@ -99,22 +99,38 @@ public class GoToModifyStudentGrade extends HttpServlet {
 		
 		String studentGradeString = request.getParameter("grade");
 		int studentGrade;
+		
+		if(studentGradeString.equals("absent")) {
+			studentGrade = 0;
+		}
+		
+		else if(studentGradeString.equals("postponed")) {
+			studentGrade = 1;
+		}
+		
+		else if(studentGradeString.equals("to sit again")) {
+			studentGrade = 2;
+		}
+		
+		else {
 
-		try {
-			studentGrade = Integer.parseInt(studentGradeString);
-		}catch (NumberFormatException e) {
-			ForwardHandler.forwardToErrorPage(request, response, "Submitted grade is not a number", templateEngine);
-			return;
-		}
+			try {
+				studentGrade = Integer.parseInt(studentGradeString);
+			}catch (NumberFormatException e) {
+				ForwardHandler.forwardToErrorPage(request, response, "Submitted grade is not valid", templateEngine);
+				return;
+			}
+			
+			if(studentGrade <18 || studentGrade>31) {
+				String error = studentGrade + " is not a valid grade! Please submit a value between 18 and 31 (laude)";
+				request.setAttribute("error", error);
+				RequestDispatcher dispatcher = request.getRequestDispatcher(PathUtils.pathToGradePageProfessor);
+				dispatcher.forward(request, response);
+				return;
+			}
 		
-		if(studentGrade <18 || studentGrade>31) {
-			String error = studentGrade + " is not a valid grade! Please submit a value between 18 and 31 (laude)";
-			request.setAttribute("error", error);
-			RequestDispatcher dispatcher = request.getRequestDispatcher(PathUtils.pathToGradePageProfessor);
-			dispatcher.forward(request, response);
-			return;
 		}
-		
+			
 	
 		Student student = null;
 		SimpleImmutableEntry<Integer, String> studentExamInfo = null;
@@ -139,7 +155,7 @@ public class GoToModifyStudentGrade extends HttpServlet {
 			return;	
 		}
 		
-		
+
 		response.sendRedirect(getServletContext().getContextPath() + PathUtils.pathToRegisteredStudents);
 		
 	}

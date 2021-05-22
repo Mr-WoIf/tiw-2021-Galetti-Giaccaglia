@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
 
+import it.polimi.tiw.beans.Report;
+import it.polimi.tiw.beans.Student;
+
 public class ReportDAO {
 	
 	private Connection connection;
@@ -14,7 +17,8 @@ public class ReportDAO {
 		this.connection = connection;
 	}
 	
-	public void createReport(int examId) throws SQLException {
+	public Report createReport(int examId) throws SQLException {
+
 		
 		Date date = new Date();
 
@@ -26,6 +30,11 @@ public class ReportDAO {
 		
 		int reportId = new Random(System.nanoTime()).nextInt();
 		
+		Report report = null;
+		
+		List<Student> students = null;
+		
+		 Map<Integer, Integer> studentsGrades = new HashMap<>();
 		
 		
 		PreparedStatement preparedStatement = null;	
@@ -63,6 +72,38 @@ public class ReportDAO {
 				
 			}
 		}
+		
+		try {
+			
+		students = registerDAO.getStudentsByReportId(examId, reportId);
+		
+		}catch(SQLException e) {
+			
+			throw new SQLException(e);
+		}
+		
+		
+		int studentGrade;
+		
+		for(Student student : students) {
+			
+			
+			try {
+				
+				studentGrade = registerDAO.getExamRegisterByStudentID(student.getId(), examId).getKey();
+				studentsGrades.put(student.getId(), studentGrade);
+				
+				}catch(SQLException e) {
+					
+					throw new SQLException(e);
+				}		
+				
+		}
+		
+		report = new Report(students, reportId, date, studentsGrades);
+		
+		return report;
+		
 	}
 
 	

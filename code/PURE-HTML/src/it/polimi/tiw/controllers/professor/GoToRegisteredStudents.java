@@ -21,6 +21,7 @@ import org.thymeleaf.TemplateEngine;
 
 import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Professor;
+import it.polimi.tiw.beans.Report;
 import it.polimi.tiw.beans.Student;
 import it.polimi.tiw.dao.ExamDAO;
 import it.polimi.tiw.dao.ExamRegisterDAO;
@@ -213,17 +214,27 @@ public class GoToRegisteredStudents extends HttpServlet {
 
 		if(requestType.equals("publish")) {
 			try {
+				
 				ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
 				examRegisterDAO.publishGradeByExamID(examId);
+				response.sendRedirect(getServletContext().getContextPath() + PathUtils.pathToRegisteredStudents);
+				
 			}catch (SQLException e) {
+				
 				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 				return;
+				
 			}
 		}else if(requestType.equals("record")) {
 
 			try {
+				
 				ReportDAO reportDAO = new ReportDAO(connection);
-				reportDAO.createReport(examId);
+				Report report = reportDAO.createReport(examId);
+				
+				session.setAttribute("report", report);
+				response.sendRedirect(getServletContext().getContextPath() + PathUtils.pathToReportPage);
+				
 			}catch (SQLException e) {
 				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 				return;
@@ -235,7 +246,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 		}
 
 
-		response.sendRedirect(getServletContext().getContextPath() + PathUtils.pathToRegisteredStudents);
+		
 
 	}
 

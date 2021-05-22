@@ -271,22 +271,27 @@ public class ExamRegisterDAO {
 	}
 		
 	public void reportGradeByExamID(int reportId, int examId) throws SQLException {
+
 		
 		String performedAction = " changing student's exam state from 'published'/'refused' to 'recorded' and adding report id by exam id and student id";
 		
 		String query = "UPDATE exam_register "
-				+ "SET state = 'recorded' AND report_id = ? "
+				+ "( SET grade = 'postponed'"
+				+ "WHERE exam_id = ?  AND state = 'refused')"
+				+ "AND"
+				+ "(SET state = 'recorded' AND report_id = ? "
 				+ "WHERE exam_id = ? "
-				+ "AND (state = 'published' OR state = 'refused')";
+				+ "AND (state = 'published' OR state = 'refused') )";
 			
-			
-		
 		PreparedStatement preparedStatement = null;
 		
 		
 		try {
 			
 			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, examId);
+			preparedStatement.setInt(2, reportId);
+			preparedStatement.setInt(3, examId);
 			preparedStatement.executeUpdate();
 			
 		}catch(SQLException e) {
@@ -308,5 +313,6 @@ public class ExamRegisterDAO {
 		
 		
 	}
+	
 	
 }

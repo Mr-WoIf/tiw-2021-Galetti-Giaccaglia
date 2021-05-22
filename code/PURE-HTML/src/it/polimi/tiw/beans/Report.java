@@ -19,6 +19,7 @@ public class Report {
 		this.studentsGrades = studentsGrades;
 
 	}
+	
 
 	public List<Student> getStudents() {
 		return students;
