@@ -3,18 +3,8 @@
 [ FONT ]*/
 
 @font-face {
-  font-family: Poppins-Regular;
-  src: url('../fonts/poppins/Poppins-Regular.ttf'); 
-}
-
-@font-face {
-  font-family: Poppins-Bold;
-  src: url('../fonts/poppins/Poppins-Bold.ttf'); 
-}
-
-@font-face {
-  font-family: Poppins-Medium;
-  src: url('../fonts/poppins/Poppins-Medium.ttf'); 
+  font-family: OpenSans-Regular;
+  src: url('../fonts/OpenSans/OpenSans-Regular.ttf'); 
 }
 
 @font-face {
@@ -35,6 +25,7 @@ body {
 
 
 body {
+	
   background: #9053c7;
   background: -webkit-linear-gradient(-135deg, #c850c0, #4158d0);
   background: -o-linear-gradient(-135deg, #c850c0, #4158d0);
@@ -63,6 +54,7 @@ body {
 
 
 #notfound .notfound {
+ max-width: 1050px;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -77,34 +69,39 @@ body {
 }
 
 .notfound {
-  max-width: 920px;
+  max-width: 2000px;
   width: 100%;
   line-height: 1.4;
   text-align: center;
   padding-left: 15px;
   padding-right: 15px;
+  font-weight: 300;
 }
 
 .notfound h2 {
- font-family: Poppins-Bold;
-  font-size: 46px;
-  color: #F0F0F0;
-  font-weight: 900;
-  text-transform: uppercase;
-  margin: 0px;
+  
+  
+    font-size: 3rem;
+    font-weight: 300;
+    margin-top: 0;
+    margin-bottom: 0;
+    text-align: center;
+    font-weight: 500;
+    color: #F0F0F0;
+    text-transform: uppercase;
 }
 
 .notfound p {
-  font-family: Poppins-Medium;
+  font-family: OpenSans-Regular;
   font-size: 16px;
   color: #F0F0F0;
-  font-weight: 400;
+  font-weight: 300;
   text-transform: uppercase;
-  margin-top: 15px;
+  margin-top: 2px;
 }
 
 .notfound a {
-  font-family: Poppins-Regular;
+  font-family: OpenSans-Regular;
   font-size: 14px;
   text-decoration: none;
   text-transform: uppercase;
@@ -114,7 +111,7 @@ body {
   border: 2px solid transparent;
   border-radius: 40px;
   color: #F0F0F0;
-  font-weight: 400;
+  font-weight: 100;
   -webkit-transition: 0.2s all;
   transition: 0.2s all;
 }

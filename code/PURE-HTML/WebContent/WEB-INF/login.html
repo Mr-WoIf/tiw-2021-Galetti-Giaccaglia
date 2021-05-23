@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Login</title>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 <!--===============================================================================================-->	
 	<link rel="icon" type="image/png" href="../resources/myfavicon.ico" th:href="@{/resources/myfavicon.ico}" />
 	<link rel="stylesheet" type="text/css" href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
 	<link rel="stylesheet" type="text/css" href="../css/util.css" th:href="@{/css/util.css}">
-	<link rel="stylesheet" type="text/css" href="../css/main.css" th:href="@{/css/main.css}">
+	<link rel="stylesheet" type="text/css" href="../css/login_main.css" th:href="@{/css/login_main.css}">
 <!--===============================================================================================-->
+<title>Login</title>
 </head>
 <body>
 	
@@ -20,7 +20,7 @@
 					<img src="../resources/login_logo.png"  th:src="@{/resources/login_logo.png}" alt="IMG">
 				</div>
 				
-				<form class="login100-form validate-form" method="POST" th:action="@{/CheckLogin}">>
+				<form class="login100-form validate-form" method="POST" th:action="@{/CheckLogin}">
 					<span class="login100-form-title">
 						Welcome
 					</span>
