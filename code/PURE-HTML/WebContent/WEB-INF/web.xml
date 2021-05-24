@@ -3,7 +3,7 @@
   <display-name>TIW-projectExamManagement</display-name>
   <context-param>
     <param-name>dbUrl</param-name>
-    <param-value>jdbc:mysql://127.0.0.1:3306/dbtest?serverTimezone=Europe/Rome</param-value>
+    <param-value>jdbc:mysql://localhost:3306/unidb</param-value>
   </context-param>
   <context-param>
     <param-name>dbUser</param-name>
@@ -11,16 +11,13 @@
   </context-param>
   <context-param>
     <param-name>dbPassword</param-name>
-    <param-value>polimitiw2021</param-value>
+    <param-value>tiw_project2021</param-value>
   </context-param>
   <context-param>
     <param-name>dbDriver</param-name>
     <param-value>com.mysql.cj.jdbc.Driver</param-value>
   </context-param>
-  
-  <welcome-file-list>
-    <welcome-file>login.html</welcome-file>
-  </welcome-file-list>
+
   
   <filter>
   	<filter-name>CheckLoggedUser</filter-name>
@@ -46,7 +43,7 @@
   	<filter-name>CheckNotLoggedUser</filter-name>
   	<url-pattern>/</url-pattern>
   	<url-pattern>/GoToLogin</url-pattern>
-    <url-pattern>/CheckLogin</url-pattern>
+ 
   </filter-mapping>
   
   <filter-mapping>
@@ -71,7 +68,11 @@
   	<url-pattern>/GoToCourse</url-pattern>
   	<url-pattern>/GoToExam</url-pattern>
    </filter-mapping>	
-   
+
+  
+  <welcome-file-list>
+    <welcome-file>login.html</welcome-file>
+  </welcome-file-list>
    
 
 </web-app>

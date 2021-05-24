@@ -26,7 +26,7 @@ public class ReportDAO {
 
 		String performedAction = "creating report in the database";
 		
-		String queryCreateReport = "INSERT INTO report (id, exam_id,date_recorded) VALUES (?, ?, ?)";
+		String queryCreateReport = "INSERT INTO unidb.report (id, exam_id,date_recorded) VALUES (?, ?, ?)";
 		
 		int reportId = new Random(System.nanoTime()).nextInt();
 		

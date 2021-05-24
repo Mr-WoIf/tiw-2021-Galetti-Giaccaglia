@@ -25,7 +25,7 @@ public class CourseDAO {
 		
 		String performedAction = " finding courses by student id";
 		
-		String query = "SELECT id, name FROM study_plan JOIN course ON study_plan.course_id = course.id WHERE student_id = ?";
+		String query = "SELECT id, name FROM unidb.study_plan JOIN unidb.course ON study_plan.course_id = course.id WHERE student_id = ?";
 		
 		return executeQuery(performedAction, query, studentId);
 		
@@ -35,7 +35,7 @@ public class CourseDAO {
 		
 		String performedAction = " finding courses by professor id";
 		
-		String query = "SELECT id, name FROM course WHERE professor_id = ? ORDER BY name DESC";
+		String query = "SELECT id, name FROM unidb.course WHERE professor_id = ? ORDER BY name DESC";
 		
 		return executeQuery(performedAction, query, professorId);
 		
@@ -84,7 +84,7 @@ public class CourseDAO {
 		
 			String performedAction = " finding course by id";
 			
-			String query = "SELECT * FROM course WHERE id = ?";
+			String query = "SELECT * FROM unidb.course WHERE id = ?";
 			
 			PreparedStatement preparedStatement = null;
 			ResultSet resultSet = null;

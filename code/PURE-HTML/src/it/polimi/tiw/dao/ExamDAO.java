@@ -24,7 +24,7 @@ public class ExamDAO {
 		 
 			String performedAction = " finding exams by course id";
 			
-			String query = "SELECT date, id  FROM exam WHERE course_id = ? ORDER BY date DESC";
+			String query = "SELECT date, id  FROM unidb.exam WHERE course_id = ? ORDER BY date DESC";
 			
 			PreparedStatement preparedStatement = null;
 			ResultSet resultSet = null;
@@ -40,7 +40,7 @@ public class ExamDAO {
 				
 				while(resultSet.next()) {
 			
-					Exam exam = new Exam(new Date(resultSet.getDate("name").getTime()), resultSet.getInt("id"), courseId);
+					Exam exam = new Exam(new Date(resultSet.getDate("date").getTime()), resultSet.getInt("id"), courseId);
 					exams.add(exam);
 				}
 				
@@ -70,7 +70,7 @@ public class ExamDAO {
 		 
 			String performedAction = " error while determining student subscription to exam";
 			
-			String query = "SELECT * FROM exam_register WHERE course_id = ? AND student_id = ?";
+			String query = "SELECT * FROM unidb.exam_register WHERE course_id = ? AND student_id = ?";
 			
 			PreparedStatement preparedStatement = null;
 			ResultSet resultSet = null;
@@ -117,7 +117,7 @@ public class ExamDAO {
 		 
 		 String performedAction = " finding exam by id";
 			
-			String query = "SELECT date, course_id  FROM exam WHERE id = ?";
+			String query = "SELECT date, course_id  FROM unidb.exam WHERE id = ?";
 			
 			PreparedStatement preparedStatement = null;
 			ResultSet resultSet = null;
@@ -134,7 +134,7 @@ public class ExamDAO {
 				if(!resultSet.isBeforeFirst())
 					return Optional.ofNullable(exam);
 				
-				exam = new Exam(new Date(resultSet.getDate("name").getTime()), examId, resultSet.getInt("courseId"));
+				exam = new Exam(new Date(resultSet.getDate("date").getTime()), examId, resultSet.getInt("course_id"));
 				
 			} catch(SQLException e) {
 				throw new SQLException("Error accessing the DB when" + performedAction);

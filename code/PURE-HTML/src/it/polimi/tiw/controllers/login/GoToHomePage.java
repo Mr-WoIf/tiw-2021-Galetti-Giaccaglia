@@ -65,7 +65,7 @@ public class GoToHomePage extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		HttpSession session = request.getSession(false);
-		User currentUser = (User)session.getAttribute("currentUser");
+		User currentUser = (User)session.getAttribute("user");
 		
 		List<Course> courses;
 		CourseDAO courseDAO = new CourseDAO(connection);

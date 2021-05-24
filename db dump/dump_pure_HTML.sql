@@ -23,8 +23,8 @@ DROP TABLE IF EXISTS `course`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `course` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `professor_id` bigint unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `professor_id` int unsigned NOT NULL,
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
@@ -51,8 +51,8 @@ DROP TABLE IF EXISTS `exam`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `exam` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `course_id` bigint unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `course_id` int unsigned NOT NULL,
   `date` date NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
@@ -79,10 +79,10 @@ DROP TABLE IF EXISTS `exam_register`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `exam_register` (
-  `student_id` bigint unsigned NOT NULL,
-  `exam_id` bigint unsigned NOT NULL,
+  `student_id` int unsigned NOT NULL,
+  `exam_id` int unsigned NOT NULL,
   `grade` int DEFAULT NULL,
-  `id_report` bigint unsigned DEFAULT NULL,
+  `id_report` int unsigned DEFAULT NULL,
   `state` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`student_id`,`exam_id`),
   UNIQUE KEY `student_id` (`student_id`),
@@ -111,7 +111,7 @@ DROP TABLE IF EXISTS `professor`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `professor` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `mail` varchar(254) DEFAULT NULL,
   `password` varchar(45) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -140,8 +140,8 @@ DROP TABLE IF EXISTS `report`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `report` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
-  `exam_id` bigint unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `exam_id` int unsigned NOT NULL,
   `date_recorded` datetime NOT NULL,
   PRIMARY KEY (`id`,`exam_id`),
   UNIQUE KEY `id` (`id`),
@@ -167,7 +167,7 @@ DROP TABLE IF EXISTS `student`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `student` (
-  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `mail` varchar(254) NOT NULL,
   `password` varchar(45) NOT NULL,
   `name` varchar(45) NOT NULL,
@@ -197,8 +197,8 @@ DROP TABLE IF EXISTS `study_plan`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `study_plan` (
-  `student_id` bigint unsigned NOT NULL,
-  `course_id` bigint unsigned NOT NULL,
+  `student_id` int unsigned NOT NULL,
+  `course_id` int unsigned NOT NULL,
   PRIMARY KEY (`student_id`,`course_id`),
   KEY `id` (`course_id`),
   CONSTRAINT `id` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),

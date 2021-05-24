@@ -3,11 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="../resources/myfavicon.ico" th:href="@{/resources/myfavicon.ico}" />
-	<link rel="stylesheet" type="text/css" href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
-	<link rel="stylesheet" type="text/css" href="../css/util.css" th:href="@{/css/util.css}">
-	<link rel="stylesheet" type="text/css" href="../css/login_main.css" th:href="@{/css/login_main.css}">
+	<link rel="icon" type="image/png" href="resources/myfavicon.ico" th:href="@{/resources/myfavicon.ico}" />
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+	<link rel="stylesheet" type="text/css" href="css/util.css" th:href="@{/css/util.css}">
+	<link rel="stylesheet" type="text/css" href="css/login_main.css" th:href="@{/css/login_main.css}">
 <!--===============================================================================================-->
 <title>Login</title>
 </head>
@@ -17,10 +18,10 @@
 		<div class="container-login100">
 			<div class="wrap-login100">
 				<div class="login100-pic" data-tilt>
-					<img src="../resources/login_logo.png"  th:src="@{/resources/login_logo.png}" alt="IMG">
+					<img src="resources/login_logo.png"  th:src="@{resources/login_logo.png}" alt="IMG">
 				</div>
 				
-				<form class="login100-form validate-form" method="POST" th:action="@{/CheckLogin}">
+				<form class="login100-form validate-form" method="POST"  action="CheckLogin" th:action="@{/CheckLogin}">
 					<span class="login100-form-title">
 						Welcome
 					</span>
@@ -32,8 +33,8 @@
 					</div>
 					
 
-					<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-						<input class="input100" type="text" required name="email" placeholder="Email">
+					<div class="wrap-input100 validate-input" data-validate = "Valid id is required: 10626428">
+						<input class="input100" required name="id" placeholder="Id">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-envelope" aria-hidden="true"></i>
@@ -41,7 +42,7 @@
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-						<input class="input100" type="password" required name="pass" placeholder="Password">
+						<input class="input100" type="password" required name="password" placeholder="Password">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-lock" aria-hidden="true"></i>
@@ -49,11 +50,15 @@
 					</div>
 					
 					<div class="container-login100-form-btn">
-						<button class="login100-form-btn">
+						<button class="login100-form-btn" type="submit">
 							Login
 						</button>
-					</div>
+						<div class="warning-message" th:if="${warning}">
+			<span th:text="${warning}">Email or password not valid!</span>
+		</div>
+				 </div>		
 				</form>
+					
 			</div>
 		</div>
 	</div>

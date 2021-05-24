@@ -17,10 +17,10 @@ public class UserDAO {
 	}
 	
 
-	public Optional<User> findUser(int id, int pwd) throws SQLException {
+	public Optional<User> findUser(int id, String pwd) throws SQLException {
 		
-		String studentQuery = "SELECT  name, , surname FROM student WHERE id = ? AND password = ?";
-		String professorQuery = "Select name, surname FROM professor WHERE id = ? AND password = ?";
+		String studentQuery = "SELECT * FROM unidb.student WHERE id = ? AND password = ?";
+		String professorQuery = "Select * FROM unidb.professor WHERE id = ? AND password = ?";
 		Optional<User> optUser;
 		
 		try {	
@@ -37,43 +37,60 @@ public class UserDAO {
 			
 	}
 	
-	private Optional<User> executeCredentialsQuery(int id, int pwd, String role, String query) throws SQLException {
+	private Optional<User> executeCredentialsQuery(int id, String pwd, String role, String query) throws SQLException {
 		
-		String action = "finding a user by id and password";
-		
-		try (PreparedStatement preparedStatement = con.prepareStatement(query);) {
-		
-			preparedStatement.setInt(1, id);
-			preparedStatement.setInt(2, pwd);
+		String action = " finding a user by id and password";
+		PreparedStatement preparedStatement = null;
+		ResultSet result = null;
 			
-			try (ResultSet result = preparedStatement.executeQuery();) {
+		try {
+		    preparedStatement = con.prepareStatement(query);
+			preparedStatement.setInt(1, id);
+			preparedStatement.setString(2, pwd);
+			result = preparedStatement.executeQuery();
 				
 				if (!result.isBeforeFirst()) // no results, credential check failed
 					return Optional.empty();
 				
 				else {
 					
-					result.next();
-					User user = new User(result.getInt("id"), result.getString("email"), result.getString("name"), result.getString("surname"), role);
-					return Optional.ofNullable(user);
+					while(result.next()) {
 					
+					User user = new User(result.getInt("id"), result.getString("mail"), result.getString("name"), result.getString("surname"), role);
+					return Optional.ofNullable(user);	
+					}
 				}
 				
-			}catch (Exception e) {
-				throw new SQLException("Error closing the result set when" + action);
+			} catch(SQLException e) {
+				throw new SQLException("Error accessing the DB when" + action);
 			}
+				finally {
+					try {
+						result.close();
+						
+					}
+				catch (Exception e) {
+				throw new SQLException("Error closing the result set when" + action);
+			}try {
+				
+				preparedStatement.close();
 			
 			}catch (Exception e) {
 				throw new SQLException("Error closing the statement when" + action);
 			}
+			
+			
+			
+				}
+		return Optional.empty();
 			
 	}
 		
 	public Optional<User> getUserById(int id) throws SQLException{
 
 			
-			String studentQuery = "SELECT  * FROM student WHERE id = ?";
-			String professorQuery = "Select * FROM professor WHERE id = ?";
+			String studentQuery = "SELECT  * FROM unidb.student WHERE id = ?";
+			String professorQuery = "Select * FROM unidb.professor WHERE id = ?";
 			Optional<User> optUser;
 			
 			optUser = executeIdQuery(id , "student", studentQuery);
@@ -88,41 +105,54 @@ public class UserDAO {
 
 	private Optional<User> executeIdQuery(int id, String role, String query) throws SQLException {
 	
-		String action = "finding a user by id";
-		
-		try (PreparedStatement preparedStatement = con.prepareStatement(query);) {
-		
-			preparedStatement.setInt(1, id);
+		String action = " finding a user by id";
+		ResultSet result = null;
+		PreparedStatement preparedStatement = null;
 			
-			try (ResultSet result = preparedStatement.executeQuery();) {
-				
+			try {
+				preparedStatement = con.prepareStatement(query);
+				preparedStatement.setInt(1, id);
+				result = preparedStatement.executeQuery();
 				if (!result.isBeforeFirst()) // no results, credential check failed
 					return Optional.empty();
 				
 				else {
-					
 					result.next();
-					User user = new User(result.getInt("id"), result.getString("email"), result.getString("name"), result.getString("surname"), role);
+					User user = new User(result.getInt("id"), result.getString("mail"), result.getString("name"), result.getString("surname"), role);
 					return Optional.ofNullable(user);
 					
 				}
 				
+			} catch(SQLException e) {
+				throw new SQLException("Error accessing the DB when" + action);
+			}
+				finally {
+				
+				try {
+					result.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + action);
 			}
 			
+				try {
+					preparedStatement.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the statement when" + action);
 			}
+				
+
+		}
 			
-	}
+		}
+			
+	
 	
 	public Student findStudentById(int studentId) throws SQLException{
 		
 
 		String performedAction = " finding student by id";
 		
-		String query = "SELECT mail, name, surname,school, degree FROM students WHERE id = ?";
+		String query = "SELECT * FROM unidb.student WHERE id = ?";
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -134,6 +164,9 @@ public class UserDAO {
 			preparedStatement.setInt(1, studentId);
 			
 			resultSet = preparedStatement.executeQuery();
+			
+			if (!resultSet.isBeforeFirst()) // no results
+				return null;
 			
 			while(resultSet.next()) {
 		
@@ -166,7 +199,7 @@ public class UserDAO {
 
 		String performedAction = " finding professor by id";
 		
-		String query = "SELECT mail, name, surname, department, degree FROM professor WHERE id = ?";
+		String query = "SELECT id, mail, name, surname, department FROM unidb.professor WHERE id = ?";
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
@@ -177,13 +210,17 @@ public class UserDAO {
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, professorId);
 			
+			
 			resultSet = preparedStatement.executeQuery();
 			
-			while(resultSet.next()) {
-		
+			if (!resultSet.isBeforeFirst()) // no results
+				return null;
+			
+			while(resultSet.next()) {				
+				professor = new Professor(resultSet.getInt("id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "professor", resultSet.getString("department"));
 				
-				professor = new Professor(resultSet.getInt("professor_id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "professor", resultSet.getString("department"));
 			}
+			
 			
 			
 		} catch(SQLException e) {
@@ -192,6 +229,7 @@ public class UserDAO {
 		} finally {
 			try {
 				resultSet.close();
+				
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
 			}

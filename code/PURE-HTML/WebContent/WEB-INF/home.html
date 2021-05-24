@@ -15,7 +15,6 @@
 </head>
 <body>
 
-	<div th:replace="/WEB-INF/header :: header"> </div>
 	
 	<div class="limiter">
 	
@@ -26,7 +25,7 @@
 		
 			<div class="home-title">Welcome to the Course Management Home Page</div>
 			
-			<div class="home-subtitle">Nice to see you again!</div>
+			<div class="home-subtitle">Nice to see you again, <span th:text="${session.user.name}">user</span>!</div>
 	
 			
 			<div class="wrap-table">

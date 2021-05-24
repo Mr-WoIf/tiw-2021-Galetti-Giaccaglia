@@ -71,7 +71,7 @@ public class CheckLogin extends HttpServlet {
 		String id_param = request.getParameter("id");
 		String password_param = request.getParameter("password");
 		int id;
-		int password;
+		String password;
 		
 		if(id_param == null){
 			request.setAttribute("warning", "Null id");		
@@ -92,18 +92,19 @@ public class CheckLogin extends HttpServlet {
 		}
 		
 		if(password_param.isEmpty()) {
-			request.setAttribute("warning", "Empty email field");		
+			request.setAttribute("warning", "Empty password field");		
 			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
 		try {
 			id = Integer.parseInt(id_param);
-			password = Integer.parseInt(password_param);
+			password = password_param;
 			
 
-			if (password < 10600000 || password > 10800000) {
-				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The id is invalid, make sure to use the one provided");
+			if (id < 10600000 || id > 10800000) {
+				request.setAttribute( "warning", "The id is invalid, make sure to use the one provided");
+				ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 				return;
 			}
 			
@@ -121,7 +122,7 @@ public class CheckLogin extends HttpServlet {
 		
 		try {
 			
-			optUser = userDAO.findUser(id,  password);
+			optUser = userDAO.findUser(id, password);
 			
 		} catch (SQLException e) {
 			
@@ -130,14 +131,14 @@ public class CheckLogin extends HttpServlet {
 		}
 		
 		if(optUser.isEmpty()) {
-			request.setAttribute("warning", "Email or password incorrect!");
+			request.setAttribute("warning", "id or password incorrect!");
 			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
 		user = optUser.get();
 		HttpSession session = request.getSession();
-		session.setAttribute("currentUser", user);
+		session.setAttribute("user", user);
 		response.sendRedirect(getServletContext().getContextPath() + PathUtils.goToHomeServletPath);		
 	}
 	
