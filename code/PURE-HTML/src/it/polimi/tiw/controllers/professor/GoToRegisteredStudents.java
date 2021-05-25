@@ -132,7 +132,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 		if(students.size()==0)
 			request.setAttribute("noSubs", false);
 			ForwardHandler.forward(request, response, PathUtils.pathToRegisteredStudents, templateEngine);
-		
+		System.out.println(students.size());
 
 		registerMap = students.stream()
 				.collect(Collectors.toMap(
@@ -149,9 +149,12 @@ public class GoToRegisteredStudents extends HttpServlet {
 
 
 		try {
+			System.out.println("ciao11");
+			System.out.print(studentId + " " + examId);
 			return examRegisterDAO.getExamRegisterByStudentID(studentId, examId);
 		} catch (SQLException e) {
 
+			System.out.println("mannaggia");
 			// TODO Auto-generated catch block
 			try {
 				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
@@ -162,7 +165,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			return null;	
+			return new SimpleImmutableEntry<Integer, String>(1, "ciao");	
 
 		}
 

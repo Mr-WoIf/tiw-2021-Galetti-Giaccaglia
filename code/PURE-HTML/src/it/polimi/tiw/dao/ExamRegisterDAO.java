@@ -95,7 +95,7 @@ public class ExamRegisterDAO {
 		
 		String query = "SELECT exam_register.student_id, student.mail, student.name, student.surname, student.school, student.degree, exam_register.grade, exam_register.state "
 				+ "FROM unidb.exam_register JOIN unidb.student "
-				+ "ON exam_register.student_id = student.id"
+				+ "ON exam_register.student_id = student.id "
 				+ "WHERE exam_register.exam_id = ? "
 				+ "ORDER BY student.surname DESC";
 		
@@ -103,11 +103,14 @@ public class ExamRegisterDAO {
 		ResultSet resultSet = null;
 		
 		List<Student> students = new ArrayList<>();
+
 		
-		try {
 			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, examId);
+			
+			
+		try {	
 			
 			resultSet = preparedStatement.executeQuery();
 			
@@ -123,13 +126,14 @@ public class ExamRegisterDAO {
 			
 			
 		} catch(SQLException e) {
-			throw new SQLException("Error accessing the DB when" + performedAction);
+			throw new SQLException("Error accessing the DB when" + performedAction +e.getMessage() + " " + examId);
 			
 		} finally {
 			try {
+				if(resultSet!=null)
 				resultSet.close();
 			}catch (Exception e) {
-				throw new SQLException("Error closing the result set when" + performedAction + "" +e.getMessage());
+				throw new SQLException("Error closing the result set when" + performedAction);
 			}
 			try {
 				preparedStatement.close();
@@ -146,11 +150,11 @@ public class ExamRegisterDAO {
 
 		String performedAction = " finding students by report id";
 		
-		String query = "SELECT exam_register.student_id, student.mail, student.name, student.surname, student.school, student.degree, exam_register.grade, exam_register.state"
+		String query = "SELECT exam_register.student_id, student.mail, student.name, student.surname, student.school, student.degree, exam_register.grade, exam_register.state "
 				+ "FROM unidb.exam_register JOIN unidb.student "
-				+ "ON exam_register.student_id = student.id"
+				+ "ON exam_register.student_id = student.id "
 				+ "WHERE exam_register.exam_id = ? "
-				+ "AND exam_register.id_report = ?"
+				+ "AND exam_register.id_report = ? "
 				+ "ORDER BY student.surname DESC";
 		
 		PreparedStatement preparedStatement = null;
@@ -179,7 +183,8 @@ public class ExamRegisterDAO {
 			
 		} finally {
 			try {
-				resultSet.close();
+				if(resultSet!=null)
+					resultSet.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
 			}
@@ -244,13 +249,10 @@ public class ExamRegisterDAO {
 			preparedStatement.setInt(1, examId);
 			
 			resultSet = preparedStatement.executeQuery();
-			
-			while(resultSet.next()) {
-		
-				examRegister = new SimpleImmutableEntry<>(resultSet.getInt("grade"), resultSet.getString("state"));
+			resultSet.next();
+			examRegister = new SimpleImmutableEntry<>(resultSet.getInt("grade"), resultSet.getString("state"));
 				
 					
-			}
 			
 			
 		} catch(SQLException e) {
@@ -277,12 +279,12 @@ public class ExamRegisterDAO {
 	public void reportGradeByExamID(int reportId, int examId) throws SQLException {
 
 		
-		String performedAction = " changing student's exam state from 'published'/'refused' to 'recorded' and adding report id by exam id and student id";
+		String performedAction = " changing student's exam state from 'published'/'refused' to 'recorded' and adding report id by exam id and student id ";
 		
 		String query = "UPDATE unidb.exam_register "
-				+ "( SET grade = 'postponed'"
-				+ "WHERE exam_id = ?  AND state = 'refused')"
-				+ "AND"
+				+ "( SET grade = 'postponed' "
+				+ "WHERE exam_id = ?  AND state = 'refused') "
+				+ "AND "
 				+ "(SET state = 'recorded' AND report_id = ? "
 				+ "WHERE exam_id = ? "
 				+ "AND (state = 'published' OR state = 'refused') )";

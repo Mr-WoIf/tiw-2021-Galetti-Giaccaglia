@@ -10,7 +10,7 @@ public class PathUtils {
     public static String pathToGradePageProfessor = "/WEB-INF/gradeProfessor.html";
     public static String pathToGradePageStudent = "/WEB-INF/gradeStudent.html";
     public static String pathToReportPage = "/WEB-INF/report.html";
-    public static String pathToRegisteredStudents = "/WEB_INF/registeredStudents.html";
+    public static String pathToRegisteredStudents = "/WEB-INF/registeredstudents.html";
     public static String goToHomeServletPath = "/GoToHomePage";
     
 }

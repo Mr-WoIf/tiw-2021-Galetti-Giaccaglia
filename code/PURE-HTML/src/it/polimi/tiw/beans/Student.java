@@ -19,6 +19,7 @@ public class Student extends User{
 		
 	}
 	
+	
 	public void setCourses(List<Course> courses) {
 		this.courses = courses;
 	}
@@ -26,6 +27,7 @@ public class Student extends User{
 	public String getDegree() {
 		return degree;
 	}
+	
 	
 	public String getSchool() {
 		return school;
