@@ -97,6 +97,10 @@ public class GoToRegisteredStudents extends HttpServlet {
 
 		HttpSession session = request.getSession(false);
 		Professor professor = (Professor)session.getAttribute("professor");
+		if(professor == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Your session has expired!", templateEngine);
+			return;
+		}
 
 		//fetching professor courses to get updated courses list
 		try {
@@ -124,11 +128,17 @@ public class GoToRegisteredStudents extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;		
 		}
+		
+		if(students.size()==0)
+			request.setAttribute("noSubs", false);
+			ForwardHandler.forward(request, response, PathUtils.pathToRegisteredStudents, templateEngine);
+		
 
 		registerMap = students.stream()
 				.collect(Collectors.toMap(
 						student -> student, student -> getExamRegister(examRegisterDAO, student.getId(), examId, request, response)));
 
+		request.setAttribute("noSubs", false);
 		request.setAttribute("registerMap", registerMap);
 		ForwardHandler.forward(request, response, PathUtils.pathToRegisteredStudents, templateEngine);
 

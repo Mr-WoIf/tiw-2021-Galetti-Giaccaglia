@@ -93,10 +93,10 @@ public class ExamRegisterDAO {
 
 		String performedAction = " finding students by exam id";
 		
-		String query = "SELECT student.id, student.mail, student.name, student.surname, student.school, student.degree, exam_register.grade, exam_register.state "
+		String query = "SELECT exam_register.student_id, student.mail, student.name, student.surname, student.school, student.degree, exam_register.grade, exam_register.state "
 				+ "FROM unidb.exam_register JOIN unidb.student "
-				+ "ON student.id = exam_register.student_id"
-				+ "WHERE exam_register.id = ? "
+				+ "ON exam_register.student_id = student.id"
+				+ "WHERE exam_register.exam_id = ? "
 				+ "ORDER BY student.surname DESC";
 		
 		PreparedStatement preparedStatement = null;
@@ -110,6 +110,9 @@ public class ExamRegisterDAO {
 			preparedStatement.setInt(1, examId);
 			
 			resultSet = preparedStatement.executeQuery();
+			
+			if(!resultSet.isBeforeFirst())
+				return students;
 			
 			while(resultSet.next()) {
 		
@@ -126,7 +129,7 @@ public class ExamRegisterDAO {
 			try {
 				resultSet.close();
 			}catch (Exception e) {
-				throw new SQLException("Error closing the result set when" + performedAction);
+				throw new SQLException("Error closing the result set when" + performedAction + "" +e.getMessage());
 			}
 			try {
 				preparedStatement.close();
@@ -141,13 +144,13 @@ public class ExamRegisterDAO {
 	public List<Student> getStudentsByReportId(int examId, int reportId) throws SQLException {
 		
 
-		String performedAction = " finding students by exam id";
+		String performedAction = " finding students by report id";
 		
-		String query = "SELECT student.id, student.mail, student.name, student.surname, student.school, student.degree, exam_register.grade, exam_register.state"
+		String query = "SELECT exam_register.student_id, student.mail, student.name, student.surname, student.school, student.degree, exam_register.grade, exam_register.state"
 				+ "FROM unidb.exam_register JOIN unidb.student "
-				+ "ON student.id = exam_register.student_id"
-				+ "WHERE exam_register.id = ? "
-				+ "AND id_report = ?"
+				+ "ON exam_register.student_id = student.id"
+				+ "WHERE exam_register.exam_id = ? "
+				+ "AND exam_register.id_report = ?"
 				+ "ORDER BY student.surname DESC";
 		
 		PreparedStatement preparedStatement = null;
@@ -245,6 +248,7 @@ public class ExamRegisterDAO {
 			while(resultSet.next()) {
 		
 				examRegister = new SimpleImmutableEntry<>(resultSet.getInt("grade"), resultSet.getString("state"));
+				
 					
 			}
 			

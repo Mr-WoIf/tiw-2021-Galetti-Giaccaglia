@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.21, for macos10.15 (x86_64)
 --
--- Host: 127.0.0.1    Database: dump_PURE-HTML
+-- Host: 127.0.0.1    Database: unidb
 -- ------------------------------------------------------
 -- Server version	8.0.23
 
@@ -30,7 +30,7 @@ CREATE TABLE `course` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `professor_id` (`professor_id`),
   CONSTRAINT `course_ibfk_1` FOREIGN KEY (`professor_id`) REFERENCES `professor` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1015 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `course` (
 
 LOCK TABLES `course` WRITE;
 /*!40000 ALTER TABLE `course` DISABLE KEYS */;
-INSERT INTO `course` VALUES (1,10728479,'Biochemistry'),(2,10728480,'Biology'),(3,10728478,'Introductory Psychology'),(4,10728482,'English Literature'),(5,10728481,'Web Applications');
+INSERT INTO `course` VALUES (1010,10728479,'Biochemistry'),(1011,10728480,'Biology'),(1012,10728478,'Introductory Psychology'),(1013,10728482,'English Literature'),(1014,10728481,'Web Applications');
 /*!40000 ALTER TABLE `course` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,8 +57,8 @@ CREATE TABLE `exam` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   KEY `course_id_idx` (`course_id`),
-  CONSTRAINT `course_id` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `course_id` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1214 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +67,7 @@ CREATE TABLE `exam` (
 
 LOCK TABLES `exam` WRITE;
 /*!40000 ALTER TABLE `exam` DISABLE KEYS */;
-INSERT INTO `exam` VALUES (1,5,'2021-07-02'),(2,5,'2021-07-21'),(3,1,'2021-07-08'),(4,1,'2021-07-19'),(5,3,'2021-07-01'),(6,3,'2021-07-09'),(7,4,'2021-07-26'),(8,4,'2021-07-03'),(9,2,'2021-07-10'),(10,2,'2021-07-29');
+INSERT INTO `exam` VALUES (1204,1014,'2021-07-02'),(1205,1014,'2021-07-21'),(1206,1010,'2021-07-08'),(1207,1010,'2021-07-19'),(1208,1012,'2021-07-01'),(1209,1012,'2021-07-09'),(1210,1013,'2021-07-26'),(1211,1013,'2021-07-03'),(1212,1011,'2021-07-10'),(1213,1011,'2021-07-29');
 /*!40000 ALTER TABLE `exam` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -81,16 +81,15 @@ DROP TABLE IF EXISTS `exam_register`;
 CREATE TABLE `exam_register` (
   `student_id` int unsigned NOT NULL,
   `exam_id` int unsigned NOT NULL,
-  `grade` int DEFAULT NULL,
+  `grade` int NOT NULL,
   `id_report` int unsigned DEFAULT NULL,
-  `state` varchar(45) DEFAULT NULL,
+  `state` varchar(45) NOT NULL,
   PRIMARY KEY (`student_id`,`exam_id`),
-  UNIQUE KEY `student_id` (`student_id`),
-  UNIQUE KEY `exam_id` (`exam_id`),
   KEY `exam_register_ibfk_3` (`id_report`),
+  KEY `exam_register_ibfk_2_idx` (`exam_id`),
   CONSTRAINT `exam_register_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `exam_register_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `exam_register_ibfk_3` FOREIGN KEY (`id_report`) REFERENCES `report` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `id_report` FOREIGN KEY (`id_report`) REFERENCES `report` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -100,6 +99,7 @@ CREATE TABLE `exam_register` (
 
 LOCK TABLES `exam_register` WRITE;
 /*!40000 ALTER TABLE `exam_register` DISABLE KEYS */;
+INSERT INTO `exam_register` VALUES (10626489,1206,1,7890,'recorded'),(10626489,1207,31,NULL,'published'),(10626489,1208,25,NULL,'published'),(10626489,1212,0,7891,'recorded'),(10626489,1213,-1,NULL,'not inserted'),(10626490,1204,0,7893,'recorded'),(10626490,1205,21,NULL,'published'),(10626490,1206,1,7890,'recorded'),(10626490,1207,20,NULL,'published'),(10626490,1211,2,7892,'recorded'),(10626491,1208,29,NULL,'published'),(10626491,1210,-1,NULL,'not inserted'),(10626491,1212,1,7891,'recorded'),(10626491,1213,25,NULL,'published'),(10626492,1204,1,7893,'recorded'),(10626492,1205,27,NULL,'published'),(10626492,1210,-1,NULL,'not inserted'),(10626492,1212,1,7891,'recorded'),(10626492,1213,18,NULL,'published'),(10626493,1204,31,7893,'recorded'),(10626493,1208,18,NULL,'published'),(10626493,1210,-1,NULL,'not inserted'),(10626493,1211,1,7892,'recorded');
 /*!40000 ALTER TABLE `exam_register` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,7 +147,7 @@ CREATE TABLE `report` (
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `exam_id` (`exam_id`),
   CONSTRAINT `report_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7894 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,6 +156,7 @@ CREATE TABLE `report` (
 
 LOCK TABLES `report` WRITE;
 /*!40000 ALTER TABLE `report` DISABLE KEYS */;
+INSERT INTO `report` VALUES (7890,1206,'2021-07-16 00:00:00'),(7891,1212,'2021-07-20 00:00:00'),(7892,1211,'2021-07-18 00:00:00'),(7893,1204,'2021-07-15 00:00:00');
 /*!40000 ALTER TABLE `report` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -201,7 +202,7 @@ CREATE TABLE `study_plan` (
   `course_id` int unsigned NOT NULL,
   PRIMARY KEY (`student_id`,`course_id`),
   KEY `id` (`course_id`),
-  CONSTRAINT `id` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`),
+  CONSTRAINT `id` FOREIGN KEY (`course_id`) REFERENCES `course` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `study_plan_ibfk_2` FOREIGN KEY (`student_id`) REFERENCES `student` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -212,7 +213,7 @@ CREATE TABLE `study_plan` (
 
 LOCK TABLES `study_plan` WRITE;
 /*!40000 ALTER TABLE `study_plan` DISABLE KEYS */;
-INSERT INTO `study_plan` VALUES (10626489,1),(10626490,1),(10626492,1),(10626489,2),(10626491,2),(10626492,2),(10626489,3),(10626491,3),(10626493,3),(10626490,4),(10626491,4),(10626493,4),(10626490,5),(10626492,5),(10626493,5);
+INSERT INTO `study_plan` VALUES (10626489,1010),(10626490,1010),(10626492,1010),(10626489,1011),(10626491,1011),(10626492,1011),(10626489,1012),(10626491,1012),(10626493,1012),(10626490,1013),(10626491,1013),(10626493,1013),(10626490,1014),(10626492,1014),(10626493,1014);
 /*!40000 ALTER TABLE `study_plan` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -225,4 +226,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-17 21:08:58
+-- Dump completed on 2021-05-25 14:34:36

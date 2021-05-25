@@ -134,6 +134,7 @@ public class ExamDAO {
 				if(!resultSet.isBeforeFirst())
 					return Optional.ofNullable(exam);
 				
+				resultSet.next();
 				exam = new Exam(new Date(resultSet.getDate("date").getTime()), examId, resultSet.getInt("course_id"));
 				
 			} catch(SQLException e) {

@@ -26,7 +26,7 @@
 			<h2>We are sorry, an error occurred</h2>
 			
 			<p>Your error is: <b><span th:text="${error}">sample error</span></b></p>
-			<div th:if="${session.currentUser == null}">
+			<div th:if="${session.user == null}">
 			<a th:href="@{/}">Back To LoginPage</a>
 			</div>
 		</div>

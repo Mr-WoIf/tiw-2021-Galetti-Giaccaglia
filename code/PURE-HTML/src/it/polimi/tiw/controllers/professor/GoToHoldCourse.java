@@ -116,6 +116,7 @@ public class GoToHoldCourse extends HttpServlet {
 		
 		try {
 			exams = examDAO.getExamsByCourseId(courseId);
+			
 		} catch (SQLException e) {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;		

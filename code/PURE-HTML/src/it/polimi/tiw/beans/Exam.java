@@ -16,7 +16,7 @@ public class Exam {
 		
 	}
 	
-	public Date geDate() {
+	public Date getDate() {
 		return date;	
 	}
 	
@@ -29,3 +29,4 @@ public class Exam {
 	}
 
 }
+

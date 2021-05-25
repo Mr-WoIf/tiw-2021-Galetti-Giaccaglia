@@ -31,7 +31,7 @@ public class UserDAO {
 			else return executeCredentialsQuery(id, pwd, "professor", professorQuery);	
 			
 		}
-		finally{
+		finally{ 
 			
 		}
 			

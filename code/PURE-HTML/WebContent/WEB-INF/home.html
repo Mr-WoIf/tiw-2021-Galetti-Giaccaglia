@@ -27,24 +27,40 @@
 			
 			<div class="home-subtitle">Nice to see you again, <span th:text="${session.user.name}">user</span>!</div>
 	
-			
+	
 			<div class="wrap-table">
 				<div class="table">
+				
+						<form method="GET" id="form" action="GoToCourse" th:action="${session.user.role == 'professor'} ? @{/GoToHoldCourse} : @{/GoToCourse}">
+						
 					<table>
 						<thead>
 							<tr class="table-head">
 								<th class="column1">Course</th>
 								<th class="column2">ID Course</th>
+								<th class="column3">Details</th>
 							</tr>
-						</thead>
-						<tbody>
-								<tr th:each="course : ${courses}">
-									<td class="column1"	th:text="${course.name}"></td>
-									<td class="column2" th:text="${course.id}"></td>
-								</tr>
+						</thead>  
+						<tbody>		<tr th:each="course : ${courses}">
 								
+									<td class="column1"	th:text="${course.name}">
+									</td>
+									
+									<td class="column2">
+									<input type="submit" id= "courseId" name= "courseId" th:value="${course.id}"/>
+									
+									
+									</td>
+									
+									<td class="column3">
+						                <input type="submit" id="submit" name="submit" value="Course Details"/>
+									</td>
+								</tr>
+									
 						</tbody>
+						
 					</table>
+					</form>
 				</div>
 			</div>
 			</div>
