@@ -4,6 +4,14 @@
 <title>Student Grade</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	crossorigin="anonymous"></script>
 <!--===============================================================================================-->
 <link rel="icon" type="image/png" href="resources/myfavicon.ico"
 	th:href="@{/resources/myfavicon.ico}" />
@@ -17,27 +25,57 @@
 <link rel="stylesheet" type="text/css" href="css/home_main.css"
 	th:href="@{/css/home_main.css}">
 <!--===============================================================================================-->
+<style>
+nav ul li {
+	padding: 8px;
+	color: #FFFFFF;
+	font-size: 20px;
+}
+
+</style>
 </head>
 <body>
-
-
 	<div class="limiter">
 
+
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark navbar-expand-sm py-2">
+			<div
+				class="navbar-collapse collapse w-80 order-1 order-md-0 dual-collapse2">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active"><span class="navbar-brand mb-0 h1">Online Services</span></li>
+					<li class="nav-item active"><a class="nav-link"
+						th:href="@{/GoToHomePage}">Home </a></li>
+				</ul>
+			</div>
+
+			<div class="navbar-collapse collapse w-80 order-3 dual-collapse2">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a th:text="${session.user.name} ">Name</a>
+					</li>
+					<li class="nav-item"><a th:text="${session.user.surname} ">Surname</a>
+					</li>
+					<li class="nav-item"><a th:text="${session.user.id} ">ID</a></li>
+					<li></li>
+				</ul>
+				<form class="form" th:action="@{/Logout}">
+					<button class="btn btn-light my-2 my-sm-0" type="submit">Logout</button>
+				</form>
+			</div>
+		</nav>
 
 		<div class="container-table">
 
 			<div class=bg>
 
 				<div class="home-title">
-					"<span th:text="${courseName.name}">name</span>" Exam Result Page (<span th:text="${#dates.format(exam.date, 'dd-MM-yyyy')}">name</span>)
+					"<span th:text="${courseName.name}">name</span>" Exam Result Page (<span
+						th:text="${#dates.format(exam.date, 'dd-MM-yyyy')}">name</span>)
 				</div>
 
 				<div class="home-subtitle">Course exam dates</div>
 
 				<div th:switch="${register.value}">
-					<div th:case="'published'">
-						
-					</div>
+					<div th:case="'published'"></div>
 					<p th:case="*">Grade not yet defined</p>
 				</div>
 

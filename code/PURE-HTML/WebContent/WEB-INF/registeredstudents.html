@@ -1,69 +1,119 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Home</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->	
-	<link rel="icon" type="image/png" href="resources/myfavicon.ico" th:href="@{/resources/myfavicon.ico}" />
+<title>Home</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	crossorigin="anonymous"></script>
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
-	
-	<link rel="stylesheet" type="text/css" href="css/util.css" th:href="@{/css/util.css}">
-	<link rel="stylesheet" type="text/css" href="css/home_main.css" th:href="@{/css/home_main.css}">
+<link rel="icon" type="image/png" href="resources/myfavicon.ico"
+	th:href="@{/resources/myfavicon.ico}" />
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css"
+	th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+
+<link rel="stylesheet" type="text/css" href="css/util.css"
+	th:href="@{/css/util.css}">
+<link rel="stylesheet" type="text/css" href="css/home_main.css"
+	th:href="@{/css/home_main.css}">
 <!--===============================================================================================-->
 </head>
 <body>
 
-	
+
 	<div class="limiter">
-	
-		
+
+		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+			<a class="navbar-brand" href="#">Navbar</a>
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active"><a class="nav-link" href="#">Home
+							<span class="sr-only">(current)</span>
+					</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">Link</a></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+						role="button" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="false"> Dropdown </a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+							<a class="dropdown-item" href="#">Action</a> <a
+								class="dropdown-item" href="#">Another action</a>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="#">Something else here</a>
+						</div></li>
+					<li class="nav-item"><a class="nav-link disabled" href="#">Disabled</a>
+					</li>
+				</ul>
+				<form class="form-inline my-2 my-lg-0">
+					<input class="form-control mr-sm-2" type="search"
+						placeholder="Search" aria-label="Search">
+					<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+				</form>
+			</div>
+		</nav>
+
 		<div class="container-table">
 
-		<div class = bg>
-		
-			<div class="home-title">Exam Page</div>
-			
-			<div class="home-subtitle">Exam Registered Students</div>
-	
-	
-			<div class="wrap-table">
-				<div class="table">
-				
-						<form method="GET" id="form" action="GoToCourse" th:action="${session.user.role == 'professor'} ? @{/GoToRegisteredStudents} : @{/GoToExam}">
-						
-					<table>
-						<thead>
-							<tr class="table-head">
-								<th class="column1">Student Id</th>
-								<th class="column2">Surname</th>
-								<th class="column3">Name</th>
-								<th class="column4">E-mail</th>
-								<th class="column5">Degree</th>
-								<th class="column6">Grade</th>
-								<th class="column7">Grade State</th>
-								<th class="column8">&nbsp;</th>
-							</tr>
-						</thead>  
-						<tbody>		<tr th:each="registerEntry : ${registerMap}">
-								
-									<td class="column1"	th:text="${registerEntry.key.id}"></td>
-									<td class="column2"	th:text="${registerEntry.key.surname}"></td>
-									<td class="column3"	th:text="${registerEntry.key.name}"></td>
-									<td class="column4"	th:text="${registerEntry.key.email}"></td>
-									<td class="column5"	th:text="${registerEntry.key.degree}"></td>
-									<td class="column5"	th:text="${registerEntry.value.key}"></td>
-									<td class="column5"	th:text="${registerEntry.value.value}"></td>
-													
-								</tr>
-									
-						</tbody>
-						
-					</table>
-					</form>
+			<div class=bg>
+
+				<div class="home-title">Exam Page</div>
+
+				<div class="home-subtitle">Exam Registered Students</div>
+
+
+				<div class="wrap-table">
+					<div class="table">
+
+						<form method="GET" id="form" action="GoToCourse"
+							th:action="${session.user.role == 'professor'} ? @{/GoToRegisteredStudents} : @{/GoToExam}">
+
+							<table>
+								<thead>
+									<tr class="table-head">
+										<th class="column1">Student Id</th>
+										<th class="column2">Surname</th>
+										<th class="column3">Name</th>
+										<th class="column4">E-mail</th>
+										<th class="column5">Degree</th>
+										<th class="column6">Grade</th>
+										<th class="column7">Grade State</th>
+										<th class="column8">&nbsp;</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="registerEntry : ${registerMap}">
+
+										<td class="column1" th:text="${registerEntry.key.id}"></td>
+										<td class="column2" th:text="${registerEntry.key.surname}"></td>
+										<td class="column3" th:text="${registerEntry.key.name}"></td>
+										<td class="column4" th:text="${registerEntry.key.email}"></td>
+										<td class="column5" th:text="${registerEntry.key.degree}"></td>
+										<td class="column5" th:text="${registerEntry.value.key}"></td>
+										<td class="column5" th:text="${registerEntry.value.value}"></td>
+
+									</tr>
+
+								</tbody>
+
+							</table>
+						</form>
+					</div>
 				</div>
-			</div>
 			</div>
 		</div>
 	</div>

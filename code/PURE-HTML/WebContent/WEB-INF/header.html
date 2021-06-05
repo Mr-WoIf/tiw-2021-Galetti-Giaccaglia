@@ -1,52 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Course</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->
-<link rel="icon" type="image/png" href="resources/myfavicon.ico"
-	th:href="@{/resources/myfavicon.ico}" />
-<!--===============================================================================================-->
-<link rel="stylesheet" type="text/css"
-	href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css"
-	th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
 
-<link rel="stylesheet" type="text/css" href="css/util.css"
-	th:href="@{/css/util.css}">
-<link rel="stylesheet" type="text/css" href="css/home_main.css"
-	th:href="@{/css/home_main.css}">
-<!--===============================================================================================-->
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	crossorigin="anonymous"></script>
+
+<style>
+nav ul li {
+	padding: 8px;
+	color: #FFFFFF;
+	font-size: 20px;
+}
+
+</style>
 </head>
+<body>
 
- <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" th:fragment="header" th:if="${session.user}">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Online Services</a>
-        </div>
-        <div class="navbar-collapse collapse">
-          
-              <a th:href="@{/CheckLogin}">Home</a>
-          <ul class="nav navbar-nav navbar-right">
-            <li th:text="${session.user.name}">Name</li>
-            <li th:text="${session.user.surname}">Surname</li>
-            <li th:text="${session.user.id}">ID</li>
-            <li th:text="${session.user.surname}">
-              <a href="/logout" th:href="@{#}" onclick="$('#form').submit();">
-                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>&nbsp;Logout
-              </a>
-             <form style="visibility: hidden" id="form" method="post" action="#" th:action="@{/Logout}"></form>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </body>
-  
+	<div class="limiter">
+	<div class="navbar navbar-inverse navbar-fixed-top"
+		th:fragment="header" th:if="${session.user}">
+
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark navbar-expand-sm py-2">
+			<div
+				class="navbar-collapse collapse w-80 order-1 order-md-0 dual-collapse2">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item active"><span class="navbar-brand mb-0 h1">Online Services</span></li>
+					<li class="nav-item active"><a class="nav-link"
+						th:href="@{/GoToHomePage}">Home </a></li>
+				</ul>
+			</div>
+
+			<div class="navbar-collapse collapse w-80 order-3 dual-collapse2">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a th:text="${session.user.name} ">Name</a>
+					</li>
+					<li class="nav-item"><a th:text="${session.user.surname} ">Surname</a>
+					</li>
+					<li class="nav-item"><a th:text="${session.user.id} ">ID</a></li>
+					<li></li>
+				</ul>
+				<form class="form" th:action="@{/Logout}">
+					<button class="btn btn-light my-2 my-sm-0" type="submit">Logout</button>
+				</form>
+			</div>
+		</nav>
+</div>
+	</div>
+</body>
+
 </html>
