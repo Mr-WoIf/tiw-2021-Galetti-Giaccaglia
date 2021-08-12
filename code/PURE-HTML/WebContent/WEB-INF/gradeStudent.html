@@ -43,23 +43,22 @@ nav ul li {
 				class="navbar-collapse collapse w-80 order-1 order-md-0 dual-collapse2">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item active"><span class="navbar-brand mb-0 h1">Online Services</span></li>
-					<li class="nav-item active"><a class="nav-link"
-						th:href="@{/GoToHomePage}">Home </a></li>
+					<li class="nav-item active"><form class="form" th:action="@{/GoToHomePage}">
+					<button class="btn btn-light my-2 my-sm-0" type="submit">Home</button>
+				</form></li>
 				</ul>
 			</div>
 
 			<div class="navbar-collapse collapse w-80 order-3 dual-collapse2">
 				<ul class="navbar-nav ml-auto">
-					<li class="nav-item"><a th:text="${session.user.name} ">Name</a>
-					</li>
-					<li class="nav-item"><a th:text="${session.user.surname} ">Surname</a>
-					</li>
+					<li class="nav-item"><a th:text="${session.user.name} ">Name</a></li>
+					<li class="nav-item"><a th:text="${session.user.surname} ">Surname</a></li>
 					<li class="nav-item"><a th:text="${session.user.id} ">ID</a></li>
-					<li></li>
-				</ul>
-				<form class="form" th:action="@{/Logout}">
+					<li class="nav-item"><form class="form" th:action="@{/Logout}">
 					<button class="btn btn-light my-2 my-sm-0" type="submit">Logout</button>
-				</form>
+				</form></li>
+				</ul>
+				
 			</div>
 		</nav>
 

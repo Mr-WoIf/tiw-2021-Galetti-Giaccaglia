@@ -13,17 +13,10 @@
 	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
 	crossorigin="anonymous"></script>
 <!--===============================================================================================-->
-<link rel="icon" type="image/png" href="resources/myfavicon.ico"
-	th:href="@{/resources/myfavicon.ico}" />
-<!--===============================================================================================-->
-<link rel="stylesheet" type="text/css"
-	href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css"
-	th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
-
-<link rel="stylesheet" type="text/css" href="css/util.css"
-	th:href="@{/css/util.css}">
-<link rel="stylesheet" type="text/css" href="css/home_main.css"
-	th:href="@{/css/home_main.css}">
+	<link rel="icon" type="image/png" href="../resources/myfavicon.ico" th:href="@{/resources/myfavicon.ico}" />
+	<link rel="stylesheet" type="text/css" href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+	<link rel="stylesheet" type="text/css" href="../css/util.css" th:href="@{/css/util.css}">
+	<link rel="stylesheet" type="text/css" href="css/home_main.css" th:href="@{/css/home_main.css}">
 <!--===============================================================================================-->
 <style>
 nav ul li {
@@ -31,8 +24,8 @@ nav ul li {
 	color: #FFFFFF;
 	font-size: 20px;
 }
-
 </style>
+
 </head>
 <body>
 	<div class="limiter">
@@ -43,26 +36,24 @@ nav ul li {
 				class="navbar-collapse collapse w-80 order-1 order-md-0 dual-collapse2">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item active"><span class="navbar-brand mb-0 h1">Online Services</span></li>
-					<li class="nav-item active"><a class="nav-link"
-						th:href="@{/GoToHomePage}">Home </a></li>
+					<li class="nav-item active"><form class="form" th:action="@{/GoToHomePage}">
+					<button class="btn btn-light my-2 my-sm-0" type="submit">Home</button>
+				</form></li>
 				</ul>
 			</div>
 
 			<div class="navbar-collapse collapse w-80 order-3 dual-collapse2">
 				<ul class="navbar-nav ml-auto">
-					<li class="nav-item"><a th:text="${session.user.name} ">Name</a>
-					</li>
-					<li class="nav-item"><a th:text="${session.user.surname} ">Surname</a>
-					</li>
+					<li class="nav-item"><a th:text="${session.user.name} ">Name</a></li>
+					<li class="nav-item"><a th:text="${session.user.surname} ">Surname</a></li>
 					<li class="nav-item"><a th:text="${session.user.id} ">ID</a></li>
-					<li></li>
-				</ul>
-				<form class="form" th:action="@{/Logout}">
+					<li class="nav-item"><form class="form" th:action="@{/Logout}">
 					<button class="btn btn-light my-2 my-sm-0" type="submit">Logout</button>
-				</form>
+				</form></li>
+				</ul>
+				
 			</div>
 		</nav>
-
 
 		<div class="container-table">
 
@@ -94,9 +85,17 @@ nav ul li {
 
 									<td class="column2" th:text="${exam.id}"></td>
 
-									<td class="column3"><a
-										th:href="${session.user.role == 'professor'} ? @{/GoToRegisteredStudents(examId=${exam.id})} : @{/GoToExam(examId=${exam.id})}">Exam
-											Details</a></td>
+									<td class="column3">
+							
+											
+							<form class="form" th:action="${session.user.role == 'professor'} ? @{/GoToRegisteredStudents} : @{/GoToExam}">
+							<input type="hidden" name="courseId" th:value="${course.id}" />
+							<input type="hidden" name="examId" th:value="${exam.id}" />
+						
+							<button class="btn btn-outline-dark" type="submit">Details</button>
+										</form>
+											
+											</td>
 								</tr>
 
 							</tbody>

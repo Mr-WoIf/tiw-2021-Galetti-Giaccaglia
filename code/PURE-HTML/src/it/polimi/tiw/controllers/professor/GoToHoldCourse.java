@@ -70,6 +70,7 @@ public class GoToHoldCourse extends HttpServlet {
 
 		if(courseIdString == null) {
 			ForwardHandler.forwardToErrorPage(request, response, "Null courseId, when accessing course details", templateEngine);
+			return;
 		}
 
 		int courseId;

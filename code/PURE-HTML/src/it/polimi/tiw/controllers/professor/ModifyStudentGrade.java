@@ -30,10 +30,10 @@ import it.polimi.tiw.utils.TemplateHandler;
 
 public class ModifyStudentGrade {
 	
-
 /**
  * Servlet implementation class ModifyStudentGrade
  */
+	
 @WebServlet("/GoToModifyStudentGrade")
 public class GoToModifyStudentGrade extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -245,6 +245,6 @@ public class GoToModifyStudentGrade extends HttpServlet {
 		return true;	
 	}
 
-}
+  }
 
 }

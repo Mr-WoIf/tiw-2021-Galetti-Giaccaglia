@@ -50,7 +50,7 @@ public class CheckNotLoggedUser implements Filter {
 		if(session != null) {
 			Object user = session.getAttribute("user");
 			if(user != null) {
-				chain.doFilter(request, response);
+				httpResponse.sendRedirect(request.getServletContext().getContextPath() + PathUtils.goToHomeServletPath);
 				return;
 			}
 		} 

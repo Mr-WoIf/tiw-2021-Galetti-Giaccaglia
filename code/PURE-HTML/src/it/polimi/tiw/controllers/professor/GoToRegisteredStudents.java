@@ -73,12 +73,20 @@ public class GoToRegisteredStudents extends HttpServlet {
 
 
 		String examIdString = request.getParameter("examId");
+		String courseIdString = request.getParameter("courseId");
 
 		if(examIdString == null) {
-			ForwardHandler.forwardToErrorPage(request, response, "Null examId, when accessing exam details", templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, "Null exam ID, when accessing exam details", templateEngine);
 		}
+		
+		if(courseIdString == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Null course ID, when accessing exam details", templateEngine);
+		}
+		
+		
 
 		int examId;
+		int courseId;
 
 		ExamDAO examDAO = new ExamDAO(connection);
 		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
@@ -94,6 +102,14 @@ public class GoToRegisteredStudents extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam id is not a number, when accessing exam details", templateEngine);
 			return;
 		}
+		
+		try {
+			courseId = Integer.parseInt(courseIdString);
+		}catch (NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam's course ID is not a number, when accessing exam details", templateEngine);
+			return;
+		}
+		
 
 		HttpSession session = request.getSession(false);
 		Professor professor = (Professor)session.getAttribute("professor");
@@ -129,10 +145,18 @@ public class GoToRegisteredStudents extends HttpServlet {
 			return;		
 		}
 		
-		if(students.size()==0)
-			request.setAttribute("noSubs", false);
+		
+		request.setAttribute("examId", examId);
+		
+		
+		if(students.size()==0) {
+			request.setAttribute("noSubs", true);  //TODO HANDLE NO SUBS HTML PAGE
+			request.setAttribute("courseId", courseId);
 			ForwardHandler.forward(request, response, PathUtils.pathToRegisteredStudents, templateEngine);
-		System.out.println(students.size());
+			return;
+		}
+		
+		System.out.println(courseId);
 
 		registerMap = students.stream()
 				.collect(Collectors.toMap(
@@ -140,6 +164,8 @@ public class GoToRegisteredStudents extends HttpServlet {
 
 		request.setAttribute("noSubs", false);
 		request.setAttribute("registerMap", registerMap);
+		request.setAttribute("courseId", courseId);
+		
 		ForwardHandler.forward(request, response, PathUtils.pathToRegisteredStudents, templateEngine);
 
 
@@ -149,12 +175,8 @@ public class GoToRegisteredStudents extends HttpServlet {
 
 
 		try {
-			System.out.println("ciao11");
-			System.out.print(studentId + " " + examId);
 			return examRegisterDAO.getExamRegisterByStudentID(studentId, examId);
 		} catch (SQLException e) {
-
-			System.out.println("mannaggia");
 			// TODO Auto-generated catch block
 			try {
 				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
@@ -165,7 +187,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			return new SimpleImmutableEntry<Integer, String>(1, "ciao");	
+			return new SimpleImmutableEntry<Integer, String>(-1, "fail");	
 
 		}
 

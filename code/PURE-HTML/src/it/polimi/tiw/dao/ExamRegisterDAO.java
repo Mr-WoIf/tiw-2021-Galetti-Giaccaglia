@@ -246,11 +246,13 @@ public class ExamRegisterDAO {
 		try {
 			
 			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setInt(1, examId);
+			preparedStatement.setInt(1, studentId);
+			preparedStatement.setInt(2, examId);
 			
 			resultSet = preparedStatement.executeQuery();
 			resultSet.next();
 			examRegister = new SimpleImmutableEntry<>(resultSet.getInt("grade"), resultSet.getString("state"));
+		
 				
 					
 			

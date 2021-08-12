@@ -18,7 +18,7 @@
 		<div class="container-login100">
 			<div class="wrap-login100">
 				<div class="login100-pic" data-tilt>
-					<img src="resources/login_logo.png"  th:src="@{resources/login_logo.png}" alt="IMG">
+					<img src="login_logo.png"  th:src="@{/login_logo.png}" alt="IMG">
 				</div>
 				
 				<form class="login100-form validate-form" method="POST"  action="CheckLogin" th:action="@{/CheckLogin}">
@@ -54,7 +54,7 @@
 							Login
 						</button>
 						<div class="warning-message" th:if="${warning}">
-			<span th:text="${warning}">Email or password not valid!</span>
+			<span th:text="${warning}"></span>
 		</div>
 				 </div>		
 				</form>
