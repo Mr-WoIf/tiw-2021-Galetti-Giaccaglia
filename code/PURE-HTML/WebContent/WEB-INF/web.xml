@@ -51,16 +51,15 @@
   	<url-pattern>/Logout</url-pattern>
   	<url-pattern>/GoToHomePage</url-pattern>
   	<url-pattern>/GoToHoldCourse</url-pattern>
-  	<url-pattern>/ModifyStudentGrade</url-pattern>
+  	<url-pattern>/GoToModifyStudentGrade</url-pattern>
   	<url-pattern>/GoToHoldCourse</url-pattern>
-  	<url-pattern>/ModifyStudentGrade</url-pattern>
    </filter-mapping>	
    
   <filter-mapping>
   	<filter-name>CheckProfessor</filter-name>
   	<url-pattern>/GoToHomePage</url-pattern>
   	<url-pattern>/GoToHoldCourse</url-pattern>
-  	<url-pattern>/ModifyStudentGrade</url-pattern>
+  	<url-pattern>/GoToModifyStudentGrade</url-pattern>
    </filter-mapping>	
    
    <filter-mapping>

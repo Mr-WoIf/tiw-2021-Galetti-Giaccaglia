@@ -17,6 +17,14 @@ public class User {
 		this.role = role;
 	}
 	
+	public User() {
+		this.email = "";
+		this.name = "";
+		this.surname = "";
+		this.role = "";
+	}
+	
+	
 	public int getId() {
 		return id;
 	}

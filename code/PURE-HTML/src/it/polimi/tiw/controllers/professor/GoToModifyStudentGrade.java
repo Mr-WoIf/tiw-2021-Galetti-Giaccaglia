@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.AbstractMap.SimpleImmutableEntry;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -25,11 +24,9 @@ import it.polimi.tiw.dao.ExamDAO;
 import it.polimi.tiw.dao.ExamRegisterDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.ForwardHandler;
+import it.polimi.tiw.utils.MutablePair;
 import it.polimi.tiw.utils.PathUtils;
 import it.polimi.tiw.utils.TemplateHandler;
-
-public class ModifyStudentGrade {
-	
 /**
  * Servlet implementation class ModifyStudentGrade
  */
@@ -73,16 +70,14 @@ public class GoToModifyStudentGrade extends HttpServlet {
 		String examIdString = request.getParameter("examId");
 		String studentIdString = request.getParameter("studentId");
 		
-		Student student = null;
-		SimpleImmutableEntry<Integer, String> studentExamInfo = null;
+		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
 		
-		
-		verifyRequestCommonConstraints(request,response,studentIdString,examIdString,student,studentExamInfo);
+		verifyRequestCommonConstraints(request,response,studentIdString,examIdString,studentInfo);
 
 		
 		
-		SimpleImmutableEntry<Student, SimpleImmutableEntry<Integer, String>> studentInfo =  new SimpleImmutableEntry <Student,SimpleImmutableEntry<Integer, String> > (student, studentExamInfo);
 		
+	
 		
 		request.setAttribute("studentInfo", studentInfo);
 		ForwardHandler.forward(request, response, PathUtils.pathToGradePageProfessor,  templateEngine);
@@ -133,9 +128,10 @@ public class GoToModifyStudentGrade extends HttpServlet {
 			
 	
 		Student student = null;
-		SimpleImmutableEntry<Integer, String> studentExamInfo = null;
+		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
 		
-		if( !verifyRequestCommonConstraints(request,response,studentIdString,examIdString,student,studentExamInfo))
+		
+		if( !verifyRequestCommonConstraints(request,response,studentIdString,examIdString,studentInfo))
 			return;
 		
 		
@@ -166,12 +162,13 @@ public class GoToModifyStudentGrade extends HttpServlet {
 								HttpServletResponse response, 
 								String studentIdString, 
 								String examIdString, 
-								Student student, 
-								SimpleImmutableEntry<Integer, String> studentExamInfo
+								MutablePair<Student, MutablePair<Integer, String>> studentInfo
 								
 ) throws ServletException, IOException {
 		
 		Optional<Exam> optExam = null;
+		Student student;
+		MutablePair<Integer, String> studentExamInfo;
 		int examId;
 		int studentId;
 		ExamDAO examDAO = new ExamDAO(connection);
@@ -237,14 +234,16 @@ public class GoToModifyStudentGrade extends HttpServlet {
 			return false;		
 		}
 		
-		if(studentExamInfo.getValue().equals("published") || studentExamInfo.getValue().equals("refused") || studentExamInfo.getValue().equals("reported")) {
+		if(studentExamInfo.getRight().equals("published") || studentExamInfo.getRight().equals("refused") || studentExamInfo.getRight().equals("reported")) {
 			ForwardHandler.forwardToErrorPage(request, response, "You can't modify this student's exam data, because exam grade state is not 'inserted'", templateEngine);
 			return false;		
 		}
+		
+		studentInfo.setLeft(student);
+		studentInfo.setRight(studentExamInfo);
 	
 		return true;	
 	}
 
   }
 
-}

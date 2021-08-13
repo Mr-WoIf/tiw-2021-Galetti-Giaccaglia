@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
@@ -28,6 +27,7 @@ import it.polimi.tiw.dao.ExamRegisterDAO;
 import it.polimi.tiw.dao.ReportDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.ForwardHandler;
+import it.polimi.tiw.utils.MutablePair;
 import it.polimi.tiw.utils.PathUtils;
 import it.polimi.tiw.utils.TemplateHandler;
 
@@ -94,7 +94,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 		Optional<Exam> optExam = null;
 		List<Student> students = null;
 
-		Map<Student, SimpleImmutableEntry<Integer, String>> registerMap = null;
+		Map<Student, MutablePair<Integer, String>> registerMap = null;
 
 		try {
 			examId = Integer.parseInt(examIdString);
@@ -112,7 +112,15 @@ public class GoToRegisteredStudents extends HttpServlet {
 		
 
 		HttpSession session = request.getSession(false);
-		Professor professor = (Professor)session.getAttribute("professor");
+		Professor professor;
+		
+		try {
+			professor = (Professor)session.getAttribute("professor");
+		}catch(NullPointerException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Your session has expired!", templateEngine);
+			return;
+		}
+		
 		if(professor == null) {
 			ForwardHandler.forwardToErrorPage(request, response, "Your session has expired!", templateEngine);
 			return;
@@ -171,7 +179,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 
 	}
 
-	private SimpleImmutableEntry<Integer, String> getExamRegister(ExamRegisterDAO examRegisterDAO, int studentId, int examId, HttpServletRequest request, HttpServletResponse response){
+	private MutablePair<Integer, String> getExamRegister(ExamRegisterDAO examRegisterDAO, int studentId, int examId, HttpServletRequest request, HttpServletResponse response){
 
 
 		try {
@@ -187,7 +195,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			return new SimpleImmutableEntry<Integer, String>(-1, "fail");	
+			return new MutablePair<Integer, String>(-1, "fail");	
 
 		}
 

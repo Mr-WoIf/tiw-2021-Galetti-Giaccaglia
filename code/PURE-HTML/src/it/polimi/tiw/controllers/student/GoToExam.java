@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
-import java.util.AbstractMap.SimpleImmutableEntry;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -22,6 +21,7 @@ import it.polimi.tiw.dao.ExamDAO;
 import it.polimi.tiw.dao.ExamRegisterDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.ForwardHandler;
+import it.polimi.tiw.utils.MutablePair;
 import it.polimi.tiw.utils.PathUtils;
 import it.polimi.tiw.utils.TemplateHandler;
 
@@ -79,7 +79,7 @@ public class GoToExam extends HttpServlet {
 		Exam exam = null;
 		Optional<Exam> optExam = null;
 
-		SimpleImmutableEntry<Integer, String> register = null;
+		MutablePair<Integer, String> register = null;
 
 		try {
 			examId = Integer.parseInt(examIdString);
@@ -154,7 +154,7 @@ public class GoToExam extends HttpServlet {
 		Exam exam = null;
 		Optional<Exam> optExam = null;
 
-		SimpleImmutableEntry<Integer, String> register = null;
+		MutablePair<Integer, String> register = null;
 
 		try {
 			examId = Integer.parseInt(examIdString);
@@ -202,19 +202,19 @@ public class GoToExam extends HttpServlet {
 			return;
 		}
 
-		if (register.getValue().equals("not inserted")) {
+		if (register.getRight().equals("not inserted")) {
 			ForwardHandler.forwardToErrorPage(request, response,
 					"Exam grade hasn't been published yet, nothing to refuse!", templateEngine);
 			return;
 		}
 
-		if (register.getValue().equals("refused")) {
+		if (register.getRight().equals("refused")) {
 			ForwardHandler.forwardToErrorPage(request, response, "Exam grade has beeen already refused!",
 					templateEngine);
 			return;
 		}
 
-		if (register.getKey() < 18) {
+		if (register.getLeft() < 18) {
 			ForwardHandler.forwardToErrorPage(request, response,
 					"You were absent or failed this exam, no grade to refuse here!", templateEngine);
 			return;

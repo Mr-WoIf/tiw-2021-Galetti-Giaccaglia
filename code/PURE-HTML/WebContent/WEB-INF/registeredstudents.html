@@ -100,19 +100,18 @@ nav ul li {
 										<td class="column3" th:text="${registerEntry.key.name}"></td>
 										<td class="column4" th:text="${registerEntry.key.email}"></td>
 										<td class="column5" th:text="${registerEntry.key.degree}"></td>
-										<td class="column6" th:text="${registerEntry.value.key}"></td>
-										<td class="column7" th:text="${registerEntry.value.value}"></td>
-										<td class="column8" th:disabled="${#strings.equals(registerEntry.value.value, 'recorded')}">
+										<td class="column6" th:text="${registerEntry.value.left}==-1 ?  '──' : ${registerEntry.value.left}"></td>
+										<td class="column7" th:text="${registerEntry.value.right}"></td>
+										<td class="column8" >
 										<form class="form" th:action="@{/GoToModifyStudentGrade}">
 							<input type="hidden" name="studentId" th:value="${registerEntry.key.id}" />
 							<input type="hidden" name="examId" th:value="${examId}" />
 						
-							<button class="btn btn-outline-dark" type="submit">Modify</button>
+							<button class="btn btn-outline-dark" th:if="${!#strings.equals(registerEntry.value.right, 'recorded') && !#strings.equals(registerEntry.value.right, 'published')}" type="submit">Modify</button>
 										</form>
-											
 										
-										
-										
+										<button type="button" class="btn btn-outline-dark" data-toggle="popover" title="Popover title" data-content="Recorded mark is not editable!" th:if="${#strings.equals(registerEntry.value.right,'recorded') || #strings.equals(registerEntry.value.right, 'published')}">Modify</button>
+															
 										</td>
 										
 									</tr>

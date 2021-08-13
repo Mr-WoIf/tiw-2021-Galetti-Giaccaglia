@@ -1,11 +1,11 @@
 package it.polimi.tiw.dao;
 
 import java.sql.*;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.List;
 
 import it.polimi.tiw.beans.Student;
+import it.polimi.tiw.utils.MutablePair;
 
 public class ExamRegisterDAO {
 	
@@ -177,7 +177,6 @@ public class ExamRegisterDAO {
 				students.add(student);
 			}
 			
-			
 		} catch(SQLException e) {
 			throw new SQLException("Error accessing the DB when" + performedAction);
 			
@@ -230,7 +229,7 @@ public class ExamRegisterDAO {
 		
 	}
 	
-	public SimpleImmutableEntry<Integer, String> getExamRegisterByStudentID(int studentId, int examId) throws SQLException {
+	public MutablePair<Integer, String> getExamRegisterByStudentID(int studentId, int examId) throws SQLException {
 		
 
 		String performedAction = " finding student's exam grade and state by exam id and student id";
@@ -241,7 +240,7 @@ public class ExamRegisterDAO {
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		
-		SimpleImmutableEntry<Integer, String> examRegister = null;
+		MutablePair<Integer, String> examRegister = null;
 		
 		try {
 			
@@ -251,7 +250,7 @@ public class ExamRegisterDAO {
 			
 			resultSet = preparedStatement.executeQuery();
 			resultSet.next();
-			examRegister = new SimpleImmutableEntry<>(resultSet.getInt("grade"), resultSet.getString("state"));
+			examRegister = new MutablePair<>(resultSet.getInt("grade"), resultSet.getString("state"));
 		
 				
 					

@@ -90,7 +90,7 @@ public class ReportDAO {
 			
 			try {
 				
-				studentGrade = registerDAO.getExamRegisterByStudentID(student.getId(), examId).getKey();
+				studentGrade = registerDAO.getExamRegisterByStudentID(student.getId(), examId).getLeft();
 				studentsGrades.put(student.getId(), studentGrade);
 				
 				}catch(SQLException e) {

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Home</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+	integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+	crossorigin="anonymous"></script>
+<!--===============================================================================================-->
+<link rel="icon" type="image/png" href="resources/myfavicon.ico"
+	th:href="@{/resources/myfavicon.ico}" />
+<!--===============================================================================================-->
+	<link rel="icon" type="image/png" href="resources/myfavicon.ico" th:href="@{/resources/myfavicon.ico}" />
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+	<link rel="stylesheet" type="text/css" href="css/modify_grade.css"th:href="@{/css/modify_grade.css}">
+		<link rel="stylesheet" type="text/css" href="css/popover.css" th:href="@{/css/popover.css}">
+<!--===============================================================================================-->
+
+
+</head>
+<body>
+<div class="container two-col-example">
+  <div class="row">
+    <div class="col-lg-6 col-xs-12">
+      <h2>Student Info</h2>
+      <div class="card-deck mb-1 text-center">
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+           <img src="resources/name.png" width="70" height="70" th:src="@{/resources/name.png}" alt="IMG">
+            			  <h4 class="card-title pricing-card-title">Name</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.left.name}"></p>
+          </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+             <img src="resources/id.png" width="80" height="80" th:src="@{/resources/id.png}" alt="IMG">
+           			  <h4 class="card-title pricing-card-title">Student ID</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.left.id}"></p>
+          </div>
+        </div>
+      </div>
+      <div class="card-deck mb-1 text-center">
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+           <img src="resources/email.png" width="70" height="70" th:src="@{/resources/email.png}" alt="IMG">
+            			  <h4 class="card-title pricing-card-title">E-mail</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.left.email}"></p>
+          </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+            <img src="resources/degree.png" width="70" height="70" th:src="@{/resources/degree.png}" alt="IMG">
+           			  <h4 class="card-title pricing-card-title">Degree</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.left.degree}"></p>
+          </div>
+        </div>
+      </div>
+      <div class="card-deck mb-1 text-center">
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+            <img src="resources/grade.png" width="80" height="80" th:src="@{/resources/grade.png}" alt="IMG">
+            			  <h4 class="card-title pricing-card-title">Grade</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.right.left}"></p>
+          </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+             <img src="resources/grade_state.png" width="70" height="70" th:src="@{/resources/grade_state.png}" alt="IMG">
+          			  <h4 class="card-title pricing-card-title">Grade State</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.right.right}"></p>
+          </div>
+        </div>
+      </div>
+      
+     <div class="popover__wrapper">
+  <a href="#">
+    <div class="popover__title">Hover:me</div>
+  </a>
+  <div class="popover__content">
+    <p class="popover__message" th:text="#{strings.equals(studentInfo.right.right, 'not inserted')} ? 'Insert Grade' : 'Modify grade'"></p>
+  </div>
+</div>
+    </div>
+    
+  </div>
+</div>
+
+</body>
+
+
+
+
+
+
