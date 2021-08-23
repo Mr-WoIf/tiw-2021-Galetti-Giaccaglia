@@ -17,9 +17,11 @@ import org.thymeleaf.TemplateEngine;
 
 import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Student;
+import it.polimi.tiw.dao.CourseDAO;
 import it.polimi.tiw.dao.ExamDAO;
 import it.polimi.tiw.dao.ExamRegisterDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
+import it.polimi.tiw.utils.DaoUtils;
 import it.polimi.tiw.utils.ForwardHandler;
 import it.polimi.tiw.utils.MutablePair;
 import it.polimi.tiw.utils.PathUtils;
@@ -33,6 +35,7 @@ public class GoToExam extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection;
+	private HttpSession session;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -64,72 +67,80 @@ public class GoToExam extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
 		String examIdString = request.getParameter("examId");
-
-		if (examIdString == null) {
-			ForwardHandler.forwardToErrorPage(request, response, "Null examId, when accessing exam details",
-					templateEngine);
-		}
-
+		String courseIdString = request.getParameter("courseId");
+		
 		int examId;
-
-		ExamDAO examDAO = new ExamDAO(connection);
-		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
-		Exam exam = null;
-		Optional<Exam> optExam = null;
-
-		MutablePair<Integer, String> register = null;
-
-		try {
-			examId = Integer.parseInt(examIdString);
-		} catch (NumberFormatException e) {
-			ForwardHandler.forwardToErrorPage(request, response,
-					"Chosen exam id is not a number, when accessing exam details", templateEngine);
+		int courseId;
+		boolean hasBeenPublished = false;
+		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
+		
+		if(courseIdString == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Null course ID, when accessing course exams details", templateEngine);
 			return;
 		}
+		
+		if(examIdString == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Null exam ID, when accessing course exams details", templateEngine);
+			return;
+		}
+		
+		session = request.getSession(false);
+		Student student = (Student)session.getAttribute("student");
+		int studentId = student.getId();
+		
+		CourseDAO courseDAO = new CourseDAO(connection);
+	
 
-		HttpSession session = request.getSession(false);
-		Student student = (Student) session.getAttribute("student");
-
+		
 		try {
-			optExam = examDAO.getExamById(examId);
+		examId = Integer.parseInt(examIdString);
+		}catch (NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam id is not a number, when accessing exam details", templateEngine);
+			return;
+		}
+		
+		try {
+			courseId = Integer.parseInt(courseIdString);
+		}catch (NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam's course id is not a number, when accessing exam details", templateEngine);
+			return;
+		}
+	
+		
+		if(!DaoUtils.verifyRequestCommonConstraints(connection, templateEngine, request,response,studentId, examId, courseId, studentInfo, student))
+			return;
+
+
+		//fetching professor courses to get updated courses list
+		try {
+			student.setCourses(courseDAO.getCoursesByStudentId(studentId));
 		} catch (SQLException e) {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+			return;		
+		}
+		
+
+		if(student.getCourseById(courseId).isEmpty()) {
+			ForwardHandler.forwardToErrorPage(request, response, "You are not subscribed to this course!", templateEngine);
 			return;
 		}
+		
+		
 
-		if (optExam.isEmpty()) {
-			ForwardHandler.forwardToErrorPage(request, response, "Exam not existing", templateEngine);
-			return;
+		
+		if(!(studentInfo.getRight().getRight().equals("inserted") || studentInfo.getRight().getRight().equals("not inserted"))) {
+			hasBeenPublished = true;
+			request.setAttribute("studentInfo", studentInfo);
 		}
-
-		exam = optExam.get();
-
-		if (student.getCourseById(exam.getCourseId()).isEmpty()) {
-			ForwardHandler.forwardToErrorPage(request, response, "You are not subscribed to this exam's course!",
-					templateEngine);
-			return;
-		}
-
-		try {
-			register = examRegisterDAO.getExamRegisterByStudentID(student.getId(), examId);
-
-		} catch (SQLException e) {
-			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-			return;
-		}
-
-		if (register == null) {
-			ForwardHandler.forwardToErrorPage(request, response, "You are not subscribed to this exam!",
-					templateEngine);
-			return;
-		}
-
-		request.setAttribute("courseName", student.getCourseById(exam.getCourseId()).get().getName());
-		request.setAttribute("exam", exam);
-		request.setAttribute("register", register);
+		
+		request.setAttribute("examId", examId);
+		request.setAttribute("courseId", courseId);
+		request.setAttribute("error", "");
+		request.setAttribute("hasBeenPublished", hasBeenPublished);
+		
 		ForwardHandler.forward(request, response, PathUtils.pathToGradePageStudent, templateEngine);
+
 
 	}
 
@@ -140,22 +151,27 @@ public class GoToExam extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String examIdString = request.getParameter("examId");
-
-		if (examIdString == null) {
-			ForwardHandler.forwardToErrorPage(request, response, "Null examId, nothing to refuse here!",
-					templateEngine);
-		}
-
 		int examId;
-
+		int courseId;
 		ExamDAO examDAO = new ExamDAO(connection);
 		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
 		Exam exam = null;
 		Optional<Exam> optExam = null;
-
 		MutablePair<Integer, String> register = null;
+		String examIdString = request.getParameter("examId");
+		String courseIdString = request.getParameter("courseId");
 
+		if (examIdString == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Null examId, nothing to refuse here!", templateEngine);
+			return;
+		}
+		
+		if(courseIdString == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Null course ID, when accessing course exams details", templateEngine);
+			return;
+		}
+		
+		
 		try {
 			examId = Integer.parseInt(examIdString);
 		} catch (NumberFormatException e) {
@@ -163,6 +179,14 @@ public class GoToExam extends HttpServlet {
 					"Chosen exam id is not a number, when refusing exam grade", templateEngine);
 			return;
 		}
+		
+		try {
+			courseId = Integer.parseInt(courseIdString);
+		}catch(NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Invalid course Id related to exam Id", templateEngine);
+			return;
+		}
+		
 
 		HttpSession session = request.getSession(false);
 		Student student = (Student) session.getAttribute("student");
@@ -227,7 +251,7 @@ public class GoToExam extends HttpServlet {
 			return;
 		}
 
-		response.sendRedirect(getServletContext().getContextPath() + PathUtils.pathToGradePageStudent);
+		response.sendRedirect(getServletContext().getContextPath() + "/GoToExam?courseId="+ courseId + "&examId=" + examId);
 
 	}
 

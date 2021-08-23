@@ -90,9 +90,12 @@ public class GoToHomePage extends HttpServlet {
 			}
 			
 		}catch(SQLException e) {
-			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, "An error occured!", templateEngine);
 			return;	
 		}
+		
+		// SortingUtils.sortCoursesListByNameDescending(courses); <-- old method, sorting is done by sql query 
+		
 		
 		request.setAttribute("courses", courses);
 		ForwardHandler.forward(request, response, PathUtils.pathToHomePage, templateEngine);

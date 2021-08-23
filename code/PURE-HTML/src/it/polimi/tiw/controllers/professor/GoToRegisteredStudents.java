@@ -3,9 +3,10 @@ package it.polimi.tiw.controllers.professor;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.servlet.ServletContext;
@@ -29,6 +30,7 @@ import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.ForwardHandler;
 import it.polimi.tiw.utils.MutablePair;
 import it.polimi.tiw.utils.PathUtils;
+import it.polimi.tiw.utils.SORTING_TYPE;
 import it.polimi.tiw.utils.TemplateHandler;
 
 
@@ -71,9 +73,9 @@ public class GoToRegisteredStudents extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
+		String requestType = request.getParameter("requestType");
 
 		if(examIdString == null) {
 			ForwardHandler.forwardToErrorPage(request, response, "Null exam ID, when accessing exam details", templateEngine);
@@ -83,6 +85,9 @@ public class GoToRegisteredStudents extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Null course ID, when accessing exam details", templateEngine);
 		}
 		
+		if(requestType == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Null request type, when accessing exam details", templateEngine);
+		}
 		
 
 		int examId;
@@ -94,7 +99,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 		Optional<Exam> optExam = null;
 		List<Student> students = null;
 
-		Map<Student, MutablePair<Integer, String>> registerMap = null;
+		LinkedHashMap<Student, MutablePair<Integer, String>> registerMap = null;
 
 		try {
 			examId = Integer.parseInt(examIdString);
@@ -164,21 +169,54 @@ public class GoToRegisteredStudents extends HttpServlet {
 			return;
 		}
 		
-		System.out.println(courseId);
-
-		registerMap = students.stream()
-				.collect(Collectors.toMap(
-						student -> student, student -> getExamRegister(examRegisterDAO, student.getId(), examId, request, response)));
+		
+		registerMap = students.stream().collect(Collectors.toMap(
+                Function.identity(),
+                student -> getExamRegister(examRegisterDAO, student.getId(), examId, request, response),
+                (student, register) -> {
+                    throw new IllegalStateException(String.format("Duplicate key %s", student));
+                },
+                LinkedHashMap::new
+        ));
+		
+		
+       if(requestType.equals("sort")) {
+			
+			String sortingTypeString = request.getParameter("sortingType");
+			SORTING_TYPE sortingType;
+			
+			if(sortingTypeString == null) {
+				ForwardHandler.forwardToErrorPage(request, response, "Null sorting type, when ordering registered students' table", templateEngine);
+				return;
+			}
+			
+			try {
+				sortingType = SORTING_TYPE.valueOf(sortingTypeString);
+			}catch (IllegalArgumentException e) {
+				ForwardHandler.forwardToErrorPage(request, response, "Chosen sorting type doesn't exists, when ordering registered students' table", templateEngine);
+				return;
+			}
+			
+			sortingType.sort(registerMap);
+			SORTING_TYPE.resetAllExceptOne(sortingType);
+			
+		}
+		
+		boolean areAllRecorded = registerMap.values().stream().allMatch(pair -> pair.getRight().equals("recorded")) || (registerMap.values().stream().noneMatch(pair -> pair.getRight().equals("refused")) && registerMap.values().stream().noneMatch(pair -> pair.getRight().equals("published")));
+		
+		boolean areAllPublished = (registerMap.values().stream().allMatch(pair -> pair.getRight().equals("published"))) || registerMap.values().stream().noneMatch(pair -> pair.getRight().equals("inserted")); ;
+		
 
 		request.setAttribute("noSubs", false);
 		request.setAttribute("registerMap", registerMap);
 		request.setAttribute("courseId", courseId);
-		
+		request.setAttribute("areAllRecorded", areAllRecorded);
+		request.setAttribute("areAllPublished", areAllPublished);
 		ForwardHandler.forward(request, response, PathUtils.pathToRegisteredStudents, templateEngine);
 
-
 	}
-
+	
+	
 	private MutablePair<Integer, String> getExamRegister(ExamRegisterDAO examRegisterDAO, int studentId, int examId, HttpServletRequest request, HttpServletResponse response){
 
 
@@ -209,12 +247,26 @@ public class GoToRegisteredStudents extends HttpServlet {
 
 		String examIdString = request.getParameter("examId");
 		String requestType = request.getParameter("requestType");
+		String courseIdString = request.getParameter("courseId");
+		
+		
+		if(requestType == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Null request type, when modifying exams' grade state", templateEngine);
+			return;
+		}
 
 		if(examIdString == null) {
-			ForwardHandler.forwardToErrorPage(request, response, "Null examId, when accessing exam details", templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, "Null exam ID, when modifying exams' grade state", templateEngine);
+			return;
+		}
+		
+		if(courseIdString == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Null course ID, when modifying exams' grade state", templateEngine);
+			return;
 		}
 
 		int examId;
+		int courseId;
 
 		ExamDAO examDAO = new ExamDAO(connection);
 		Exam exam = null;
@@ -224,12 +276,24 @@ public class GoToRegisteredStudents extends HttpServlet {
 		try {
 			examId = Integer.parseInt(examIdString);
 		}catch (NumberFormatException e) {
-			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam id is not a number, when accessing exam details", templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam ID is not a number, when modifying exams' grade state", templateEngine);
+			return;
+		}
+		
+		try {
+			courseId = Integer.parseInt(courseIdString);
+		}catch (NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen course ID is not a number, when modifying exams' grade state", templateEngine);
 			return;
 		}
 
 		HttpSession session = request.getSession(false);
 		Professor professor = (Professor)session.getAttribute("professor");
+		
+		if(professor == null) {
+			ForwardHandler.forwardToErrorPage(request, response, "Your session has expired!", templateEngine);
+			return;
+		}
 
 		//fetching professor courses to get updated courses list
 		try {
@@ -256,7 +320,8 @@ public class GoToRegisteredStudents extends HttpServlet {
 				
 				ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
 				examRegisterDAO.publishGradeByExamID(examId);
-				response.sendRedirect(getServletContext().getContextPath() + PathUtils.pathToRegisteredStudents);
+				response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestTye='load");
+				return;
 				
 			}catch (SQLException e) {
 				
@@ -271,22 +336,21 @@ public class GoToRegisteredStudents extends HttpServlet {
 				ReportDAO reportDAO = new ReportDAO(connection);
 				Report report = reportDAO.createReport(examId);
 				
-				session.setAttribute("report", report);
-				response.sendRedirect(getServletContext().getContextPath() + PathUtils.pathToReportPage);
+				request.setAttribute("report", report);
+				request.setAttribute("courseId", courseId);
+				request.setAttribute("examId", examId);
+				ForwardHandler.forward(request, response, PathUtils.pathToReportPage, templateEngine);
 				
 			}catch (SQLException e) {
 				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 				return;
-			} 
+			}
 			
 		}else{
-			ForwardHandler.forwardToErrorPage(request, response, "Invalid POST method", templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, "Invalid request type", templateEngine);
 			return;
 		}
-
-
 		
-
 	}
 
 }

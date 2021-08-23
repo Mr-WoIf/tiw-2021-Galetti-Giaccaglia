@@ -172,7 +172,6 @@ public class ExamRegisterDAO {
 			
 			while(resultSet.next()) {
 		
-				
 				Student student = new Student(resultSet.getInt("student_id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "student", resultSet.getString("school"), resultSet.getString("degree"));
 				students.add(student);
 			}
@@ -277,19 +276,16 @@ public class ExamRegisterDAO {
 		
 	}
 		
-	public void reportGradeByExamID(int reportId, int examId) throws SQLException {
+	public void reportGradeByExamID(int examId, int reportId) throws SQLException {
 
 		
 		String performedAction = " changing student's exam state from 'published'/'refused' to 'recorded' and adding report id by exam id and student id ";
+		System.out.println(examId);
 		
-		String query = "UPDATE unidb.exam_register "
-				+ "( SET grade = 'postponed' "
-				+ "WHERE exam_id = ?  AND state = 'refused') "
-				+ "AND "
-				+ "(SET state = 'recorded' AND report_id = ? "
-				+ "WHERE exam_id = ? "
-				+ "AND (state = 'published' OR state = 'refused') )";
-			
+		String query = "UPDATE unidb.exam_register SET grade = 'postponed' WHERE exam_id = ? AND state = 'refused'; "
+				+ "UPDATE unidb.exam_register SET state = 'recorded' WHERE exam_id = ? AND (state = 'published' OR state = 'refused'); "
+				+ "UPDATE unidb.exam_register SET id_report = ? WHERE exam_id = ? AND (state = 'published' OR state = 'refused');";
+		
 		PreparedStatement preparedStatement = null;
 		
 		
@@ -297,12 +293,13 @@ public class ExamRegisterDAO {
 			
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, examId);
-			preparedStatement.setInt(2, reportId);
-			preparedStatement.setInt(3, examId);
+			preparedStatement.setInt(2, examId);
+			preparedStatement.setInt(3, reportId);
+			preparedStatement.setInt(4, examId);
 			preparedStatement.executeUpdate();
 			
 		}catch(SQLException e) {
-			throw new SQLException("Error accessing the DB when" + performedAction);
+			throw new SQLException("Error accessing the DB when" + e.toString());
 			
 		}finally {
 			

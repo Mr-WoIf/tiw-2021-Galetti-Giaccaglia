@@ -3,7 +3,7 @@
   <display-name>TIW-projectExamManagement</display-name>
   <context-param>
     <param-name>dbUrl</param-name>
-    <param-value>jdbc:mysql://localhost:3306/unidb</param-value>
+    <param-value>jdbc:mysql://localhost:3306/unidb?allowMultiQueries=true</param-value>
   </context-param>
   <context-param>
     <param-name>dbUser</param-name>
@@ -68,10 +68,7 @@
   	<url-pattern>/GoToExam</url-pattern>
    </filter-mapping>	
 
-  
-  <welcome-file-list>
-    <welcome-file>login.html</welcome-file>
-  </welcome-file-list>
+ 
    
 
 </web-app>

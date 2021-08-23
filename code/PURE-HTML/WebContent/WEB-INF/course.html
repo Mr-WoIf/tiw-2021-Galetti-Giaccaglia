@@ -63,10 +63,10 @@ nav ul li {
 					"<span th:text="${course.name}">name</span>" Course Page
 				</div>
 
-				<div class="home-subtitle">Course exam dates</div>
-
-
-				<div class="wrap-table">
+				<div class="home-subtitle" th:if = "${(session.user.role == 'student' and noExams == false) or session.user.role == 'professor'}" th:text="${session.user.role == 'professor' ? 'Course exam dates' : ' Your exam dates'}"></div>
+				<div class="home-subsubtitle" th:if="${session.user.role == 'student' and noExams == true }">You aren't registered to any exam</div>
+					
+				<div class="wrap-table" th:if="${(session.user.role == 'student' and noExams == false) or session.user.role == 'professor'}">
 					<div class="table">
 
 						<table>
@@ -91,6 +91,7 @@ nav ul li {
 							<form class="form" th:action="${session.user.role == 'professor'} ? @{/GoToRegisteredStudents} : @{/GoToExam}">
 							<input type="hidden" name="courseId" th:value="${course.id}" />
 							<input type="hidden" name="examId" th:value="${exam.id}" />
+							<input type="hidden" name="requestType" th:value="${'load'}" />
 						
 							<button class="btn btn-outline-dark" type="submit">Details</button>
 										</form>
@@ -104,6 +105,7 @@ nav ul li {
 					</div>
 				</div>
 			</div>
+
 		</div>
 	</div>
 

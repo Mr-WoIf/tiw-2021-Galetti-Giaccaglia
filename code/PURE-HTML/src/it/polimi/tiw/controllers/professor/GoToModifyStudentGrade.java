@@ -3,10 +3,7 @@ package it.polimi.tiw.controllers.professor;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,12 +14,11 @@ import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
 
-import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Professor;
 import it.polimi.tiw.beans.Student;
-import it.polimi.tiw.dao.ExamDAO;
 import it.polimi.tiw.dao.ExamRegisterDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
+import it.polimi.tiw.utils.DaoUtils;
 import it.polimi.tiw.utils.ForwardHandler;
 import it.polimi.tiw.utils.MutablePair;
 import it.polimi.tiw.utils.PathUtils;
@@ -36,7 +32,8 @@ public class GoToModifyStudentGrade extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection;
-
+	HttpSession session = null;
+	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -68,18 +65,47 @@ public class GoToModifyStudentGrade extends HttpServlet {
 
 
 		String examIdString = request.getParameter("examId");
+		String courseIdString = request.getParameter("courseId");
 		String studentIdString = request.getParameter("studentId");
-		
+	
+		int examId;
+		int courseId;
+		int studentId;
 		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
 		
-		verifyRequestCommonConstraints(request,response,studentIdString,examIdString,studentInfo);
+		
+		
+		session = request.getSession(false);
+		Professor professor = (Professor)session.getAttribute("professor");
+		
+		try {
+			examId = Integer.parseInt(examIdString);
+		}catch (NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam id is not a number, when accessing exam details", templateEngine);
+			return;
+		}
+		
+		try {
+			courseId = Integer.parseInt(courseIdString);
+		}catch (NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam's course id is not a number, when accessing exam details", templateEngine);
+			return;
+		}
+		
+		try {
+			studentId = Integer.parseInt(studentIdString);
+			}catch (NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen student id is not a number, when accessing exam details", templateEngine);
+			return;
+		}
 
 		
-		
-		
-	
-		
+		DaoUtils.verifyRequestCommonConstraints(connection, templateEngine, request,response, studentId,examId, courseId, studentInfo, professor);
+
 		request.setAttribute("studentInfo", studentInfo);
+		request.setAttribute("examId", examId);
+		request.setAttribute("courseId", courseId);
+		request.setAttribute("error", "");
 		ForwardHandler.forward(request, response, PathUtils.pathToGradePageProfessor,  templateEngine);
 			
 	}
@@ -88,55 +114,23 @@ public class GoToModifyStudentGrade extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.getParameter("grade");
 		String examIdString = request.getParameter("examId");
-		String studentIdString = request.getParameter("studentId");
-		
+		String courseIdString = request.getParameter("courseId");
+		String studentIdString = request.getParameter("studentId");		
 		String studentGradeString = request.getParameter("grade");
-		int studentGrade;
-		
-		if(studentGradeString.equals("absent")) {
-			studentGrade = 0;
-		}
-		
-		else if(studentGradeString.equals("postponed")) {
-			studentGrade = 1;
-		}
-		
-		else if(studentGradeString.equals("to sit again")) {
-			studentGrade = 2;
-		}
-		
-		else {
 
-			try {
-				studentGrade = Integer.parseInt(studentGradeString);
-			}catch (NumberFormatException e) {
-				ForwardHandler.forwardToErrorPage(request, response, "Submitted grade is not valid", templateEngine);
-				return;
-			}
-			
-			if(studentGrade <18 || studentGrade>31) {
-				String error = studentGrade + " is not a valid grade! Please submit a value between 18 and 31 (laude)";
-				request.setAttribute("error", error);
-				RequestDispatcher dispatcher = request.getRequestDispatcher(PathUtils.pathToGradePageProfessor);
-				dispatcher.forward(request, response);
-				return;
-			}
-		
-		}
-			
-	
-		Student student = null;
-		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
-		
-		
-		if( !verifyRequestCommonConstraints(request,response,studentIdString,examIdString,studentInfo))
-			return;
-		
-		
-		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
+		int studentGrade;
+		int courseId;
 		int examId;
+		int studentId;
+		
+		try {
+			courseId = Integer.parseInt(courseIdString);
+		}catch(NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Invalid course Id related to exam Id", templateEngine);
+			return;
+		}
+		
 		try {
 			examId = Integer.parseInt(examIdString);
 		}catch (NumberFormatException e) {
@@ -145,104 +139,49 @@ public class GoToModifyStudentGrade extends HttpServlet {
 		}
 		
 		try {
-			examRegisterDAO.setGradeByStudentId(student.getId(), examId, studentGrade);
+			studentId = Integer.parseInt(studentIdString);
+			}catch (NumberFormatException e) {
+			ForwardHandler.forwardToErrorPage(request, response, "Chosen student id is not a number, when accessing exam details", templateEngine);
+			return;
+		}
+
+
+		try {
+				studentGrade = Integer.parseInt(studentGradeString);
+		}catch (NumberFormatException e) {
+				ForwardHandler.forwardToErrorPage(request, response, "Submitted grade is not valid", templateEngine);
+				return;
+		}
+			
+		if(studentGrade > 2 && (studentGrade <18 || studentGrade>31)) {
+				String error = studentGrade + " is not a valid grade! Please submit a value between 18 and 31 (laude)";
+				request.setAttribute("error", error);
+				response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId);
+				return;
+		}
+		
+			
+		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
+		request.getSession(false);
+		Professor professor = (Professor)session.getAttribute("professor");
+		
+		if(!DaoUtils.verifyRequestCommonConstraints(connection, templateEngine, request,response, studentId, examId, courseId, studentInfo, professor))
+			return;
+		
+		
+		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
+
+		
+		try {
+			examRegisterDAO.setGradeByStudentId(studentInfo.getLeft().getId(), examId, studentGrade);
 		} catch (SQLException e) {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;	
 		}
 		
-
-		response.sendRedirect(getServletContext().getContextPath() + PathUtils.pathToRegisteredStudents);
 		
-	}
-	
-	private boolean verifyRequestCommonConstraints(	
-			
-								HttpServletRequest request, 
-								HttpServletResponse response, 
-								String studentIdString, 
-								String examIdString, 
-								MutablePair<Student, MutablePair<Integer, String>> studentInfo
-								
-) throws ServletException, IOException {
+		response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load'");
 		
-		Optional<Exam> optExam = null;
-		Student student;
-		MutablePair<Integer, String> studentExamInfo;
-		int examId;
-		int studentId;
-		ExamDAO examDAO = new ExamDAO(connection);
-		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
-		Exam exam = null;
-	
-		
-		try {
-			examId = Integer.parseInt(examIdString);
-		}catch (NumberFormatException e) {
-			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam id is not a number, when accessing exam details", templateEngine);
-			return false;
-		}
-		
-		try {
-			studentId = Integer.parseInt(studentIdString);
-		}catch (NumberFormatException e) {
-			ForwardHandler.forwardToErrorPage(request, response, "Chosen student id is not a number, when accessing exam details", templateEngine);
-			return false;
-		}
-		
-		
-		final int id = studentId;
-		HttpSession session = request.getSession(false);
-		Professor professor = (Professor)session.getAttribute("professor");
-
-		//fetching professor courses to get updated courses list
-		try {
-			optExam = examDAO.getExamById(examId);
-		} catch (SQLException e) {
-			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-			return false;		
-		}
-
-		if(optExam.isEmpty()) {
-			ForwardHandler.forwardToErrorPage(request, response, "Exam not existing", templateEngine);
-			return false;
-		}
-		
-		exam = optExam.get();
-		
-		if(professor.getCourseById(exam.getCourseId()).isEmpty()) {
-			ForwardHandler.forwardToErrorPage(request, response, "Exam's course not hold by you!", templateEngine);
-			return false;
-		}
-		
-		
-		try {
-			student = examRegisterDAO.getStudentsByExamId(examId).stream().filter(studentBean -> studentBean.getId()== id).findFirst().orElseThrow();
-		} catch (SQLException e) {
-			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-			return false;		
-		} catch(NoSuchElementException e) {
-			ForwardHandler.forwardToErrorPage(request, response, "Student is not subscribed to this exam!", templateEngine);
-			return false;	
-		}
-		
-		
-		try {
-			studentExamInfo = examRegisterDAO.getExamRegisterByStudentID(studentId, examId);
-		} catch(SQLException e) {
-			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-			return false;		
-		}
-		
-		if(studentExamInfo.getRight().equals("published") || studentExamInfo.getRight().equals("refused") || studentExamInfo.getRight().equals("reported")) {
-			ForwardHandler.forwardToErrorPage(request, response, "You can't modify this student's exam data, because exam grade state is not 'inserted'", templateEngine);
-			return false;		
-		}
-		
-		studentInfo.setLeft(student);
-		studentInfo.setRight(studentExamInfo);
-	
-		return true;	
 	}
 
   }

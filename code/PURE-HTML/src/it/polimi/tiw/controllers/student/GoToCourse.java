@@ -98,8 +98,6 @@ public class GoToCourse extends HttpServlet {
 			return;		
 		}
 		
-		
-		
 		try {
 			if(!courseDAO.isCourseIdValid(courseId)) {
 				ForwardHandler.forwardToErrorPage(request, response, "Course id doesn't match any currently active course", templateEngine);
@@ -125,6 +123,19 @@ public class GoToCourse extends HttpServlet {
 			return;		
 		}
 
+		try {
+			exams = examDAO.getSubscribedExamsByStudentID(studentId, courseId);
+		} catch (SQLException e) {
+			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+			return;		
+		}
+		
+		
+		
+		if(exams.size()==0)
+			request.setAttribute("noExams", true);
+		else
+			request.setAttribute("noExams", false);
 
 		request.setAttribute("course", course);
 		request.setAttribute("exams", exams);

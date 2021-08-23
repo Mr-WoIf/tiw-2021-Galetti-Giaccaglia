@@ -1,8 +1,10 @@
 package it.polimi.tiw.beans;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Report {
 	
@@ -32,9 +34,16 @@ public class Report {
 	public Date getReportDate() {
 		return reportDate;
 	}
+	
+	public String getPrettyPrintedDate() {
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String format = formatter.format(reportDate);
+		return format;
+	}
 
 	public int getStudentGrade(int studentId) {
-		return studentsGrades.get(studentId);
+		return Objects.nonNull(studentsGrades.get(studentId)) ? studentsGrades.get(studentId) : -1;
 	}
 	
 	

@@ -14,7 +14,7 @@ public class MutablePair<A, B> {
 
 	    public boolean equals(Object other) {
 	        if (other instanceof MutablePair) {
-	            MutablePair otherPair = (MutablePair) other;
+	            MutablePair<?, ?> otherPair = (MutablePair<?, ?>) other;
 	            return 
 	            ((  this.left == otherPair.left ||
 	                ( this.left != null && otherPair.left != null &&

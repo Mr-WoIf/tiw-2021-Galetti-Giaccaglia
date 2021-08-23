@@ -9,19 +9,18 @@
 
 .popover__wrapper {
   position: relative;
-  margin-top: 1.5rem;
   display: inline-block;
 }
 .popover__content {
   opacity: 0;
   visibility: hidden;
   position: absolute;
-  left: -150px;
+  left: -50px;
   transform: translate(0, 10px);
   background-color: #bfbfbf;
-  padding: 1.5rem;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-  width: auto;
+  padding: 0.5rem;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.15);
+  width: 264px;
 }
 .popover__content:before {
   position: absolute;
@@ -42,6 +41,10 @@
   transform: translate(0, -20px);
   transition: all 0.5s cubic-bezier(0.75, -0.02, 0.2, 0.97);
 }
+
 .popover__message {
+  word-wrap: break-word;
+  width: 9px;
   text-align: center;
+  color : #ff0033;
 }

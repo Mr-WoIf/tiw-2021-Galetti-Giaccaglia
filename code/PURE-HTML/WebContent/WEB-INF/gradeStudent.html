@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Student Grade</title>
+<title>Home</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet"
@@ -16,28 +16,25 @@
 <link rel="icon" type="image/png" href="resources/myfavicon.ico"
 	th:href="@{/resources/myfavicon.ico}" />
 <!--===============================================================================================-->
-<link rel="stylesheet" type="text/css"
-	href="../fonts/font-awesome-4.7.0/css/font-awesome.min.css"
-	th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
-
-<link rel="stylesheet" type="text/css" href="css/util.css"
-	th:href="@{/css/util.css}">
-<link rel="stylesheet" type="text/css" href="css/home_main.css"
-	th:href="@{/css/home_main.css}">
+	<link rel="icon" type="image/png" href="resources/myfavicon.ico" th:href="@{/resources/myfavicon.ico}" />
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css" th:href="@{/fonts/font-awesome-4.7.0/css/font-awesome.min.css}">
+	<link rel="stylesheet" type="text/css" href="css/modify_grade.css"th:href="@{/css/modify_grade.css}">
+	<link rel="stylesheet" type="text/css" href="css/popover.css" th:href="@{/css/popover.css}">
 <!--===============================================================================================-->
+
 <style>
 nav ul li {
 	padding: 8px;
 	color: #FFFFFF;
 	font-size: 20px;
 }
-
 </style>
+
+
 </head>
 <body>
-	<div class="limiter">
 
-
+<div class="limiter">
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark navbar-expand-sm py-2">
 			<div
 				class="navbar-collapse collapse w-80 order-1 order-md-0 dual-collapse2">
@@ -46,6 +43,10 @@ nav ul li {
 					<li class="nav-item active"><form class="form" th:action="@{/GoToHomePage}">
 					<button class="btn btn-light my-2 my-sm-0" type="submit">Home</button>
 				</form></li>
+					<li class="nav-item active"><form class="form" th:action="@{/GoToHoldCourse(courseId)}">
+							<input type="hidden" name="courseId" th:value="${courseId}" />
+							<button class="btn btn-light my-2 my-sm-0" type="submit">Exam dates</button>
+										</form></li>
 				</ul>
 			</div>
 
@@ -60,56 +61,88 @@ nav ul li {
 				</ul>
 				
 			</div>
-		</nav>
+</nav>
+		
+		
+<div class="container two-col-example">
+ <h2>Exam outcome</h2>
+  <div class="row" th:if="${hasBeenPublished == true}">
+    <div class="col-lg-6 col-xs-12">
+      <div class="card-deck mb-1 text-center">
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+           <img src="resources/name.png" width="70" height="70" th:src="@{/resources/name.png}" alt="IMG">
+            			  <h4 class="card-title pricing-card-title">Name</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.left.name}"></p>
+          </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+             <img src="resources/id.png" width="80" height="80" th:src="@{/resources/id.png}" alt="IMG">
+           			  <h4 class="card-title pricing-card-title">Student ID</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.left.id}"></p>
+          </div>
+        </div>
+      </div>
+      <div class="card-deck mb-1 text-center">
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+           <img src="resources/email.png" width="70" height="70" th:src="@{/resources/email.png}" alt="IMG">
+            			  <h4 class="card-title pricing-card-title">E-mail</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.left.email}"></p>
+          </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+            <img src="resources/degree.png" width="70" height="70" th:src="@{/resources/degree.png}" alt="IMG">
+           			  <h4 class="card-title pricing-card-title">Degree</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.left.degree}"></p>
+          </div>
+        </div>
+      </div>
+      <div class="card-deck mb-1 text-center">
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+            <img src="resources/grade.png" width="80" height="80" th:src="@{/resources/grade.png}" alt="IMG">
+            			  <h4 class="card-title pricing-card-title">Grade</h4>
+            			  
+            			  
+            			  				 <p class="mt-3 mb-4" th:if="${studentInfo.right.left}==-1">Not inserted</p>
+										 <p class="mt-3 mb-4" th:if="${studentInfo.right.left}==0">Absent</p>
+										 <p class="mt-3 mb-4" th:if="${studentInfo.right.left}==1">Postponed</p>
+										 <p class="mt-3 mb-4" th:if="${studentInfo.right.left}==2">To Sit Again</p>
+										 <p class="mt-3 mb-4" th:if="${(studentInfo.right.left &gt; 2) and (studentInfo.right.left &lt; 31) }" th:text="${studentInfo.right.left}"></p>
+										 <p class="mt-3 mb-4" th:if="${studentInfo.right.left}==31">30 Cum laude</p>
+          
+          </div>
+        </div>
+        <div class="card mb-4 box-shadow">
+          <div class="card-body">
+             <img src="resources/grade_state.png" width="70" height="70" th:src="@{/resources/grade_state.png}" alt="IMG">
+          			  <h4 class="card-title pricing-card-title">Grade State</h4>
+	            <p class="mt-3 mb-4" th:text="${studentInfo.right.right}"></p>
+          </div>
+        </div>
+      </div>
+      
+      <form method="post" class="button1" th:action="@{/GoToExam}">
+					 <input type="hidden" name="examId" th:value="${examId}" />
+					 <input type="hidden" name="courseId" th:value="${courseId}" />
+					<button type="submit" class="btn btn-light" th:disabled="${areAllPublished} == true" th:if="${((studentInfo.right.left &gt; 2) and (studentInfo.right.left &lt; 32)) and !#strings.equals(studentInfo.right.right, 'refused') and !#strings.equals(studentInfo.right.right, 'recorded')}">Refuse Grade</button>
+	</form> 
+	
+    </div>
+    
+</div>
+ <h3 th:if="${hasBeenPublished == false}">Grade hasn't been published yet!</h3>
+</div>
 
-		<div class="container-table">
-
-			<div class=bg>
-
-				<div class="home-title">
-					"<span th:text="${courseName.name}">name</span>" Exam Result Page (<span
-						th:text="${#dates.format(exam.date, 'dd-MM-yyyy')}">name</span>)
-				</div>
-
-				<div class="home-subtitle">Course exam dates</div>
-
-				<div th:switch="${register.value}">
-					<div th:case="'published'"></div>
-					<p th:case="*">Grade not yet defined</p>
-				</div>
-
-				<div class="wrap-table">
-					<div class="table">
-
-						<table>
-							<thead>
-								<tr class="table-head">
-									<th class="column1">Date</th>
-									<th class="column2">ID Exam</th>
-									<th class="column3">Details</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="exam : ${exams}">
-
-									<td class="column1"
-										th:text="${#dates.format(exam.date, 'dd-MM-yyyy')}"></td>
-
-									<td class="column2" th:text="${exam.id}"></td>
-
-									<td class="column3"><a
-										th:href="${session.user.role == 'professor'} ? @{/GoToRegisteredStudents(examId=${exam.id})} : @{/GoToExam(examId=${exam.id})}">Exam
-											Details</a></td>
-								</tr>
-
-							</tbody>
-
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+</div>
 
 </body>
-</html>
+
+
+
+
+
+

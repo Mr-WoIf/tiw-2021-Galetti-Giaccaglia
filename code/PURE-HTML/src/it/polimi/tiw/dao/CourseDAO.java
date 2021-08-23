@@ -23,7 +23,7 @@ public class CourseDAO {
 		
 		String performedAction = " finding courses by student id";
 		
-		String query = "SELECT id, name FROM unidb.study_plan JOIN unidb.course ON study_plan.course_id = course.id WHERE student_id = ?";
+		String query = "SELECT id, name FROM unidb.study_plan JOIN unidb.course ON study_plan.course_id = course.id WHERE student_id = ? ORDER BY name DESC";
 		
 		return executeQuery(performedAction, query, studentId);
 		
