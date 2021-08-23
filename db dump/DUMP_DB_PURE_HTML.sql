@@ -99,7 +99,7 @@ CREATE TABLE `exam_register` (
 
 LOCK TABLES `exam_register` WRITE;
 /*!40000 ALTER TABLE `exam_register` DISABLE KEYS */;
-INSERT INTO `exam_register` VALUES (10626489,1206,1,7890,'recorded'),(10626489,1207,31,NULL,'published'),(10626489,1208,25,NULL,'published'),(10626489,1212,0,7891,'recorded'),(10626489,1213,-1,NULL,'not inserted'),(10626490,1204,0,7893,'recorded'),(10626490,1205,21,NULL,'published'),(10626490,1206,1,7890,'recorded'),(10626490,1207,20,NULL,'published'),(10626490,1211,2,7892,'recorded'),(10626491,1208,29,NULL,'published'),(10626491,1210,-1,NULL,'not inserted'),(10626491,1212,1,7891,'recorded'),(10626491,1213,25,NULL,'published'),(10626492,1204,1,7893,'recorded'),(10626492,1205,27,NULL,'published'),(10626492,1210,-1,NULL,'not inserted'),(10626492,1212,1,7891,'recorded'),(10626492,1213,18,NULL,'published'),(10626493,1204,31,7893,'recorded'),(10626493,1208,18,NULL,'published'),(10626493,1210,-1,NULL,'not inserted'),(10626493,1211,1,7892,'recorded');
+INSERT INTO `exam_register` VALUES (10626489,1206,1,7890,'recorded'),(10626489,1207,31,1976,'recorded'),(10626489,1208,25,1323,'recorded'),(10626489,1212,0,7891,'recorded'),(10626489,1213,20,1144,'recorded'),(10626490,1204,0,7893,'recorded'),(10626490,1205,21,1123,'recorded'),(10626490,1206,1,7890,'recorded'),(10626490,1207,20,1976,'recorded'),(10626490,1211,2,7892,'recorded'),(10626491,1208,29,1323,'recorded'),(10626491,1210,29,1100,'recorded'),(10626491,1212,1,7891,'recorded'),(10626491,1213,25,1144,'recorded'),(10626492,1204,1,7893,'recorded'),(10626492,1205,1,1123,'recorded'),(10626492,1210,30,1100,'recorded'),(10626492,1212,1,7891,'recorded'),(10626492,1213,1,1144,'recorded'),(10626493,1204,31,7893,'recorded'),(10626493,1208,18,1323,'recorded'),(10626493,1210,30,1100,'recorded'),(10626493,1211,1,7892,'recorded');
 /*!40000 ALTER TABLE `exam_register` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,11 +143,9 @@ CREATE TABLE `report` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `exam_id` int unsigned NOT NULL,
   `date_recorded` datetime NOT NULL,
-  PRIMARY KEY (`id`,`exam_id`),
-  UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `exam_id` (`exam_id`),
-  CONSTRAINT `report_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7894 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7895 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -156,7 +154,7 @@ CREATE TABLE `report` (
 
 LOCK TABLES `report` WRITE;
 /*!40000 ALTER TABLE `report` DISABLE KEYS */;
-INSERT INTO `report` VALUES (7890,1206,'2021-07-16 00:00:00'),(7891,1212,'2021-07-20 00:00:00'),(7892,1211,'2021-07-18 00:00:00'),(7893,1204,'2021-07-15 00:00:00');
+INSERT INTO `report` VALUES (1005,1213,'2021-08-22 16:13:55'),(1100,1210,'2021-08-23 08:28:37'),(1122,1213,'2021-08-22 16:14:00'),(1123,1205,'2021-08-23 08:25:30'),(1125,1213,'2021-08-22 16:13:59'),(1144,1213,'2021-08-22 16:14:04'),(1195,1213,'2021-08-22 16:13:46'),(1251,1213,'2021-08-22 16:13:57'),(1323,1208,'2021-08-18 18:13:30'),(1387,1213,'2021-08-18 08:01:35'),(1409,1213,'2021-08-22 16:13:32'),(1631,1213,'2021-08-22 16:13:59'),(1633,1213,'2021-08-22 16:14:01'),(1785,1213,'2021-08-22 16:14:03'),(1918,1213,'2021-08-18 08:05:17'),(1952,1213,'2021-08-22 16:13:49'),(1976,1207,'2021-08-20 08:08:16'),(7890,1206,'2021-07-16 00:00:00'),(7891,1212,'2021-07-20 00:00:00'),(7892,1211,'2021-07-18 00:00:00'),(7893,1204,'2021-07-15 00:00:00'),(7894,1204,'2021-07-15 00:00:00');
 /*!40000 ALTER TABLE `report` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -186,7 +184,7 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-INSERT INTO `student` VALUES (10626489,'fogell.mclovin@stud.unimail.com','fogell.mclovin','Fogell','McLovin','Empire State University','Engineering Management'),(10626490,'greg.heffley@stud.unimail.com','greg.heffley','Greg','Heffley','Empire State University','Chemical Engineering'),(10626491,'lisa.simpson@stud.unimail.com','lisa.simpson','Lisa','Simpson','Empire State University','Psychology'),(10626492,'martin.mcfly@stud.unimail.com','martin.mcfly','Marin','McFly','Empire State University','Bioengineering'),(10626493,'sarah.connor@stud.unimail.com','sarah.connor','Sarah','Connor','Empire State University','Computer Science');
+INSERT INTO `student` VALUES (10626489,'fogell.mclovin@stud.unimail.com','fogell.mclovin','Fogell','McLovin','Empire State University','Engineering Management'),(10626490,'greg.heffley@stud.unimail.com','greg.heffley','Greg','Heffley','Empire State University','Chemical Engineering'),(10626491,'lisa.simpson@stud.unimail.com','lisa.simpson','Lisa','Simpson','Empire State University','Psychology'),(10626492,'martin.mcfly@stud.unimail.com','martin.mcfly','Martin','McFly','Empire State University','Bioengineering'),(10626493,'sarah.connor@stud.unimail.com','sarah.connor','Sarah','Connor','Empire State University','Computer Science');
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -213,7 +211,7 @@ CREATE TABLE `study_plan` (
 
 LOCK TABLES `study_plan` WRITE;
 /*!40000 ALTER TABLE `study_plan` DISABLE KEYS */;
-INSERT INTO `study_plan` VALUES (10626489,1010),(10626490,1010),(10626492,1010),(10626489,1011),(10626491,1011),(10626492,1011),(10626489,1012),(10626491,1012),(10626493,1012),(10626490,1013),(10626491,1013),(10626493,1013),(10626490,1014),(10626492,1014),(10626493,1014);
+INSERT INTO `study_plan` VALUES (10626489,1010),(10626490,1010),(10626492,1010),(10626489,1011),(10626491,1011),(10626492,1011),(10626489,1012),(10626491,1012),(10626493,1012),(10626490,1013),(10626491,1013),(10626492,1013),(10626493,1013),(10626490,1014),(10626492,1014),(10626493,1014);
 /*!40000 ALTER TABLE `study_plan` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -226,4 +224,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-05-25 14:34:36
+-- Dump completed on 2021-08-23  9:04:14
