@@ -89,12 +89,19 @@ public class GoToHoldCourse extends HttpServlet {
 
 		HttpSession session = request.getSession(false);
 		Professor currentProfessor = (Professor)session.getAttribute("professor");
+		
+		if(currentProfessor==null) {
+			ForwardHandler.forwardToErrorPage(request, response, "You are not authorized to perform this action!", templateEngine);
+			return;		
+		}
+			
+			
 
 		//fetching professor courses to get updated courses list
 		try {
 			currentProfessor.setCourses(courseDAO.getCoursesByProfessorId(currentProfessor.getId()));
 		} catch (SQLException e) {
-			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+			ForwardHandler.forwardToErrorPage(request, response, "There has been an error finding courses by professor ID", templateEngine);
 			return;		
 		}
 		

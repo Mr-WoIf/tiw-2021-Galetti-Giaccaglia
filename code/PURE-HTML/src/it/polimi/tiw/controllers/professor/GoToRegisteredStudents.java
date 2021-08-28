@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -79,14 +80,17 @@ public class GoToRegisteredStudents extends HttpServlet {
 
 		if(examIdString == null) {
 			ForwardHandler.forwardToErrorPage(request, response, "Null exam ID, when accessing exam details", templateEngine);
+			return;
 		}
 		
 		if(courseIdString == null) {
 			ForwardHandler.forwardToErrorPage(request, response, "Null course ID, when accessing exam details", templateEngine);
+			return;
 		}
 		
 		if(requestType == null) {
 			ForwardHandler.forwardToErrorPage(request, response, "Null request type, when accessing exam details", templateEngine);
+			return;
 		}
 		
 
@@ -320,7 +324,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 				
 				ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
 				examRegisterDAO.publishGradeByExamID(examId);
-				response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestTye='load");
+				response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load");
 				return;
 				
 			}catch (SQLException e) {
@@ -336,10 +340,12 @@ public class GoToRegisteredStudents extends HttpServlet {
 				ReportDAO reportDAO = new ReportDAO(connection);
 				Report report = reportDAO.createReport(examId);
 				
-				request.setAttribute("report", report);
+
+				RequestDispatcher rd = request.getRequestDispatcher("GoToReport");
+				request.setAttribute("reportID", report.getReportId());
 				request.setAttribute("courseId", courseId);
 				request.setAttribute("examId", examId);
-				ForwardHandler.forward(request, response, PathUtils.pathToReportPage, templateEngine);
+				rd.forward(request, response);
 				
 			}catch (SQLException e) {
 				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);

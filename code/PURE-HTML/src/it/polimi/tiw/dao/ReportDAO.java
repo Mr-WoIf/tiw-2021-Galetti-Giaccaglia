@@ -2,6 +2,7 @@ package it.polimi.tiw.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -125,7 +126,84 @@ public class ReportDAO {
 		return report;
 		
 	}
-
 	
+	public Report getReport(int reportId) throws SQLException {
+		
+		Report report = null;
+		
+		List<Student> students = null;
+		Map<Integer, Integer> studentsGrades = new HashMap<>();
+		Date date = null;
+		int examId = 0;
+		
+		ExamRegisterDAO registerDAO = new ExamRegisterDAO(connection);
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		String performedAction = " getting from database the newly created report";
+		String query = "SELECT * FROM unidb.report WHERE id = ?";
+		
+		
+		try {
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, reportId);
+			resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next()) {
+				
+				examId = resultSet.getInt("exam_id");
+				date = resultSet.getDate("date_recorded");
+			}
+			
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error accessing the DB when" + performedAction);
+			
+		} finally {
+			try {
+				resultSet.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the result set when" + performedAction);
+			}
+			try {
+				preparedStatement.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the statement when" + performedAction);
+			}
+		}
+		
+		try {
+			
+		students = registerDAO.getStudentsByReportId(examId, reportId);
+		
+		
+		}catch(SQLException e) {
+			
+			throw new SQLException(e);
+		}
+		
+		
+		int studentGrade;
+		
+		for(Student student : students) {
+			
+			
+			try {
+				
+				studentGrade = registerDAO.getExamRegisterByStudentID(student.getId(), examId).getLeft();
+				studentsGrades.put(student.getId(), studentGrade);
+				
+				}catch(SQLException e) {
+					
+					throw new SQLException(e);
+				}		
+				
+		}
+		
+		report = new Report(students, reportId, date, studentsGrades);
+		
+		return report;
+		
+	}
 
 }

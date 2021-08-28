@@ -4,6 +4,11 @@
 <title>Home</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
@@ -43,7 +48,7 @@ nav ul li {
 					<li class="nav-item active"><form class="form" th:action="@{/GoToHomePage}">
 					<button class="btn btn-light my-2 my-sm-0" type="submit">Home</button>
 				</form></li>
-					<li class="nav-item active"><form class="form" th:action="@{/GoToHoldCourse(courseId)}">
+					<li class="nav-item active"><form class="form" th:action="@{/GoToCourse}">
 							<input type="hidden" name="courseId" th:value="${courseId}" />
 							<button class="btn btn-light my-2 my-sm-0" type="submit">Exam dates</button>
 										</form></li>
