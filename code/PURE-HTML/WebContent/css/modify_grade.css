@@ -7,8 +7,6 @@
 }
 
 
-
-
 body{
   background: #c850c0;
   background: -webkit-linear-gradient(45deg, #4158d0, #c850c0);
@@ -16,18 +14,17 @@ body{
   background: -moz-linear-gradient(45deg, #4158d0, #c850c0);
   background: linear-gradient(45deg, #4158d0, #c850c0);
   color: #303030;
-  margin-top:3em;
-  margin-left : 36em;
  font-family: sans-serif;
 }
 
 .two-col-example{
-  margin-bottom:10em;
+  margin-top:3em;
+  margin-right: 30px;
 }
 
 h2{
-  margin-bottom: 1em;
-  text-align:center;
+  margin-bottom: 0.5em;
+  margin-left : 140px;
   font-size: 40px;
   font-weight: 300;
   color: rgba(255, 255, 255);
@@ -53,8 +50,9 @@ p{
   font-size: 14px;
 }
 
+
 .card{
-  border-radius:3px;
+  border-radius:5px;
 }
 
 .card-deck .card {

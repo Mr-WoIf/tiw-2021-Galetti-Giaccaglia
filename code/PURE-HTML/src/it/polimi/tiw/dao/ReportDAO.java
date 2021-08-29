@@ -16,15 +16,14 @@ public class ReportDAO {
 
 	public ReportDAO(Connection connection) {
 		this.connection = connection;
-	}
+		}
 	
 	public Report createReport(int examId) throws SQLException {
-
-		
+		 
 		Date date = new Date();
-
+        
 		Object sqlDatetime = new Timestamp(date.getTime());
-
+        
 		String performedAction1 = "creating report in the database";
 	//	String performedAction2 = " changing student's exam state from 'published'/'refused' to 'recorded' and adding report id by exam id and student id ";
 		
@@ -76,7 +75,7 @@ public class ReportDAO {
 			connection.rollback();
 		//	System.out.println(e.toString()); //for debug
 			
-			throw new SQLException("Error accessing the DB when " + performedAction1);
+			throw new SQLException(e.getMessage());
 			
 		}finally {
 			

@@ -1,156 +1,104 @@
 package it.polimi.tiw.utils;
 
-import java.util.Arrays;
 import java.util.Map;
 
 import it.polimi.tiw.beans.Student;
 
 public enum SORTING_TYPE {
 
-    STUDENTS_IDS(ThreeState.UNSET){
+    STUDENTS_IDS{
         @Override
-        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap){
-            ThreeState thisState = getState();
-
-            if(thisState.equals(ThreeState.DESCENDING) || thisState.equals(ThreeState.UNSET)) {
+        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state){
+            if(state.equals(ThreeState.DESCENDING) || state.equals(ThreeState.UNSET))
                 SortingUtils.sortByIDsAscending(unsortedMap);
-                this.setState(ThreeState.ASCENDING);
-            }
-            else {
+            else
                 SortingUtils.sortByIDsDescending(unsortedMap);
-                this.setState(ThreeState.DESCENDING);
-            }
         }
     },
-    SURNAME(ThreeState.UNSET){
-        @Override
-        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap){
-            ThreeState thisState = getState();
 
-            if(thisState.equals(ThreeState.DESCENDING) || thisState.equals(ThreeState.UNSET)) {
+            
+    SURNAME{
+        @Override
+        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state){
+            if(state.equals(ThreeState.DESCENDING) || state.equals(ThreeState.UNSET))
                 SortingUtils.sortBySurnameAscending(unsortedMap);
-                this.setState(ThreeState.ASCENDING);
-            }
-            else {
+            else
                 SortingUtils.sortBySurnameDescending(unsortedMap);
-                this.setState(ThreeState.DESCENDING);
-            }
+ 
         }
     },
-    NAME(ThreeState.UNSET){
+    
+    NAME{
         @Override
-        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap){
-            ThreeState thisState = getState();
-
-            if(thisState.equals(ThreeState.DESCENDING) || thisState.equals(ThreeState.UNSET)) {
+        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state){
+            if(state.equals(ThreeState.DESCENDING) || state.equals(ThreeState.UNSET))
                 SortingUtils.sortByNameAscending(unsortedMap);
-                this.setState(ThreeState.ASCENDING);
-            }
-            else {
+            else
                 SortingUtils.sortByNameDescending(unsortedMap);
-                this.setState(ThreeState.DESCENDING);
-            }
-
         }
     },
-    EMAIL(ThreeState.UNSET){
+    EMAIL{
         @Override
-        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap){
-            ThreeState thisState = getState();
-
-            if(thisState.equals(ThreeState.DESCENDING) || thisState.equals(ThreeState.UNSET)) {
+        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state){
+            if(state.equals(ThreeState.DESCENDING) || state.equals(ThreeState.UNSET))
                 SortingUtils.sortByEmailAscending(unsortedMap);
-                this.setState(ThreeState.ASCENDING);
-            }
-            else {
-                SortingUtils.sortByEmailDescending(unsortedMap);
-                this.setState(ThreeState.DESCENDING);
-            }
+            else
+                SortingUtils.sortByEmailDescending(unsortedMap);   
         }
     },
-    DEGREE(ThreeState.UNSET){
+        
+    DEGREE{
         @Override
-        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap){
-            ThreeState thisState = getState();
+        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state){
 
-            if(thisState.equals(ThreeState.DESCENDING) || thisState.equals(ThreeState.UNSET)) {
+            if(state.equals(ThreeState.DESCENDING) || state.equals(ThreeState.UNSET))
                 SortingUtils.sortByDegreeAscending(unsortedMap);
-                this.setState(ThreeState.ASCENDING);
-            }
-            else {
+            else
                 SortingUtils.sortByDegreeDescending(unsortedMap);
-                this.setState(ThreeState.DESCENDING);
-            }
-
-
+            
         }
+       
     },
-    GRADE(ThreeState.UNSET){
+        
+        
+    GRADE{
         @Override
-        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap){
-            ThreeState thisState = getState();
-
-            if(thisState.equals(ThreeState.DESCENDING) || thisState.equals(ThreeState.UNSET)) {
+        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state){
+            if(state.equals(ThreeState.DESCENDING) || state.equals(ThreeState.UNSET))
                 SortingUtils.sortByGradeAscending(unsortedMap);
-                this.setState(ThreeState.ASCENDING);
-            }
-            else {
+         
+            else
                 SortingUtils.sortByGradeDescending(unsortedMap);
-                this.setState(ThreeState.DESCENDING);
-            }
-
         }
     },
-    GRADE_STATE(ThreeState.UNSET){
+    
+    GRADE_STATE{
         @Override
-        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap){
-            ThreeState thisState = getState();
+        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state){
+       
 
-            if(thisState.equals(ThreeState.DESCENDING) || thisState.equals(ThreeState.UNSET)) {
+            if(state.equals(ThreeState.DESCENDING) || state.equals(ThreeState.UNSET))
                 SortingUtils.sortByGradeStateAscending(unsortedMap);
-                this.setState(ThreeState.ASCENDING);
-            }
-            else {
+            else
                 SortingUtils.sortByGradeStateDescending(unsortedMap);
-                this.setState(ThreeState.DESCENDING);
-            }
-
+               
         }
     },
-    INVALID(ThreeState.UNSET){
+    
+    INVALID{
         @Override
-        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap){
+        public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state){
 
         }
     };
 
-    enum ThreeState {
+    public enum ThreeState {
         ASCENDING, //ascending order 
         DESCENDING, //descending order 
         UNSET;
     }
 
-    public abstract void sort(Map<Student, MutablePair<Integer,String>> unsortedMap);
+    public abstract void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state);
 
-    private ThreeState state;
-
-    SORTING_TYPE(ThreeState state){
-        this.state = state; }
-
-    public void setState(ThreeState state){
-        this.state = state;
-    }
-
-    public ThreeState getState(){
-        return state;
-    }
-
-
-    public void toggle(){ this.state = state.equals(ThreeState.ASCENDING)? ThreeState.DESCENDING : ThreeState.ASCENDING;}
-
-    public static void resetAllExceptOne(SORTING_TYPE typeToNotReset){
-        Arrays.stream(SORTING_TYPE.values())
-                .filter(sortingType -> !sortingType.equals(typeToNotReset))
-                .forEach(sortingType -> sortingType.setState(ThreeState.UNSET));
-    }
+   
 }

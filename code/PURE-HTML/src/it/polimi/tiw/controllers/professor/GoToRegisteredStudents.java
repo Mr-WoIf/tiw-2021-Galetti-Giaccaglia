@@ -32,6 +32,7 @@ import it.polimi.tiw.utils.ForwardHandler;
 import it.polimi.tiw.utils.MutablePair;
 import it.polimi.tiw.utils.PathUtils;
 import it.polimi.tiw.utils.SORTING_TYPE;
+import it.polimi.tiw.utils.SortingHistory;
 import it.polimi.tiw.utils.TemplateHandler;
 
 
@@ -44,6 +45,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection;
+	private SortingHistory sortingHistory;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -58,6 +60,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 		ServletContext servletContext = getServletContext();
 		this.templateEngine = TemplateHandler.getEngine(servletContext, ".html");
 		this.connection = ConnectionHandler.getConnection(servletContext);
+		this.sortingHistory = new SortingHistory();
 	}
 
 	@Override
@@ -201,15 +204,27 @@ public class GoToRegisteredStudents extends HttpServlet {
 				return;
 			}
 			
-			sortingType.sort(registerMap);
-			SORTING_TYPE.resetAllExceptOne(sortingType);
+			sortingHistory.sort(registerMap, sortingType);
+			
 			
 		}
 		
-		boolean areAllRecorded = registerMap.values().stream().allMatch(pair -> pair.getRight().equals("recorded")) || (registerMap.values().stream().noneMatch(pair -> pair.getRight().equals("refused")) && registerMap.values().stream().noneMatch(pair -> pair.getRight().equals("published")));
+		boolean areAllRecorded;
 		
-		boolean areAllPublished = (registerMap.values().stream().allMatch(pair -> pair.getRight().equals("published"))) || registerMap.values().stream().noneMatch(pair -> pair.getRight().equals("inserted")); ;
+		try {
+			areAllRecorded = examRegisterDAO.areAllGradesRecorded(examId);
+		} catch (SQLException e) {
+			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(),  templateEngine);
+			return;
+		}
 		
+		boolean areAllPublished;
+		try {
+			areAllPublished = examRegisterDAO.areAllGradesPublished(examId);
+		} catch (SQLException e) {
+			ForwardHandler.forwardToErrorPage(request, response,e.getMessage(), templateEngine);
+			return;
+		}
 
 		request.setAttribute("noSubs", false);
 		request.setAttribute("registerMap", registerMap);
@@ -318,11 +333,26 @@ public class GoToRegisteredStudents extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Exam's course not hold by you!", templateEngine);
 			return;
 		}
+		
+		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
 
 		if(requestType.equals("publish")) {
+			
+			boolean areAllPublished;
+			
 			try {
-				
-				ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
+				areAllPublished = examRegisterDAO.areAllGradesPublished(examId);
+			} catch (SQLException e) {
+				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(),  templateEngine);
+				return;
+			}
+			
+			if(areAllPublished) {
+				ForwardHandler.forwardToErrorPage(request, response, "You are not authorized to publish these grades!",  templateEngine);
+				return;
+			}
+			
+			try {	
 				examRegisterDAO.publishGradeByExamID(examId);
 				response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load");
 				return;
@@ -334,7 +364,21 @@ public class GoToRegisteredStudents extends HttpServlet {
 				
 			}
 		}else if(requestType.equals("record")) {
-
+			
+			boolean areAllRecorded;
+			
+			try {
+				areAllRecorded = examRegisterDAO.areAllGradesRecorded(examId);
+			} catch (SQLException e) {
+				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(),  templateEngine);
+				return;
+			}
+			
+			if(areAllRecorded ) {
+				ForwardHandler.forwardToErrorPage(request, response, "You are not authorized to record these grades!",  templateEngine);
+				return;
+			}
+			
 			try {
 				
 				ReportDAO reportDAO = new ReportDAO(connection);

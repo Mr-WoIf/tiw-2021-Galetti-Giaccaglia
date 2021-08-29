@@ -251,10 +251,6 @@ public class ExamRegisterDAO {
 			resultSet.next();
 			examRegister = new MutablePair<>(resultSet.getInt("grade"), resultSet.getString("state"));
 		
-				
-					
-			
-			
 		} catch(SQLException e) {
 			throw new SQLException("Error accessing the DB when" + performedAction);
 			
@@ -275,7 +271,21 @@ public class ExamRegisterDAO {
 		
 		
 	}
-		
+	
+	public boolean areAllGradesRecorded(int examId) throws SQLException {
+	List<String> gradeStates = getGradeStates(examId);	
+	boolean areAllRecorded = gradeStates.stream().allMatch(state -> state.equals("recorded")) || (gradeStates.stream().noneMatch(state -> state.equals("refused")) && gradeStates.stream().noneMatch(state -> state.equals("published")));
+	return areAllRecorded;
+	}
+	
+	
+	public boolean areAllGradesPublished(int examId) throws SQLException {
+		List<String> gradeStates = getGradeStates(examId);	
+		boolean areAllPublished = (gradeStates.stream().allMatch(state -> state.equals("published"))) || gradeStates.stream().noneMatch(state -> state.equals("inserted"));
+		return areAllPublished;
+	}
+	
+	
 	public void reportGradeByExamID(int examId, int reportId) throws SQLException {
 
 		
@@ -318,5 +328,45 @@ public class ExamRegisterDAO {
 		
 	}
 	
+	private List<String> getGradeStates(int examId) throws SQLException{
+		
+		String performedAction = " checking if all exam grades have been recorded";
+		
+		String query = "SELECT state FROM unidb.exam_register WHERE exam_id = ?";
+			
+		
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		List<String> gradeStates = new ArrayList<>();
+		
+	try {
+			
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setInt(1, examId);
+			
+			resultSet = preparedStatement.executeQuery();
+			
+			while(resultSet.next())
+				gradeStates.add(resultSet.getString("state"));
+			
+		} catch(SQLException e) {
+			throw new SQLException("Error accessing the DB when" + performedAction);
+			
+		} finally {
+			try {
+				resultSet.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the result set when" + performedAction);
+			}
+			try {
+				preparedStatement.close();
+			}catch (Exception e) {
+				throw new SQLException("Error closing the statement when" + performedAction);
+			}
+		}
+	
+	return gradeStates;
+		
+	}
 	
 }
