@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+  <display-name>TIW-projectExamManagement</display-name>
+  <context-param>
+    <param-name>dbUrl</param-name>
+    <param-value>jdbc:mysql://localhost:3306/unidb?allowMultiQueries=true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>dbUser</param-name>
+    <param-value>root</param-value>
+  </context-param>
+  <context-param>
+    <param-name>dbPassword</param-name>
+    <param-value>tiw_project2021</param-value>
+  </context-param>
+  <context-param>
+    <param-name>dbDriver</param-name>
+    <param-value>com.mysql.cj.jdbc.Driver</param-value>
+  </context-param>
+
+  
+  <filter>
+  	<filter-name>CheckLoggedUser</filter-name>
+  	<filter-class>it.polimi.tiw.filters.CheckLoggedUser</filter-class>
+  </filter>
+  
+  <filter>
+  	<filter-name>CheckNotLoggedUser</filter-name>
+  	<filter-class>it.polimi.tiw.filters.CheckNotLoggedUser</filter-class>
+  </filter>
+  
+    <filter>
+  	<filter-name>CheckProfessor</filter-name>
+  	<filter-class>it.polimi.tiw.filters.CheckLoggedUser</filter-class>
+  </filter>
+  
+  <filter>
+  	<filter-name>CheckStudent</filter-name>
+  	<filter-class>it.polimi.tiw.filters.CheckLoggedUser</filter-class>
+  </filter>
+  
+   <filter-mapping>
+  	<filter-name>CheckNotLoggedUser</filter-name>
+  	<url-pattern>/</url-pattern>
+  	<url-pattern>/GoToLogin</url-pattern>
+ 
+  </filter-mapping>
+  
+  <filter-mapping>
+  	<filter-name>CheckLoggedUser</filter-name>
+  	<url-pattern>/Logout</url-pattern>
+  	<url-pattern>/GoToHomePage</url-pattern>
+  	<url-pattern>/GoToHoldCourse</url-pattern>
+  	<url-pattern>/GoToModifyStudentGrade</url-pattern>
+  	<url-pattern>/GoToHoldCourse</url-pattern>
+   </filter-mapping>	
+   
+  <filter-mapping>
+  	<filter-name>CheckProfessor</filter-name>
+  	<url-pattern>/GoToHomePage</url-pattern>
+  	<url-pattern>/GoToHoldCourse</url-pattern>
+  	<url-pattern>/GoToModifyStudentGrade</url-pattern>
+   </filter-mapping>	
+   
+   <filter-mapping>
+  	<filter-name>CheckStudent</filter-name>
+  	<url-pattern>/GoToCourse</url-pattern>
+  	<url-pattern>/GoToExam</url-pattern>
+   </filter-mapping>	
+
+ 
+   
+
+</web-app>
