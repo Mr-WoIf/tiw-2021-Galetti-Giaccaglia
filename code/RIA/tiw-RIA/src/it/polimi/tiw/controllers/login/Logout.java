@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import it.polimi.tiw.utils.TemplateHandler;
  * Servlet implementation class Logout
  */
 @WebServlet("/Logout")
+@MultipartConfig
 public class Logout extends HttpServlet {
 	private TemplateEngine templateEngine;
 	private static final long serialVersionUID = 1L;

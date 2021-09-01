@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import it.polimi.tiw.utils.ResponseUtils;
  * Servlet implementation class ToHoldCoursePage
  */
 @WebServlet("/GoToReport")
+@MultipartConfig
 public class GoToReport extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;

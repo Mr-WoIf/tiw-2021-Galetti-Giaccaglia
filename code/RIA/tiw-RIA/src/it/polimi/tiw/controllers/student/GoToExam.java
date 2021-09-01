@@ -30,6 +30,7 @@ import it.polimi.tiw.utils.ResponseUtils;
  * Servlet implementation class ToHoldCoursePage
  */
 @WebServlet("/GoToExam")
+@MultipartConfig
 public class GoToExam extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
