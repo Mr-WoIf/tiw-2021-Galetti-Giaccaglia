@@ -18,8 +18,8 @@ import com.google.gson.Gson;
 
 import it.polimi.tiw.beans.*;
 import it.polimi.tiw.dao.UserDAO;
+import it.polimi.tiw.simplebeans.UserPacket;
 import it.polimi.tiw.utils.*;
-import packets.UserPacket;
 
 /**
  * Servlet implementation class Login

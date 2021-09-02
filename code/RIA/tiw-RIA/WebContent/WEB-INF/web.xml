@@ -42,18 +42,17 @@
    <filter>
   	<filter-name>NoCacher</filter-name>
   	<filter-class>it.polimi.tiw.filters.NoCacher</filter-class>
-  </filter>
-  
+  </filter>  
   <filter-mapping>
   	<filter-name>NoCacher</filter-name>
     <url-pattern>/login.html</url-pattern>	
     <url-pattern>/home.html</url-pattern>
   </filter-mapping>
+
   
    <filter-mapping>
   	<filter-name>CheckNotLoggedUser</filter-name>
   	<url-pattern>/</url-pattern>
-  	  <url-pattern>/login.html</url-pattern>	
   	<url-pattern>/GoToLogin</url-pattern>
  
   </filter-mapping>
@@ -62,7 +61,7 @@
   	<filter-name>CheckLoggedUser</filter-name>
   	 <url-pattern>/home.html</url-pattern>
   	<url-pattern>/Logout</url-pattern>
-  	<url-pattern>/GoToHomePage</url-pattern>
+  	<url-pattern>/GetCoursesList</url-pattern>
   	<url-pattern>/GoToHoldCourse</url-pattern>
   	<url-pattern>/GoToModifyStudentGrade</url-pattern>
   	<url-pattern>/GoToHoldCourse</url-pattern>
@@ -70,7 +69,7 @@
    
   <filter-mapping>
   	<filter-name>CheckProfessor</filter-name>
-  	<url-pattern>/GoToHomePage</url-pattern>
+  	<url-pattern>/GetCoursesList</url-pattern>
   	<url-pattern>/GoToHoldCourse</url-pattern>
   	<url-pattern>/GoToModifyStudentGrade</url-pattern>
    </filter-mapping>	

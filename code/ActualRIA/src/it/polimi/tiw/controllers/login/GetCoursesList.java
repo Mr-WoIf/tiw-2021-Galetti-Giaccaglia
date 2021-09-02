@@ -29,7 +29,7 @@ import it.polimi.tiw.utils.*;
 /**
  * Servlet implementation class ToRegisterPage
  */
-@WebServlet("/GoToHomePage")
+@WebServlet("/GetCoursesList")
 @MultipartConfig
 
 public class GetCoursesList extends HttpServlet {

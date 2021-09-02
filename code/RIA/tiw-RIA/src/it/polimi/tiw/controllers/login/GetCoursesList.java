@@ -29,16 +29,16 @@ import it.polimi.tiw.utils.*;
 /**
  * Servlet implementation class ToRegisterPage
  */
-@WebServlet("/GoToHomePage")
+@WebServlet("/GetCoursesList")
 @MultipartConfig
-public class GoToHomePage extends HttpServlet {
+public class GetCoursesList extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GoToHomePage() {
+    public GetCoursesList() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -73,7 +73,6 @@ public class GoToHomePage extends HttpServlet {
 		int id = currentUser.getId();
 		
 		String role = currentUser.getRole();
-		String user;
 		
 		try {
 			if(role.equals("professor")) {
@@ -81,7 +80,6 @@ public class GoToHomePage extends HttpServlet {
 				Professor professor = userDAO.findProfessorById(id);
 				professor.setCourses(courses);
 				session.setAttribute("professor", professor);
-				user = new Gson().toJson(professor);
 			}
 				
 			else {
@@ -90,7 +88,6 @@ public class GoToHomePage extends HttpServlet {
 				Student student = userDAO.findStudentById(id);
 				student.setCourses(courses);
 				session.setAttribute("student", student);
-				user = new Gson().toJson(student);
 			}
 			
 		}catch(SQLException e) {
@@ -100,10 +97,14 @@ public class GoToHomePage extends HttpServlet {
 		
 		// SortingUtils.sortCoursesListByNameDescending(courses); <-- old method, sorting is done by sql query 
 		
-		response.setStatus(HttpServletResponse.SC_OK);	
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		response.getWriter().println(user);
+				session.setAttribute("courses", courses);
+				
+				String coursesList = new Gson().toJson(courses);
+				
+				response.setStatus(HttpServletResponse.SC_OK);;
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().println(coursesList);
 	}
 	
 	

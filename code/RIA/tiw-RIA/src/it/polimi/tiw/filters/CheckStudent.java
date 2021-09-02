@@ -47,7 +47,6 @@ public class CheckStudent implements Filter {
 		}
 		// pass the request along the filter chain
 		chain.doFilter(request, response);
-		chain.doFilter(request, response);
 	}
 
 }
