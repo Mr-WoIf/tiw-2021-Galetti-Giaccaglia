@@ -1,5 +1,4 @@
-package it.polimi.tiw.controllers.student;
-
+package it.polimi.tiw.controllers.professor;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -19,7 +18,7 @@ import com.google.gson.Gson;
 
 import it.polimi.tiw.beans.Course;
 import it.polimi.tiw.beans.Exam;
-import it.polimi.tiw.beans.Student;
+import it.polimi.tiw.beans.Professor;
 import it.polimi.tiw.dao.CourseDAO;
 import it.polimi.tiw.dao.ExamDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
@@ -31,16 +30,16 @@ import it.polimi.tiw.utils.ResponseUtils;
 /**
  * Servlet implementation class ToHoldCoursePage
  */
-@WebServlet("/GoToCourse")
+@WebServlet("/GetHoldCourse")
 @MultipartConfig
-public class GoToCourse extends HttpServlet {
+public class GetHoldCourse extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public GoToCourse() {
+	public GetHoldCourse() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -67,6 +66,7 @@ public class GoToCourse extends HttpServlet {
 
 
 		String courseIdString = request.getParameter("courseId");
+
 		if(courseIdString == null) {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Missing course ID, when accessing course details");
 			return;
@@ -82,62 +82,60 @@ public class GoToCourse extends HttpServlet {
 		try {
 			courseId = Integer.parseInt(courseIdString);
 		}catch (NumberFormatException e) {
-			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Chosen account ID is not a number, when accessing courses details");
+			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Chosen course ID is not a number, when accessing courses details");
 			return;
 		}
 
 		HttpSession session = request.getSession(false);
-		Student currentStudent = (Student)session.getAttribute("student");
-		int studentId = currentStudent.getId();
+		Professor currentProfessor = (Professor)session.getAttribute("professor");
+		
+		if(currentProfessor==null) {
+			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_UNAUTHORIZED, "You are not authorized to perform this action!");
+			return;	
+		}
+			
+			
 
 		//fetching professor courses to get updated courses list
 		try {
-			currentStudent.setCourses(courseDAO.getCoursesByStudentId(studentId));
+			currentProfessor.setCourses(courseDAO.getCoursesByProfessorId(currentProfessor.getId()));
 		} catch (SQLException e) {
-			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-			return;
+			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "There has been an error finding courses by professor ID");
+			return;	
 		}
 		
 		try {
 			if(!courseDAO.isCourseIdValid(courseId)) {
-				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Course ID doesn't match any currently active course");
-				return;
+				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_NOT_FOUND, "Course id doesn't match any currently active course");
+				return;	
 			}
-		} catch (SQLException e) {
-			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-			return;	
-		}
-
-		if(currentStudent.getCourseById(courseId).isEmpty()) {
-			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_UNAUTHORIZED, "You are not subscribed to this course!");
-			return;
-		}
-	
-		course = currentStudent.getCourseById(courseId).get();
-		
-
-		try {
-			exams = examDAO.getSubscribedExamsByStudentID(studentId, courseId);
-		} catch (SQLException e) {
-			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-			return;	
-		}
-
-		try {
-			exams = examDAO.getSubscribedExamsByStudentID(studentId, courseId);
 		} catch (SQLException e) {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			return;			
 		}
-		
-		
-		
 
+		if(currentProfessor.getCourseById(courseId).isEmpty()) {
+			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_UNAUTHORIZED, "Course is not held by you");
+			return;
+		}
+
+		course =  currentProfessor.getCourseById(courseId).get();
+		
+		try {
+			exams = examDAO.getExamsByCourseId(courseId);
+			
+		} catch (SQLException e) {
+			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+			return;	
+		}
+
+		
+				
 	//	request.setAttribute("course", course);
 	//	request.setAttribute("exams", exams);
 		
-		String json = new Gson().toJson(new MutablePair<Course, List<Exam>>(course, exams));
 		
+		String json = new Gson().toJson(new MutablePair<Course, List<Exam>>(course, exams));
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json);

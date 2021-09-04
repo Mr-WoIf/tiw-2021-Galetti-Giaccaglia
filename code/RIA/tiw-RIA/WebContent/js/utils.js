@@ -7,7 +7,7 @@
 	    req.onreadystatechange = function() {
 	      cback(req)
 	    }; // closure
-	    req.open(method, url);
+	    req.open(method, url, true);
 	    if (formElement == null) {
 	      req.send();
 	    } else {
