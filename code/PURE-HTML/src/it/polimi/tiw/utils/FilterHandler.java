@@ -46,11 +46,9 @@ public class FilterHandler {
 			
 			
 			if( user==null ||
-					( !(expectedClass.getClass().getTypeName().equals(Professor.class.getTypeName())) && (user instanceof Professor)) || (!(expectedClass.getClass().getTypeName().equals(Student.class.getTypeName())) && (user instanceof Student))) {
-				
-					httpResponse.sendRedirect(loginpath);
+					( !(expectedClass.getClass().getTypeName().equals(Professor.class.getTypeName())) && (user instanceof Professor)) || (!(expectedClass.getClass().getTypeName().equals(Student.class.getTypeName())) && (user instanceof Student))) 
 					return false;
-				}
+				
 		}	    
 		
 		return true;
