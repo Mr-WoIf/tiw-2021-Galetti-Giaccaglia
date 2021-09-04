@@ -1,15 +1,15 @@
-Student(ID, mail, password, name, surname, school)
+Student(ID, mail, password, name, surname, school, degree)
 Study_plan(STUDENT_ID, COURSE_ID)
 Exam(ID, COURSE_ID, date)
-Professor(ID, MAIL, password, name, surname, department)
-Course(ID,  Professor_ID, Name)
+Professor(ID, mail, password, name, surname, department)
+Course(ID,  professor_ID, Name)
 Exam_Register(STUDENT_ID, EXAM_ID, grade, state, id_report)
-Report(ID , EXAM_ID,  date, time)
+Report(ID , EXAM_ID,  date_recorded)
 
 Study_plan.STUDENT_ID -> Student.ID
 Study_plan.COURSE_ID -> Course.COURSE_ID
 Exam_Register.STUDENT_ID -> Student.ID
 Exam_Register.EXAM_ID -> Exam.EXAM.ID
-Exam_Register.id_report -> Report.ID
+Exam_Register.ID_REPORT -> Report.ID
 Report.EXAM_ID -> Exam.ID
 Course.Professor_ID -> Professor.ID
