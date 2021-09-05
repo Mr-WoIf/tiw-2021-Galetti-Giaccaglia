@@ -164,7 +164,7 @@ public class GetRegisteredStudents extends HttpServlet {
 		
 	//	request.setAttribute("examId", examId);
 		
-		Gson gson = new GsonBuilder().setDateFormat("yyy/MM/dd").create();
+		Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setDateFormat("yyy/MM/dd").create();
 		
 		if(students.size()==0) {
 		//	request.setAttribute("noSubs", true);  //TODO HANDLE NO SUBS HTML PAGE
@@ -215,6 +215,7 @@ public class GetRegisteredStudents extends HttpServlet {
 	//	request.setAttribute("areAllRecorded", areAllRecorded);
 	//	request.setAttribute("areAllPublished", areAllPublished);
 		
+	
 	
 		String json = gson.toJson(new ExamRegisteredStudents(examId, false, courseId, areAllRecorded, areAllPublished, registerMap));
 		
