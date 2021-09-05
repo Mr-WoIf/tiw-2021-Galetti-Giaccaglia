@@ -15,7 +15,7 @@ package it.polimi.tiw.controllers.login;
 	/**
 	 * Servlet implementation class GoToLoginPage
 	 */
-	@WebServlet("/error")  //default mapping
+	@WebServlet("/")  //default mapping
 	public class GoToErrorPage extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 		private TemplateEngine templateEngine;
@@ -39,7 +39,7 @@ package it.polimi.tiw.controllers.login;
 		 */
 		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 			
-			String error = "ERROR 404 : the page you are looking for doesn't exists";
+			String error = " the page you are looking for doesn't exists";
 			
 			ForwardHandler.forwardToErrorPage(request, response, error, templateEngine);
 			return;

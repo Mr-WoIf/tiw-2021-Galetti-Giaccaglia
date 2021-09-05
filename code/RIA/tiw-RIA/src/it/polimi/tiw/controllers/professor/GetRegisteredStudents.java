@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Professor;
@@ -163,12 +164,13 @@ public class GetRegisteredStudents extends HttpServlet {
 		
 	//	request.setAttribute("examId", examId);
 		
+		Gson gson = new GsonBuilder().setDateFormat("yyy/MM/dd").create();
 		
 		if(students.size()==0) {
 		//	request.setAttribute("noSubs", true);  //TODO HANDLE NO SUBS HTML PAGE
 		//	request.setAttribute("courseId", courseId);
 			
-			String json = new Gson().toJson(new ExamRegisteredStudents(examId, true, courseId, false, false, new LinkedHashMap<Student, MutablePair<Integer, String>>()));
+			String json = gson.toJson(new ExamRegisteredStudents(examId, true, courseId, false, false, new LinkedHashMap<Student, MutablePair<Integer, String>>()));
 			
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
@@ -213,7 +215,8 @@ public class GetRegisteredStudents extends HttpServlet {
 	//	request.setAttribute("areAllRecorded", areAllRecorded);
 	//	request.setAttribute("areAllPublished", areAllPublished);
 		
-		String json = new Gson().toJson(new ExamRegisteredStudents(examId, false, courseId, areAllRecorded, areAllPublished, registerMap));
+	
+		String json = gson.toJson(new ExamRegisteredStudents(examId, false, courseId, areAllRecorded, areAllPublished, registerMap));
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
