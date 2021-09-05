@@ -11,12 +11,14 @@
   })
 
   function PageOrchestrator() {
-    coursesList = new CoursesList(document.getElementById("courses_section"), document.getElementById("courses_list_table"));
-    examsList = new ExamsList(document.getElementById("course_section"), document.getElementById("exams_list_table"));
+    coursesList = new CoursesList(document.getElementById("courses_section"), document.getElementById("courses_list"));
+    examsList = new ExamsList(document.getElementById("course_section"), document.getElementById("exams_list"));
+    studentsList = new StudentsList(document.getElementById("prof_exam_section"), document.getElementById("students_list"))
 
     this.init = function () {
 
       examsList.reset();
+      studentsList.reset();
       coursesList.reset();
       coursesList.show();
     }
@@ -24,10 +26,18 @@
     this.courseView = function (courseid) {
 
       examsList.reset();
+      studentsList.reset();
       coursesList.reset();
       examsList.show(courseid);
     }
 
+    this.registeredStudentsView = function (courseid, examid) {
+
+      examsList.reset();
+      studentsList.reset();
+      coursesList.reset();
+      studentsList.show(courseid, examid);
+    }
 
   }
 
@@ -174,9 +184,10 @@
         linkText = document.createTextNode("Details");
         anchor.className = "btn btn-outline-dark"
         anchor.appendChild(linkText);
+        anchor.setAttribute('courseid', listOfExams["left"].id)
         anchor.setAttribute('examid', exam.id)
         anchor.addEventListener("click", (e) => {
-          examsList.show(e.target.getAttribute("examid"));
+          pageOrchestrator.registeredStudentsView(e.target.getAttribute("courseid"), e.target.getAttribute("examid"));
         });
         anchor.href = "#";
         row.appendChild(linkcell);
@@ -186,7 +197,7 @@
     }
   }
 
-  function StudentList(_listcontainer, _listbody) {
+  function StudentsList(_listcontainer, _listbody) {
     this.listcontainer = _listcontainer;
     this.listbody = _listbody;
 
@@ -194,9 +205,9 @@
       this.listcontainer.style.display = "none";
     }
 
-    this.show = function () {
+    this.show = function (courseId, examId) {
       var self = this;
-      makeCall("GET", 'GetRegisteredStudents', null,
+      makeCall("GET", 'GetRegisteredStudents?courseId=' + courseId + '&examId=' + examId + '&requestType=load', null,
         function (x) {
           if (x.readyState == XMLHttpRequest.DONE) {
             switch (x.status) {
@@ -242,7 +253,7 @@
         anchor.appendChild(linkText);
         anchor.setAttribute('courseid', student.id)
         anchor.addEventListener("click", (e) => {
-          pageOrchestrator.courseView(e.target.getAttribute("courseid"));
+          pageOrchestrator.registeredStudentsView();
         });
         anchor.href = "#";
         row.appendChild(linkcell);
