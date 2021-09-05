@@ -28,9 +28,9 @@ import it.polimi.tiw.utils.ResponseUtils;
  * Servlet implementation class ModifyStudentGrade
  */
 	
-@WebServlet("/GoToModifyStudentGrade")
+@WebServlet("/GetStudentExamInfo")
 @MultipartConfig
-public class GoToModifyStudentGrade extends HttpServlet {
+public class GetStudentExamInfo extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 	HttpSession session = null;
@@ -38,7 +38,7 @@ public class GoToModifyStudentGrade extends HttpServlet {
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public GoToModifyStudentGrade() {
+	public GetStudentExamInfo() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -110,7 +110,7 @@ public class GoToModifyStudentGrade extends HttpServlet {
 		if(!(studentInfo.getRight().getRight().equals("inserted") || studentInfo.getRight().getRight().equals("not inserted")))
 			hasBeenPublished = true;
 		
-		Gson gson = new GsonBuilder().setDateFormat("yyy/MM/dd").create();
+		Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy").create();
 		String json = gson.toJson(new StudentExamInfo(studentInfo, examId, courseId, hasBeenPublished));
 		
 		response.setContentType("application/json");

@@ -31,9 +31,9 @@ import it.polimi.tiw.utils.ResponseUtils;
 /**
  * Servlet implementation class ToHoldCoursePage
  */
-@WebServlet("/GoToExam")
+@WebServlet("/GetExamDetails")
 @MultipartConfig
-public class GoToExam extends HttpServlet {
+public class GetExamDetails extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 	private HttpSession session;
@@ -41,7 +41,7 @@ public class GoToExam extends HttpServlet {
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public GoToExam() {
+	public GetExamDetails() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

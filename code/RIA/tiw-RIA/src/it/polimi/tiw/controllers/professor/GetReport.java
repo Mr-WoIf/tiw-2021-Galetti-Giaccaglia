@@ -24,16 +24,16 @@ import it.polimi.tiw.utils.ResponseUtils;
 /**
  * Servlet implementation class ToHoldCoursePage
  */
-@WebServlet("/GoToReport")
+@WebServlet("/GetReport")
 @MultipartConfig
-public class GoToReport extends HttpServlet {
+public class GetReport extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 	
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public GoToReport() {
+	public GetReport() {
 		super();
 		// TODO Auto-generated constructor stub
 	}

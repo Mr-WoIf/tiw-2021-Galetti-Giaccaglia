@@ -2,7 +2,6 @@ package it.polimi.tiw.controllers.login;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -11,11 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-
-import it.polimi.tiw.utils.ForwardHandler;
-import it.polimi.tiw.utils.PathUtils;
-import it.polimi.tiw.utils.TemplateHandler;
 
 /**
  * Servlet implementation class Logout
@@ -23,7 +17,6 @@ import it.polimi.tiw.utils.TemplateHandler;
 @WebServlet("/Logout")
 @MultipartConfig
 public class Logout extends HttpServlet {
-	private TemplateEngine templateEngine;
 	private static final long serialVersionUID = 1L;
     
     /**
@@ -33,13 +26,7 @@ public class Logout extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-    
-    @Override
-    public void init() throws ServletException {
-    	ServletContext servletContext = getServletContext();
-		this.templateEngine = TemplateHandler.getEngine(servletContext, ".html");
-    }
-    
+   
     
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -49,8 +36,8 @@ public class Logout extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		if(session != null)
 			session.invalidate();
-		//response.sendRedirect(getServletContext().getContextPath());
-		ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
+		response.sendRedirect(getServletContext().getContextPath());
+		
 	}
 
 	/**

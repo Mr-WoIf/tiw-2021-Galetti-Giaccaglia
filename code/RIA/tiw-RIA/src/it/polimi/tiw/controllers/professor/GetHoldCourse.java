@@ -135,7 +135,7 @@ public class GetHoldCourse extends HttpServlet {
 	//	request.setAttribute("course", course);
 	//	request.setAttribute("exams", exams);
 		
-		Gson gson = new GsonBuilder().setDateFormat("yyy/MM/dd").create();
+		Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy").create();
 		String json = gson.toJson(new MutablePair<Course, List<Exam>>(course, exams));
 		
 		response.setContentType("application/json");

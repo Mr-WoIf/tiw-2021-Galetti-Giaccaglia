@@ -1,6 +1,6 @@
 (function () {
 
-  var coursesList, examsList, studentsList, pageOrchestrator = new PageOrchestrator();
+  var coursesList, examsList, studentsList, navbar, pageOrchestrator = new PageOrchestrator();
 
   window.addEventListener("load", () => {
     if (localStorage.getItem("name") == null) {
@@ -14,9 +14,11 @@
     coursesList = new CoursesList(document.getElementById("courses_section"), document.getElementById("courses_list"));
     examsList = new ExamsList(document.getElementById("course_section"), document.getElementById("exams_list"));
     studentsList = new StudentsList(document.getElementById("prof_exam_section"), document.getElementById("students_list"))
+    navbarList = new NavbarList(document.getElementById("navbar_list"));
 
     this.init = function () {
-
+      localStorage.removeItem('courseid');
+      navbarList.init();
       examsList.reset();
       studentsList.reset();
       coursesList.reset();
@@ -24,7 +26,7 @@
     }
 
     this.courseView = function (courseid) {
-
+      localStorage.setItem('courseid', courseid);
       examsList.reset();
       studentsList.reset();
       coursesList.reset();
@@ -32,7 +34,7 @@
     }
 
     this.registeredStudentsView = function (courseid, examid) {
-
+      navbarList.showCourseButton();
       examsList.reset();
       studentsList.reset();
       coursesList.reset();
@@ -230,25 +232,50 @@
     }
 
     this.update = function (listOfStudents) {
-      var row, datecell, idcell, linkcell, anchor;
+      var row, idcell, surnamecell, namecell, emailcell, degreecell, gradecell, gradestatecell, linkcell, anchor;
       this.listbody.innerHTML = "";
       document.getElementById("home_username").textContent = localStorage.getItem("name");
       var self = this;
-      listOfStudents.forEach(function (student) {
+      var result = Object.keys(listOfStudents.registerMap).map((key) => [listOfStudents.registerMap[key]]);
+      result.forEach(function (student) {
         row = document.createElement("tr");
-        namecell = document.createElement("td");
-        namecell.className = "column1";
-        namecell.textContent = student.name;
-        row.appendChild(namecell);
         idcell = document.createElement("td");
-        idcell.className = "column2";
-        idcell.textContent = student.id;
+        idcell.className = "column1";
+        idcell.textContent = "\t" + student[0][0].id + "\t";
         row.appendChild(idcell);
+        surnamecell = document.createElement("td");
+        surnamecell.className = "column2";
+        surnamecell.textContent = student[0][0].surname;
+        row.appendChild(surnamecell);
+        namecell = document.createElement("td");
+        namecell.className = "column3";
+        namecell.textContent = student[0][0].name;
+        row.appendChild(namecell);
+        emailcell = document.createElement("td");
+        emailcell.className = "column4";
+        emailcell.textContent = student[0][0].email;
+        row.appendChild(emailcell);
+        degreecell = document.createElement("td");
+        degreecell.className = "column5";
+        degreecell.textContent = student[0][0].degree;
+        row.appendChild(degreecell);
+        gradecell = document.createElement("td");
+        gradecell.className = "column6";
+        if(student[0][1].left > 2 && student[0][1].left < 31) {
+        gradecell.textContent = student[0][1].left;
+        } else if(student[0][1].left == 31) {
+          gradecell.textContent = "30 Cum laude";
+        }
+        row.appendChild(gradecell);
+        gradestatecell = document.createElement("td");
+        gradestatecell.className = "column7";
+        gradestatecell.textContent = student[0][1].right;
+        row.appendChild(gradestatecell);
         linkcell = document.createElement("td");
-        linkcell.className = "column3";
+        linkcell.className = "column8";
         anchor = document.createElement("a");
         linkcell.appendChild(anchor);
-        linkText = document.createTextNode("Details");
+        linkText = document.createTextNode("Modify");
         anchor.className = "btn btn-outline-dark"
         anchor.appendChild(linkText);
         anchor.setAttribute('courseid', student.id)
@@ -261,5 +288,41 @@
       });
       this.listcontainer.style.display = "";
     }
+  }
+
+  function NavbarList(_navbarList) {
+    this.navbarList = _navbarList;
+
+    this.init = function() {
+
+      document.getElementById("navbar_name").textContent = localStorage.getItem("name");
+      document.getElementById("navbar_role").textContent = localStorage.getItem("role");
+      document.getElementById("navbar_id").textContent = localStorage.getItem("id");
+
+      this.navbarList.children[1].addEventListener("click", (e) => {
+        pageOrchestrator.init();
+      });
+
+      this.navbarList.children[2].addEventListener("click", (e) => {
+        pageOrchestrator.courseView(localStorage.getItem('courseid'));
+      });
+
+      document.getElementById("logout_button").addEventListener("click", (e) => {
+        localStorage.clear();
+      });
+
+      this.hideCourseButton();
+    }
+
+    this.hideCourseButton = function(){
+      this.navbarList.children[2].style.display = "none";
+    }
+
+    this.showCourseButton = function() {
+      this.navbarList.children[2].style.display = "";
+    }
+
+
+
   }
 })()

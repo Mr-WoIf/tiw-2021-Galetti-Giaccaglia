@@ -164,7 +164,7 @@ public class GetRegisteredStudents extends HttpServlet {
 		
 	//	request.setAttribute("examId", examId);
 		
-		Gson gson = new GsonBuilder().setDateFormat("yyy/MM/dd").create();
+		Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setDateFormat("yyy/MM/dd").create();
 		
 		if(students.size()==0) {
 		//	request.setAttribute("noSubs", true);  //TODO HANDLE NO SUBS HTML PAGE
@@ -336,7 +336,7 @@ public class GetRegisteredStudents extends HttpServlet {
 			
 			try {	
 				examRegisterDAO.publishGradeByExamID(examId);
-				response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load");
+				response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load");
 				return;
 				
 			}catch (SQLException e) {
@@ -366,7 +366,7 @@ public class GetRegisteredStudents extends HttpServlet {
 				Report report = reportDAO.createReport(examId);
 				
 
-				RequestDispatcher rd = request.getRequestDispatcher("GoToReport");
+				RequestDispatcher rd = request.getRequestDispatcher("GetReport");
 				request.setAttribute("reportID", report.getReportId());
 				request.setAttribute("courseId", courseId);
 				request.setAttribute("examId", examId);
