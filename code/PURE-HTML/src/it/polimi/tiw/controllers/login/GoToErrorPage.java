@@ -1,8 +1,7 @@
 package it.polimi.tiw.controllers.login;
 
 	import java.io.IOException;
-
-	import javax.servlet.ServletContext;
+import javax.servlet.ServletContext;
 	import javax.servlet.ServletException;
 	import javax.servlet.annotation.WebServlet;
 	import javax.servlet.http.HttpServlet;
@@ -15,7 +14,7 @@ package it.polimi.tiw.controllers.login;
 	/**
 	 * Servlet implementation class GoToLoginPage
 	 */
-	@WebServlet("/")  //default mapping
+	@WebServlet("/error")  //default mapping
 	public class GoToErrorPage extends HttpServlet {
 		private static final long serialVersionUID = 1L;
 		private TemplateEngine templateEngine;
@@ -39,6 +38,9 @@ package it.polimi.tiw.controllers.login;
 		 */
 		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 			
+			
+			String path = ((HttpServletRequest) request).getRequestURI();
+			System.out.print(path);
 			String error = " the page you are looking for doesn't exists";
 			
 			ForwardHandler.forwardToErrorPage(request, response, error, templateEngine);

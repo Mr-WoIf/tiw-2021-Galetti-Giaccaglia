@@ -41,6 +41,7 @@
    <filter-mapping>
   	<filter-name>CheckNotLoggedUser</filter-name>
   	<url-pattern>/</url-pattern>
+  	<url-pattern>/login</url-pattern>	
   	<url-pattern>/GoToLogin</url-pattern>
  
   </filter-mapping>

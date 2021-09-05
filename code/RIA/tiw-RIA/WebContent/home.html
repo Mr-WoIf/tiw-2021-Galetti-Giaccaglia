@@ -28,11 +28,10 @@
 <!--===============================================================================================-->
 <link rel="icon" type="image/png" href="resources/myfavicon.ico" />
 <!--===============================================================================================-->
-<link rel="icon" type="image/png" href="resources/myfavicon.ico" />
-<link rel="stylesheet" type="text/css"
-	href="fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
-<link rel="stylesheet" type="text/css" href="css/util.css" />
-<link rel="stylesheet" type="text/css" href="css/home_main.css" />
+	<link rel="icon" type="image/png" href="resources/myfavicon.ico">
+	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/util.css">
+	<link rel="stylesheet" type="text/css" href="css/home_main.css">
 <!--===============================================================================================-->
 <style>
 nav ul li {
@@ -43,7 +42,6 @@ nav ul li {
 </style>
 <script src="js/utils.js?2" charset="utf-8" defer></script>
 <script src="js/examManagement.js?2" charset="utf-8" defer></script>
-<script src="js/sort.js?2" charset="utf-8" defer></script>
 <body>
 	<div class="limiter">
 
@@ -51,29 +49,25 @@ nav ul li {
 			class="navbar navbar-expand-md navbar-dark bg-dark navbar-expand-sm py-2">
 			<div
 				class="navbar-collapse collapse w-80 order-1 order-md-0 dual-collapse2">
-				<ul id="navbar_list" class="navbar-nav mr-auto">
+				<ul class="navbar-nav mr-auto">
 					<li class="nav-item active"><span class="navbar-brand mb-0 h1">Online
 							Services</span></li>
 					<li class="nav-item active"><form class="form" action="#">
 							<input id="home_button" class="btn btn-light my-2 my-sm-0"
-								type="button" value="Home"/>
+								type="button" value="Home"></input>
 						</form></li>
-					<li class="nav-item active"><form class="form" action="#">
-							<input id="course_button" class="btn btn-light my-2 my-sm-0"
-								type="button" value="Exam dates"/>
-						</form></li>
-
 				</ul>
 			</div>
 
 			<div class="navbar-collapse collapse w-80 order-3 dual-collapse2">
 				<ul class="navbar-nav ml-auto">
-					<li class="nav-item"><a id="navbar_name"></a></li>
-					<li class="nav-item"><a id="navbar_role"></a></li>
-					<li class="nav-item"><a id="navbar_id"></a></li>
-					<li class="nav-item"><a id="logout_button"
-						class="btn btn-light my-2 my-sm-0" href="Logout" type="button">Logout</a>
-					</li>
+					<li class="nav-item"><a id="headerName">Name</a></li>
+					<li class="nav-item"><a id="headerSurname">Surname</a></li>
+					<li class="nav-item"><a id="headerId">ID</a></li>
+					<li class="nav-item"><form class="form" action="#">
+							<input id="logout_button" class="btn btn-light my-2 my-sm-0"
+								type="button" value="Logout"></input>
+						</form></li>
 				</ul>
 			</div>
 		</nav>
@@ -165,32 +159,32 @@ nav ul li {
 								<thead>
 									<tr class="table-head">
 
-										<th id="id_studentid" class="sortable" class="column1">Student
-											Id<span> &uarr;</span> <span> &darr;</span>
-										</th>
-
-										<th id="id_surname" class="sortable" class="column2">Surname<span>
+										<th class="column1">Student Id<span>
 												&uarr;</span> <span> &darr;</span>
 										</th>
 
-										<th id="id_name" class="sortable" class="column3">Name<span>
+										<th id="id_surname" class="column2">Surname<span>
 												&uarr;</span> <span> &darr;</span>
 										</th>
 
-										<th id="id_mail" class="sortable" class="column4">E-mail<span>
+										<th id="id_name" class="column3">Name<span> &uarr;</span>
+											<span> &darr;</span>
+										</th>
+
+										<th id="id_mail" class="column4">E-mail<span>
 												&uarr;</span> <span> &darr;</span>
 										</th>
 
-										<th id="id_degree" class="sortable" class="column5">Degree<span>
+										<th id="id_degree" class="column5">Degree<span>
 												&uarr;</span> <span> &darr;</span>
 										</th>
 
-										<th id="id_grade" class="sortable" class="column6">Grade<span>
+										<th id="id_grade" class="column6">Grade<span>
 												&uarr;</span> <span> &darr;</span>
 										</th>
 
-										<th id="id_gradestate" class="sortable" class="column7">Grade
-											state<span> &uarr;</span> <span> &darr;</span>
+										<th id="id_gradestate" class="column7">Grade state<span>
+												&uarr;</span> <span> &darr;</span>
 										</th>
 
 
@@ -202,14 +196,22 @@ nav ul li {
 								</tbody>
 
 							</table>
-
+							
 						</div>
-					
 						<form class="button1" action="#">
-							<input id="publish_button" class="btn btn-light" type="button" value="Publish Grades"/>
+							<input type="hidden" name="requestType"/>
+							<input type="hidden" name="examId" /> <input
+								type="hidden" name="courseId"/>
+							<button type="submit" class="btn btn-light"
+								>Publish Grades</button>
 						</form>
 						<form class="button2" action="#">
-							<input id="record_button" class="btn btn-light" type="button" value="Record Grades"/>
+							<input type="hidden" name="requestType" />
+							<input type="hidden" name="examId"/> <input
+								type="hidden" name="courseId"/>
+
+							<button type="submit" class="btn btn-light"
+								>Record Grades</button>
 						</form>
 
 					</div>

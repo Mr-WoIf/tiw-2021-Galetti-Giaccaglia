@@ -216,6 +216,7 @@ public class GetRegisteredStudents extends HttpServlet {
 	//	request.setAttribute("areAllPublished", areAllPublished);
 		
 	
+	
 		String json = gson.toJson(new ExamRegisteredStudents(examId, false, courseId, areAllRecorded, areAllPublished, registerMap));
 		
 		response.setContentType("application/json");

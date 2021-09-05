@@ -53,13 +53,13 @@
    <filter-mapping>
   	<filter-name>CheckNotLoggedUser</filter-name>
   	<url-pattern>/</url-pattern>
-  	<url-pattern>/GoToLogin</url-pattern>
- 
+  	<url-pattern>/login</url-pattern>	
+ 	<url-pattern>/GoToLogin</url-pattern>
   </filter-mapping>
   
   <filter-mapping>
   	<filter-name>CheckLoggedUser</filter-name>
-  	 <url-pattern>/home.html</url-pattern>
+  	<url-pattern>/home.html</url-pattern>
   	<url-pattern>/Logout</url-pattern>
   	<url-pattern>/GetCoursesList</url-pattern>
   	<url-pattern>/GoToHoldCourse</url-pattern>

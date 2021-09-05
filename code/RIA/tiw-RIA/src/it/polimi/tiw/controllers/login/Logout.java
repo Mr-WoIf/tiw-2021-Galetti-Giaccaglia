@@ -1,7 +1,6 @@
 package it.polimi.tiw.controllers.login;
 
 import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +25,7 @@ public class Logout extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
-   
+    
     
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -37,7 +36,6 @@ public class Logout extends HttpServlet {
 		if(session != null)
 			session.invalidate();
 		response.sendRedirect(getServletContext().getContextPath());
-		
 	}
 
 	/**
