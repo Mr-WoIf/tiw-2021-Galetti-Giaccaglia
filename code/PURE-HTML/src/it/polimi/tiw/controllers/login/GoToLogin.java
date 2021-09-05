@@ -15,7 +15,7 @@ import it.polimi.tiw.utils.*;
 /**
  * Servlet implementation class GoToLoginPage
  */
-@WebServlet("")  //default mapping
+@WebServlet (name = "GoToLogin", urlPatterns={"/login", "/login.html"})
 public class GoToLogin extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;

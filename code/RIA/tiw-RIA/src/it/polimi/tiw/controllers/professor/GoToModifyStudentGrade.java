@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.beans.Professor;
 import it.polimi.tiw.beans.Student;
@@ -105,10 +106,12 @@ public class GoToModifyStudentGrade extends HttpServlet {
 		//request.setAttribute("studentInfo", studentInfo);
 		//request.setAttribute("examId", examId);
 		//request.setAttribute("courseId", courseId);
+		
 		if(!(studentInfo.getRight().getRight().equals("inserted") || studentInfo.getRight().getRight().equals("not inserted")))
 			hasBeenPublished = true;
 		
-		String json = new Gson().toJson(new StudentExamInfo(studentInfo, examId, courseId, hasBeenPublished));
+		Gson gson = new GsonBuilder().setDateFormat("yyy/MM/dd").create();
+		String json = gson.toJson(new StudentExamInfo(studentInfo, examId, courseId, hasBeenPublished));
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");

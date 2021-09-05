@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.beans.Course;
 import it.polimi.tiw.beans.Exam;
@@ -134,8 +135,9 @@ public class GetHoldCourse extends HttpServlet {
 	//	request.setAttribute("course", course);
 	//	request.setAttribute("exams", exams);
 		
+		Gson gson = new GsonBuilder().setDateFormat("yyy/MM/dd").create();
+		String json = gson.toJson(new MutablePair<Course, List<Exam>>(course, exams));
 		
-		String json = new Gson().toJson(new MutablePair<Course, List<Exam>>(course, exams));
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json);

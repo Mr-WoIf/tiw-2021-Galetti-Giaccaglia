@@ -18,7 +18,6 @@
     <param-value>com.mysql.cj.jdbc.Driver</param-value>
   </context-param>
 
-  
   <filter>
   	<filter-name>CheckLoggedUser</filter-name>
   	<filter-class>it.polimi.tiw.filters.CheckLoggedUser</filter-class>
@@ -68,7 +67,7 @@
   	<url-pattern>/GoToExam</url-pattern>
    </filter-mapping>	
 
- 
+
    
 
 </web-app>
