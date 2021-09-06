@@ -3,6 +3,7 @@ package it.polimi.tiw.dao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import it.polimi.tiw.beans.Student;
 import it.polimi.tiw.utils.MutablePair;
@@ -14,6 +15,69 @@ public class ExamRegisterDAO {
 
 	public ExamRegisterDAO(Connection connection) {
 		this.connection = connection;
+	}
+	
+	private String buildMultipleInsertionQueryString(Map<Integer, Integer> studentsMap, int examId) {
+		
+		StringBuilder builder = new StringBuilder();
+		
+		builder.append("INSERT INTO unidb,exam_register (student_id, exam_id, grade, id_report, state) VALUES ");
+		
+		for (Map.Entry<Integer, Integer> entry : studentsMap.entrySet()) {
+			
+			builder
+			.append("(")
+			.append(entry.getKey())
+			.append(", ")
+			.append(examId)
+			.append(", ")
+			.append(entry.getValue())
+			.append(", ")
+			.append(1000)
+			.append(", ")
+			.append("'inserted'")
+			.append("), ");
+			
+		}
+		
+		builder.setLength(builder.length() - 1); //removes last comma
+		
+		builder.append(" ON DUPLICATE KEY UPDATE student_id=VALUES(student_id), exam_id=VALUES(exam_id), grade=VALUES(grade), id_report=VALUES(id_report), state = VALUES(state);");
+		
+		return builder.toString();
+	
+	}
+	
+	
+	public void setMultipleGrades(Map<Integer, Integer> studentsMap, int examId) throws SQLException {
+		
+		String queryString =buildMultipleInsertionQueryString(studentsMap, examId);
+		String performedAction = " setting student grade in the database through multiple insertion";
+		
+		PreparedStatement preparedStatementMultipleInsertion = null;	
+		
+		try {
+			
+			preparedStatementMultipleInsertion = connection.prepareStatement(queryString);
+			
+			
+		}catch(SQLException e) {
+			
+			throw new SQLException("Error accessing the DB when" + performedAction);
+			
+		}finally {
+			
+			try {
+				
+				preparedStatementMultipleInsertion.close();
+				
+			}catch (Exception e) {
+				
+				throw new SQLException("Error closing the statement when" + performedAction);
+				
+			}
+		}
+		
 	}
 
 	public void setGradeByStudentId(int studentId, int examId, int grade) throws SQLException {

@@ -100,7 +100,8 @@ public class GoToModifyStudentGrade extends HttpServlet {
 		}
 
 		
-		DaoUtils.verifyRequestCommonConstraints(connection, templateEngine, request,response, studentId,examId, courseId, studentInfo, professor);
+		if(!DaoUtils.verifyRequestCommonConstraints(connection, templateEngine, request,response, studentId,examId, courseId, studentInfo, professor))
+			return;
 
 		request.setAttribute("studentInfo", studentInfo);
 		request.setAttribute("examId", examId);

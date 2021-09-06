@@ -98,7 +98,7 @@ ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEng
 return false;		
 }
 
-if((user instanceof Professor) && (studentExamInfo.getRight().equals("published") || studentExamInfo.getRight().equals("refused") || studentExamInfo.getRight().equals("reported"))) {
+if((user instanceof Professor) && (studentExamInfo.getRight().equals("published") || studentExamInfo.getRight().equals("refused") || studentExamInfo.getRight().equals("recorded"))) {
 ForwardHandler.forwardToErrorPage(request, response, "You can't modify this student's exam data, because exam grade state is not 'inserted'", templateEngine);
 return false;		
 }

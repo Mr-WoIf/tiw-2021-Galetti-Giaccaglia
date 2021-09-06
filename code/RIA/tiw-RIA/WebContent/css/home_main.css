@@ -23,6 +23,28 @@ body, html {
 	font-family: sans-serif;
 }
 
+body{
+  background: #c850c0;
+  background: -webkit-linear-gradient(45deg, #4158d0, #c850c0);
+  background: -o-linear-gradient(45deg, #4158d0, #c850c0);
+  background: -moz-linear-gradient(45deg, #4158d0, #c850c0);
+  background: linear-gradient(45deg, #4158d0, #c850c0);
+  color: #303030;
+  font-family: sans-serif;
+}
+
+h2{
+  padding-left : 150px;
+  padding-bottom : 20px;
+  font-size: 40px;
+  font-weight: 300;
+  color: rgba(255, 255, 255);
+}
+.two-col-example{
+  margin-top:3em;
+  margin-right: 30px;
+}
+
 /* ------------------------------------ */
 a {
 	margin: 0px;
