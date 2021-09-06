@@ -247,7 +247,7 @@ public class GetExamDetails extends HttpServlet {
 			return;	
 		}
 
-		response.sendRedirect(getServletContext().getContextPath() + "/GoToExam?courseId="+ courseId + "&examId=" + examId);
+		response.sendRedirect(getServletContext().getContextPath() + "/GetExamDetails?courseId="+ courseId + "&examId=" + examId);
 
 	}
 
