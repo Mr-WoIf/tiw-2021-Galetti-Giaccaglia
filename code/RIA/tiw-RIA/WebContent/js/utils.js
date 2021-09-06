@@ -2,7 +2,7 @@
  * AJAX call management
  */
 
-function makeCall(method, url, form, cback) {
+ function makeCall(method, url, form, cback) {
 	var req = new XMLHttpRequest(); // visible by closure
 	req.onreadystatechange = function() {
 		cback(req)
@@ -17,7 +17,7 @@ function makeCall(method, url, form, cback) {
 		req.send(new FormData(form)); //Send serialized form
 	}
 	//Eventually reset form (if provided)
-	if (form !== null && !(form instanceof FormData) && reset === true) {
+	if (form !== null && !(form instanceof FormData)) {
 		form.reset(); //Do not touch hidden fields, and restore default values if any
 	}
 }

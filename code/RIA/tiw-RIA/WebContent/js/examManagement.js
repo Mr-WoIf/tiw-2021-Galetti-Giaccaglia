@@ -15,13 +15,15 @@
     examsList = new ExamsList(document.getElementById("course_section"), document.getElementById("exams_list"));
     studentsList = new StudentsList(document.getElementById("prof_exam_section"), document.getElementById("students_list"))
     examDetails = new ExamDetails(document.getElementById("exam_details_section"));
+    report = new Report(document.getElementById("report_section"), document.getElementById("report_list"));
     navbar = new Navbar(document.getElementById("navbar_list"));
 
-    this.reset = function() {
+    this.reset = function () {
       coursesList.reset();
       examsList.reset();
       studentsList.reset();
       examDetails.reset();
+      report.reset();
     }
 
     this.init = function () {
@@ -43,12 +45,15 @@
       studentsList.show(courseid, examid);
     }
 
-    this.examDetailsView = function(courseid, examid) {
+    this.examDetailsView = function (courseid, examid) {
       this.reset();
       examDetails.show(courseid, examid);
-
     }
 
+    this.reportView = function (report) {
+      this.reset();
+      report.update(report);
+    }
   }
 
   function CoursesList(_listcontainer, _listbody) {
@@ -214,14 +219,15 @@
   function StudentsList(_listcontainer, _listbody) {
     this.listcontainer = _listcontainer;
     this.listbody = _listbody;
-    this.publishgradebutton = document.getElementById("publish_button");
-    this.recordgradebutton = document.getElementById("record_button");
-
+    let publishgradebutton = document.getElementById("publish_button");
+    let recordgradebutton = document.getElementById("record_button");
+    let sself = this;
     this.reset = function () {
       this.listcontainer.style.display = "none";
     }
 
     this.show = function (courseId, examId) {
+      this.gradebuttons(courseId, examId);
       let self = this;
       makeCall("GET", 'GetRegisteredStudents?courseId=' + courseId + '&examId=' + examId + '&requestType=load', null,
         function (x) {
@@ -304,20 +310,19 @@
     }
 
     this.gradebuttons = function (courseid, examid) {
-
       publishgradebutton.addEventListener("click", (e) => {
         let data = new FormData();
         data.append("requestType", "publish");
         data.append("examId", examid);
         data.append("courseId", courseid);
-        let self = this;
+
         makeCall("POST", 'GetRegisteredStudents', data,
           function (x) {
             if (x.readyState == XMLHttpRequest.DONE) {
               switch (x.status) {
                 case 200:
                   let listOfStudents = JSON.parse(x.responseText);
-                  self.update(listOfStudents);
+                  sself.update(listOfStudents);
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
@@ -344,8 +349,8 @@
             if (x.readyState == XMLHttpRequest.DONE) {
               switch (x.status) {
                 case 200:
-                  let listOfStudents = JSON.parse(x.responseText);
-                  self.update(listOfStudents);
+                  let report = JSON.parse(x.responseText);
+                  pageOrchestrator.reportView(report);
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
@@ -465,6 +470,48 @@
     };
 
   }
+
+  function Report(_listcontainer, _listbody) {
+    this.listcontainer = _listcontainer;
+    this.listbody = _listbody;
+
+    this.reset = function () {
+      this.listcontainer.style.display = "none";
+    }
+
+    this.update = function (report) {
+      let row, idcell, linkcell, anchor;
+      this.listbody.innerHTML = "";
+      let self = this;
+      listOfCourses.forEach(function (course) {
+        row = document.createElement("tr");
+        namecell = document.createElement("td");
+        namecell.className = "column1";
+        namecell.textContent = course.name;
+        row.appendChild(namecell);
+        idcell = document.createElement("td");
+        idcell.className = "column2";
+        idcell.textContent = course.id;
+        row.appendChild(idcell);
+        linkcell = document.createElement("td");
+        linkcell.className = "column3";
+        anchor = document.createElement("a");
+        linkcell.appendChild(anchor);
+        linkText = document.createTextNode("Details");
+        anchor.className = "btn btn-outline-dark"
+        anchor.appendChild(linkText);
+        anchor.setAttribute('courseid', course.id)
+        anchor.addEventListener("click", (e) => {
+          pageOrchestrator.courseView(e.target.getAttribute("courseid"));
+        });
+        anchor.href = "#";
+        row.appendChild(linkcell);
+        self.listbody.appendChild(row);
+      });
+      this.listcontainer.style.display = "";
+    }
+  }
+
   function Navbar(_navbarList) {
     this.navbarList = _navbarList;
 

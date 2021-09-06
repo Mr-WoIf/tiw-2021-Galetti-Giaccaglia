@@ -142,7 +142,7 @@ public class GetReport extends HttpServlet {
 			return;
 		}
 	
-		response.sendRedirect(getServletContext().getContextPath() + "/GoToReport?courseId="+ courseId + "&examId=" + examId + "&reportID=" + reportId);
+		response.sendRedirect(getServletContext().getContextPath() + "/GetReport?courseId="+ courseId + "&examId=" + examId + "&reportID=" + reportId);
 		
 		
 		

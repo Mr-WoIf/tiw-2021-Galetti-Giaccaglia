@@ -296,6 +296,55 @@ nav ul li {
 			</div>
 
 		</section>
+
+		<section id="report_section">
+
+			<div class="container-table">
+				<div class=bg>
+					<div class="home-title">Exam Report</div>
+
+					<div class="wrap-table">
+						<div id="report_id" class="home-subtitle"></div>
+						<div id="report_date" class="home-subsubtitle"></div>
+						<div class="table">
+
+							<table>
+								<thead>
+									<tr class="table-head">
+										<th class="column1">Student Id</th>
+										<th class="column2">Surname</th>
+										<th class="column3">Name</th>
+										<th class="column4">Grade</th>
+									</tr>
+								</thead>
+								<tbody id="report_list">
+								</tbody>
+
+							</table>
+						</div>
+
+						<form id="exam_grades_button" method="get" class="button1">
+							<input type="hidden" name="examId" /> <input type="hidden"
+								name="courseId" /> <input type="hidden" name="requestType" />
+							<button type="submit" class="btn btn-light">Exam Grades</button>
+						</form>
+
+						<form id="courses_button" method="get" class="button2">
+							<input type="hidden" name="courseId" />
+
+							<button type="submit" class="btn btn-light">Your courses</button>
+						</form>
+
+					</div>
+
+
+
+
+
+				</div>
+			</div>
+
+		</section>
 	</div>
 
 </body>

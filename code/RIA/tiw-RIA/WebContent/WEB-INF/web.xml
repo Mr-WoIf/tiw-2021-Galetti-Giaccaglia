@@ -62,22 +62,22 @@
   	<url-pattern>/home.html</url-pattern>
   	<url-pattern>/Logout</url-pattern>
   	<url-pattern>/GetCoursesList</url-pattern>
-  	<url-pattern>/GoToHoldCourse</url-pattern>
-  	<url-pattern>/GoToModifyStudentGrade</url-pattern>
-  	<url-pattern>/GoToHoldCourse</url-pattern>
+  	<url-pattern>/GetHoldCourse</url-pattern>
+  	<url-pattern>/GetModifyStudentGrade</url-pattern>
+  	<url-pattern>/GetHoldCourse</url-pattern>
    </filter-mapping>	
    
   <filter-mapping>
   	<filter-name>CheckProfessor</filter-name>
   	<url-pattern>/GetCoursesList</url-pattern>
-  	<url-pattern>/GoToHoldCourse</url-pattern>
-  	<url-pattern>/GoToModifyStudentGrade</url-pattern>
+  	<url-pattern>/GetHoldCourse</url-pattern>
+  	<url-pattern>/GetModifyStudentGrade</url-pattern>
    </filter-mapping>	
    
    <filter-mapping>
   	<filter-name>CheckStudent</filter-name>
-  	<url-pattern>/GoToCourse</url-pattern>
-  	<url-pattern>/GoToExam</url-pattern>
+  	<url-pattern>/GetCourse</url-pattern>
+  	<url-pattern>/GetExam</url-pattern>
    </filter-mapping>	
 
  
