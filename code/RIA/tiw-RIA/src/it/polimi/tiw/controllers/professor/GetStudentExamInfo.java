@@ -1,8 +1,10 @@
 package it.polimi.tiw.controllers.professor;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import it.polimi.tiw.beans.Professor;
 import it.polimi.tiw.beans.Student;
@@ -101,8 +104,8 @@ public class GetStudentExamInfo extends HttpServlet {
 		}
 
 		
-		DaoUtils.verifyRequestCommonConstraints(connection, request,response, studentId,examId, courseId, studentInfo, professor);
-
+		if(!DaoUtils.verifyRequestCommonConstraints(connection, request,response, studentId,examId, courseId, studentInfo, professor))	
+			return;
 		//request.setAttribute("studentInfo", studentInfo);
 		//request.setAttribute("examId", examId);
 		//request.setAttribute("courseId", courseId);
@@ -123,6 +126,9 @@ public class GetStudentExamInfo extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		
+		String multipleGradesString = request.getParameter("multipleGrades");
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
 		String studentIdString = request.getParameter("studentId");		
@@ -132,6 +138,11 @@ public class GetStudentExamInfo extends HttpServlet {
 		int courseId;
 		int examId;
 		int studentId;
+		boolean multipleGrades;	
+		
+		multipleGrades = Boolean.parseBoolean(multipleGradesString);	
+			
+		
 		
 		try {
 			courseId = Integer.parseInt(courseIdString);
@@ -146,6 +157,61 @@ public class GetStudentExamInfo extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST,  "Chosen exam id is not a number, when accessing exam details");
 			return;	
 		}
+		
+		if(multipleGrades) {	
+			
+			String studentsMapJsonString = request.getParameter("studentsMap");	
+				
+			if(studentsMapJsonString == null) {	
+				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST,  "List of students is missing when doing multiple grades insertion");	
+				return;		
+					
+			}	
+				
+			Gson gson = new Gson();	
+			Type integerIntegerMap = new TypeToken<Map<Integer, Integer>>(){}.getType();	
+			Map<Integer,Integer> studentsMap = gson.fromJson(studentsMapJsonString, integerIntegerMap);	
+				
+				
+			if(studentsMap == null || studentsMap.isEmpty() || studentsMap.size()==0) {	
+				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST,  "List of students is missing when doing multiple grades insertion");	
+				return;		
+			}	
+			
+
+			ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
+			
+			for (Map.Entry<Integer, Integer> entry : studentsMap.entrySet()) {
+			
+				studentGrade = entry.getValue();
+				
+				if(!isValidGrade(studentGrade)) {
+					String error = studentGrade + " is not a valid grade! Please submit a value between 18 and 31 (laude)";
+					request.setAttribute("error", error);
+					response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId);
+					return;
+			}
+				
+				studentId = entry.getKey();
+				MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
+				request.getSession(false);
+				Professor professor = (Professor)session.getAttribute("professor");
+				
+				if(!DaoUtils.verifyRequestCommonConstraints(connection, request,response, studentId, examId, courseId, studentInfo, professor))
+					return;
+				
+		}
+			
+			try {
+				examRegisterDAO.setMultipleGrades(studentsMap, examId);
+			} catch (SQLException e) {
+				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+				return;
+			}
+
+		}
+		
+		
 		
 		try {
 			studentId = Integer.parseInt(studentIdString);
@@ -162,7 +228,7 @@ public class GetStudentExamInfo extends HttpServlet {
 			return;	
 		}
 			
-		if(studentGrade > 2 && (studentGrade <18 || studentGrade>31)) {
+		if(!isValidGrade(studentGrade)) {
 				String error = studentGrade + " is not a valid grade! Please submit a value between 18 and 31 (laude)";
 				request.setAttribute("error", error);
 				response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId);
@@ -190,7 +256,15 @@ public class GetStudentExamInfo extends HttpServlet {
 		
 		
 		response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load'");
+		}
 		
+	
+	private boolean isValidGrade(int studentGrade) {	
+		
+		if(studentGrade > 2 && (studentGrade <18 || studentGrade>31))	
+			return false;	
+		else	
+			return true;	
 	}
 
   }

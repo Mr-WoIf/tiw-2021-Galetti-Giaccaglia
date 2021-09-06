@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
@@ -35,8 +34,6 @@ public class FilterHandler {
 	public static <T> boolean doFilterHandler(ServletRequest request, ServletResponse response, FilterChain chain, Class<T> expectedClass)  throws IOException, ServletException {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
-		String loginpath = httpRequest.getServletContext().getContextPath() + "/index.html";
 		
 		// check if the user is a professor
 		HttpSession session = httpRequest.getSession();

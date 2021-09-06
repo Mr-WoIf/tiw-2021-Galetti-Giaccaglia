@@ -24,7 +24,6 @@ public class ReportDAO {
         
 		Object sqlDatetime = new Timestamp(date.getTime());
         
-		@SuppressWarnings("unused")
 		String performedAction1 = "creating report in the database";
 	//	String performedAction2 = " changing student's exam state from 'published'/'refused' to 'recorded' and adding report id by exam id and student id ";
 		
@@ -32,7 +31,7 @@ public class ReportDAO {
 		
 		String queryChangeState = "UPDATE unidb.exam_register SET grade = '1' WHERE exam_id = ? AND state = 'refused'; "
 				+ "UPDATE unidb.exam_register SET state = 'recorded' WHERE exam_id = ? AND (state = 'published' OR state = 'refused'); "
-				+ "UPDATE unidb.exam_register SET id_report = ? WHERE exam_id = ? AND state = 'recorded';";
+				+ "UPDATE unidb.exam_register SET id_report = ? WHERE exam_id = ? AND state = 'recorded' AND id_report = '1000';";
 		
 		
 		Random rand = new Random(System.nanoTime());
@@ -88,7 +87,7 @@ public class ReportDAO {
 				
 			}catch (Exception e) {
 				
-				throw new SQLException("Error closing the statement when " + e.toString());
+				throw new SQLException("Error closing the statement when " + performedAction1);
 				
 			}
 		}
@@ -181,6 +180,10 @@ public class ReportDAO {
 			
 			throw new SQLException(e);
 		}
+		
+		if(students.isEmpty()) 
+			throw new SQLException("Requested report doesn't exists");
+		
 		
 		
 		int studentGrade;
