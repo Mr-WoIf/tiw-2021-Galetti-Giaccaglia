@@ -16,7 +16,7 @@
     studentsList = new StudentsList(document.getElementById("prof_exam_section"), document.getElementById("students_list"));
     examDetails = new ExamDetails(document.getElementById("exam_details_section"));
     report = new Report(document.getElementById("report_section"), document.getElementById("report_list"));
-    multiInput = new MultiInput(document.getElementById("modal_section"), document.getElementById("students_list"));
+    multiInput = new MultiInput(document.getElementById("modal_section"), document.getElementById("modal_students_list"));
     navbar = new Navbar(document.getElementById("navbar_list"));
 
     this.reset = function () {
@@ -263,7 +263,7 @@
         row = document.createElement("tr");
         idcell = document.createElement("td");
         idcell.className = "column1";
-        idcell.textContent = "\t" + student[0][0].id + "\t";
+        idcell.textContent = student[0][0].id;
         row.appendChild(idcell);
         surnamecell = document.createElement("td");
         surnamecell.className = "column2";
@@ -283,10 +283,29 @@
         row.appendChild(degreecell);
         gradecell = document.createElement("td");
         gradecell.className = "column6";
-        if (student[0][1].left > 2 && student[0][1].left < 31) {
-          gradecell.textContent = student[0][1].left;
-        } else if (student[0][1].left == 31) {
-          gradecell.textContent = "30 Cum laude";
+        switch (student[0][1].left) {
+          case -1:
+            gradecell.textContent = "Not inserted";
+            break;
+          case 0:
+            gradecell.textContent = "Absent";
+            break;
+          case 1:
+            gradecell.textContent = "Postponed";
+            break;
+          case 2:
+            gradecell.textContent = "To Sit Again";
+            break;
+          case 31:
+            gradecell.textContent = "30 cum laude";
+            break;
+          default:
+            if (student[0][1].left > 2 && student[0][1].left < 31) {
+              gradecell.textContent = student[0][1].left;
+            } else if (student[0][1].left == 31) {
+              gradecell.textContent = "30 Cum laude";
+            }
+            break;
         }
         row.appendChild(gradecell);
         gradestatecell = document.createElement("td");
@@ -380,7 +399,7 @@
               switch (x.status) {
                 case 200:
                   let listOfStudents = JSON.parse(x.responseText);
-                  multiInput.update(self.modallilst(listOfStudents));
+                  multiInput.update(self.modallist(listOfStudents));
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
@@ -397,7 +416,7 @@
 
           this.modallist = function(listOfStudents) {
             let tempList = Object.keys(listOfStudents.registerMap).map((key) => [listOfStudents.registerMap[key]]);
-            let finalList = new Array(1);
+            let finalList = new Array(0);
             tempList.forEach(function(student) {
               if (student[0][1].right == "not inserted")
                 finalList.push(student);
@@ -462,7 +481,7 @@
           this.gradecard.textContent = "Absent";
           break;
         case 1:
-          this.gradecard.textContent = "Posponed";
+          this.gradecard.textContent = "Postponed";
           break;
         case 2:
           this.gradecard.textContent = "To Sit Again";
@@ -592,7 +611,7 @@
       listOfStudents.forEach(function (student) {
         row = document.createElement("tr");
         idcell = document.createElement("td");
-        idcell.setAttribute("id", "counter" + "id");
+        idcell.setAttribute("id", counter + "id");
         idcell.className = "column1";
         idcell.textContent = student[0][0].id;
         row.appendChild(idcell);
@@ -613,7 +632,7 @@
         degreecell.textContent = student[0][0].degree;
         row.appendChild(degreecell);
         input = document.createElement("input");
-        input.setAttribute("id", "counter" + "input");
+        input.setAttribute("id", counter + "input");
         row.appendChild(input);
         self.listbody.appendChild(row);
         counter++;
@@ -621,8 +640,8 @@
       document.getElementById("modal_button").addEventListener("click", (e) => {
         let map = new Map();
         for(let i = 0; i < listOfStudents.lenght; i++) {
-          if(document.getElementById("i" + "input").value != "") {
-            map[document.getElementById("i" + "id").value] = document.getElementById("i" + "input").value;
+          if(document.getElementById(i + "input").value != "") {
+            map[document.getElementById(i + "id").value] = document.getElementById("i" + "input").value;
           }
         }
 
