@@ -158,8 +158,6 @@ public class GetStudentExamInfo extends HttpServlet {
 			return;	
 		}
 		
-		System.out.println(courseId);
-		
 		if(multipleGrades) {	
 			
 			String studentsMapJsonString = request.getParameter("studentsMap");	
@@ -172,7 +170,6 @@ public class GetStudentExamInfo extends HttpServlet {
 				
 			Gson gson = new Gson();	
 			Type integerIntegerMap = new TypeToken<Map<Integer, Integer>>(){}.getType();	
-			System.out.println(studentsMapJsonString);
 			Map<Integer,Integer> studentsMap = gson.fromJson(studentsMapJsonString, integerIntegerMap);	
 				
 				
@@ -180,8 +177,6 @@ public class GetStudentExamInfo extends HttpServlet {
 				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST,  "List of students is missing when doing multiple grades insertion");	
 				return;		
 			}	
-			
-			System.out.println(studentsMap.size());
 
 			ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
 			
@@ -262,8 +257,8 @@ public class GetStudentExamInfo extends HttpServlet {
 		
 	}
 		
-		response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId=" + courseId + "&examId=" + examId + "&requestType='load'");
-		
+		response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load'");
+		return;
 	}
 		
 	

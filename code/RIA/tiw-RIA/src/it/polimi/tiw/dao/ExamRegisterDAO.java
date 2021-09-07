@@ -52,7 +52,6 @@ public class ExamRegisterDAO {
 	public void setMultipleGrades(Map<Integer, Integer> studentsMap, int examId) throws SQLException {
 		
 		String queryString = buildMultipleInsertionQueryString(studentsMap, examId);
-		System.out.println(queryString);
 		String performedAction = " setting student grade in the database through multiple insertion";
 		
 		PreparedStatement preparedStatementMultipleInsertion = null;	
