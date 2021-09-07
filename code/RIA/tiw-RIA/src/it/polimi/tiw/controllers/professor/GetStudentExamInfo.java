@@ -209,7 +209,7 @@ public class GetStudentExamInfo extends HttpServlet {
 				return;
 			}
 
-		}
+		} else {
 		
 		
 		
@@ -253,6 +253,8 @@ public class GetStudentExamInfo extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			return;
 		}
+		
+	}
 		
 		
 		response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load'");
