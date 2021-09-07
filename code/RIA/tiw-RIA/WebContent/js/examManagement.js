@@ -650,7 +650,7 @@
       document.getElementById("modal_button").addEventListener("click", (e) => {
         for(let i = 0; i < length; i++) {
           if(document.getElementById(i).value != "") {
-            map[document.getElementById(i + 100).textContent] = document.getElementById(i).value);
+            map[document.getElementById(i + 100).textContent] = document.getElementById(i).value;
           }
         }
 
