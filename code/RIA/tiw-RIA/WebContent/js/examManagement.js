@@ -731,7 +731,13 @@
       this.listcontainer.style.display = "none";
     }
 
-    this.update = function(e)
+    this.update = function(message) {
+      this.listbody = message;
+
+      document.getElementById("error_button").addEventListener("click", (e) => {
+        pageOrchestrator.init();
+      })
+    }
 
   }
 
