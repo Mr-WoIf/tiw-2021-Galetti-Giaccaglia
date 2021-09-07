@@ -17,7 +17,7 @@
     examDetails = new ExamDetails(document.getElementById("exam_details_section"));
     report = new Report(document.getElementById("report_section"), document.getElementById("report_list"));
     multiInput = new MultiInput(document.getElementById("modal_section"), document.getElementById("modal_students_list"));
-    errorPage = new errorPage(document.getElementById("error_section"), document.getElementById("errormessage"));
+    errorPage = new ErrorPage(document.getElementById("error_section"), document.getElementById("errormessage"));
     navbar = new Navbar(document.getElementById("navbar_list"));
 
     this.reset = function () {
@@ -26,6 +26,7 @@
       studentsList.reset();
       examDetails.reset();
       report.reset();
+      errorPage.reset();
     }
 
     this.init = function () {
@@ -83,12 +84,15 @@
                 break;
               case 400: // bad request
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
               case 401: // unauthorized
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
               case 500: // server error
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
             }
           }
@@ -150,12 +154,15 @@
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 401: // unauthorized
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 500: // server error
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
               }
             }
@@ -171,12 +178,15 @@
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 401: // unauthorized
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 500: // server error
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
               }
             }
@@ -247,12 +257,15 @@
                 break;
               case 400: // bad request
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
               case 401: // unauthorized
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
               case 500: // server error
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
             }
           }
@@ -381,12 +394,15 @@
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 401: // unauthorized
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 500: // server error
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
               }
             }
@@ -409,26 +425,29 @@
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 401: // unauthorized
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 500: // server error
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
               }
             }
           })
 
-          this.modallist = function(listOfStudents) {
-            let tempList = Object.keys(listOfStudents.registerMap).map((key) => [listOfStudents.registerMap[key]]);
-            let finalList = new Array(0);
-            tempList.forEach(function(student) {
-              if (student[0][1].right == "not inserted")
-                finalList.push(student);
-            })
-            return finalList;
-          }
+        this.modallist = function (listOfStudents) {
+          let tempList = Object.keys(listOfStudents.registerMap).map((key) => [listOfStudents.registerMap[key]]);
+          let finalList = new Array(0);
+          tempList.forEach(function (student) {
+            if (student[0][1].right == "not inserted")
+              finalList.push(student);
+          })
+          return finalList;
+        }
       })
     }
   }
@@ -461,12 +480,15 @@
                 break;
               case 400: // bad request
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
               case 401: // unauthorized
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
               case 500: // server error
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
             }
           }
@@ -520,12 +542,15 @@
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 401: // unauthorized
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 500: // server error
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
               }
             }
@@ -556,12 +581,15 @@
                 break;
               case 400: // bad request
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
               case 401: // unauthorized
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
               case 500: // server error
                 document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
                 break;
             }
           }
@@ -648,8 +676,8 @@
         counter++;
       });
       document.getElementById("modal_button").addEventListener("click", (e) => {
-        for(let i = 0; i < length; i++) {
-          if(document.getElementById(i).value != "") {
+        for (let i = 0; i < length; i++) {
+          if (document.getElementById(i).value != "") {
             map[document.getElementById(i + 100).textContent] = document.getElementById(i).value;
           }
         }
@@ -670,12 +698,15 @@
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 401: // unauthorized
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
                 case 500: // server error
                   document.getElementById("errormessage").textContent = x.responseText;
+                  pageOrchestrator.errorView;
                   break;
               }
             }
@@ -684,7 +715,7 @@
 
       this.listcontainer.style.display = "";
     }
-    
+
   }
 
   function Navbar(_navbarList) {
@@ -731,7 +762,7 @@
       this.listcontainer.style.display = "none";
     }
 
-    this.update = function(message) {
+    this.update = function (message) {
       this.listbody = message;
 
       document.getElementById("error_button").addEventListener("click", (e) => {
