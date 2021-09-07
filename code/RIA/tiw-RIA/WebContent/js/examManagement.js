@@ -652,7 +652,7 @@
         data.append("multipleGrades", true);
         data.append("examId", examid);
         data.append("courseId", courseid);
-        data.append("studentsMap", map);
+        data.append("studentsMap", JSON.stringify(map));
         let self = this;
         makeCall("POST", 'GetStudentExamInfo', data,
           function (x) {
