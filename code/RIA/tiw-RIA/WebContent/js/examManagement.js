@@ -1,6 +1,6 @@
 (function () {
 
-  let coursesList, examDetails, studentsList, navbar, errorPage, pageOrchestrator = new PageOrchestrator();
+  let coursesList, examDetails, studentsList, navbar, errorPage, studentExam, pageOrchestrator = new PageOrchestrator();
 
   window.addEventListener("load", () => {
     if (localStorage.getItem("name") == null) {
@@ -17,6 +17,7 @@
     examDetails = new ExamDetails(document.getElementById("exam_details_section"));
     report = new Report(document.getElementById("report_section"), document.getElementById("report_list"));
     multiInput = new MultiInput(document.getElementById("modal_section"), document.getElementById("modal_students_list"));
+    studentExam = new StudentExam(document.getElementById("prof_exam_details_section"), document.getElementById("grade_button"));
     errorPage = new ErrorPage(document.getElementById("error_section"), document.getElementById("errormessage"));
     navbar = new Navbar(document.getElementById("navbar_list"));
 
@@ -25,6 +26,8 @@
       examsList.reset();
       studentsList.reset();
       examDetails.reset();
+      multiInput.reset();
+      studentExam.reset();
       report.reset();
       errorPage.reset();
     }
@@ -56,6 +59,11 @@
     this.reportView = function (report) {
       this.reset();
       report.update(report);
+    }
+
+    this.studentExamView = function (courseId, examId, studentId) {
+      this.reset();
+      studentExam.show(courseId, examId, studentId);
     }
 
     this.errorView = function (message) {
@@ -239,21 +247,20 @@
     let publishgradebutton = document.getElementById("publish_button");
     let recordgradebutton = document.getElementById("record_button");
     let multipleinputbutton = document.getElementById("multipleinput_button")
-    let sself = this;
+    let self = this;
     this.reset = function () {
       this.listcontainer.style.display = "none";
     }
 
     this.show = function (courseId, examId) {
       this.gradebuttons(courseId, examId);
-      let self = this;
       makeCall("GET", 'GetRegisteredStudents?courseId=' + courseId + '&examId=' + examId + '&requestType=load', null,
         function (x) {
           if (x.readyState == XMLHttpRequest.DONE) {
             switch (x.status) {
               case 200:
                 let listOfStudents = JSON.parse(x.responseText);
-                self.update(listOfStudents);
+                self.update(listOfStudents, courseId, examId);
                 break;
               case 400: // bad request
                 document.getElementById("errormessage").textContent = x.responseText;
@@ -272,7 +279,7 @@
         })
     }
 
-    this.update = function (listOfStudents) {
+    this.update = function (listOfStudents, courseId, examId) {
       let row, idcell, surnamecell, namecell, emailcell, degreecell, gradecell, gradestatecell, linkcell, anchor;
       this.listbody.innerHTML = "";
       document.getElementById("home_username").textContent = localStorage.getItem("name");
@@ -338,9 +345,11 @@
         linkText = document.createTextNode("Modify");
         anchor.className = "btn btn-outline-dark"
         anchor.appendChild(linkText);
-        anchor.setAttribute('courseid', student.id)
+        anchor.setAttribute('courseId', courseId)
+        anchor.setAttribute('examId', examId)
+        anchor.setAttribute('studentId', student[0][0].id)
         anchor.addEventListener("click", (e) => {
-          pageOrchestrator.registeredStudentsView();
+          pageOrchestrator.studentExamView(e.target.getAttribute("courseId"), e.target.getAttribute("examId"), e.target.getAttribute("studentId"));
         });
         anchor.href = "#";
         row.appendChild(linkcell);
@@ -362,7 +371,7 @@
               switch (x.status) {
                 case 200:
                   let listOfStudents = JSON.parse(x.responseText);
-                  sself.update(listOfStudents);
+                  self.update(listOfStudents);
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
@@ -569,33 +578,6 @@
       this.listcontainer.style.display = "none";
     }
 
-    this.show = function () {
-      let self = this;
-      makeCall("GET", 'GetCoursesList', null,
-        function (x) {
-          if (x.readyState == XMLHttpRequest.DONE) {
-            switch (x.status) {
-              case 200:
-                let listOfCourses = JSON.parse(x.responseText);
-                self.update(listOfCourses);
-                break;
-              case 400: // bad request
-                document.getElementById("errormessage").textContent = x.responseText;
-                pageOrchestrator.errorView;
-                break;
-              case 401: // unauthorized
-                document.getElementById("errormessage").textContent = x.responseText;
-                pageOrchestrator.errorView;
-                break;
-              case 500: // server error
-                document.getElementById("errormessage").textContent = x.responseText;
-                pageOrchestrator.errorView;
-                break;
-            }
-          }
-        })
-    }
-
     this.update = function (report) {
       let row, idcell, linkcell, anchor;
       this.listbody.innerHTML = "";
@@ -693,7 +675,7 @@
               switch (x.status) {
                 case 200:
                   let listOfStudents = JSON.parse(x.responseText);
-                  pageOrchestrator.registeredStudentsView(listOfStudents);
+                  pageOrchestrator.registeredStudentsView(courseid, examid);
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
@@ -717,6 +699,120 @@
 
   }
 
+  function StudentExam(_listcontainer, _listbody) {
+    this.listcontainer = _listcontainer;
+    this.listbody = _listbody;
+
+    this.namecard = document.getElementById("prof_card_name");
+    this.studentidcard = document.getElementById("prof_card_studentid");
+    this.emailcard = document.getElementById("prof_card_email");
+    this.degreecard = document.getElementById("prof_card_degree");
+    this.gradecard = document.getElementById("prof_card_grade");
+    this.gradestatecard = document.getElementById("prof_card_gradestate");
+
+    this.reset = function () {
+      this.listcontainer.style.display = "none";
+    }
+
+    this.show = function (courseId, examId, studentId) {
+      let self = this;
+      makeCall("GET", 'GetStudentExamInfo?courseId=' + courseId + '&examId=' + examId + '&studentId=' + studentId, null,
+        function (x) {
+          if (x.readyState == XMLHttpRequest.DONE) {
+            switch (x.status) {
+              case 200:
+                let studentExamDetails = JSON.parse(x.responseText);
+                self.update(studentExamDetails, courseId, examId);
+                break;
+              case 400: // bad request
+                document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
+                break;
+              case 401: // unauthorized
+                document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
+                break;
+              case 500: // server error
+                document.getElementById("errormessage").textContent = x.responseText;
+                pageOrchestrator.errorView;
+                break;
+            }
+          }
+        })
+    }
+
+    this.update = function (studentExamDetails, courseId, examId) {
+
+      this.namecard.textContent = studentExamDetails.studentInfo.left.name;
+      this.studentidcard.textContent = studentExamDetails.studentInfo.left.id;
+      this.emailcard.textContent = studentExamDetails.studentInfo.left.email;
+      this.degreecard.textContent = studentExamDetails.studentInfo.left.degree;
+      switch (studentExamDetails.studentInfo.right.left) {
+        case -1:
+          this.gradecard.textContent = "Not inserted";
+          break;
+        case 0:
+          this.gradecard.textContent = "Absent";
+          break;
+        case 1:
+          this.gradecard.textContent = "Postponed";
+          break;
+        case 2:
+          this.gradecard.textContent = "To Sit Again";
+          break;
+        case 31:
+          this.gradecard.textContent = "30 cum laude";
+          break;
+        default:
+          if (studentExamDetails.studentInfo.right.left > 2 && studentExamDetails.studentInfo.right.left < 31)
+            this.gradecard.textContent = studentExamDetails.studentInfo.right.left;
+          break;
+      }
+      this.gradestatecard.textContent = studentExamDetails.studentInfo.right.right;
+
+      if (studentExamDetails.areAllPublished && studentExamDetails.studentInfo.right.left > 2 && studentExamDetails.studentInfo.right.left < 32 && (studentExamDetails.studentInfo.right.right).localeCompare("refused") && (examDetails.studentInfo.right.right).localeCompare("recorded"))
+        this.refusebutton.style.display = "none";
+
+      this.listbody.addEventListener('click', (e) => {
+        let data = new FormData();
+        data.append("grade", document.getElementById("grade_button").value);
+        data.append("multipleGrades", false);
+        data.append("examId", examId);
+        data.append("courseId", courseId);
+        data.append("studentId", studentExamDetails.studentInfo.left.id);
+        makeCall("POST", 'GetStudentExamInfo', data,
+          function (x) {
+            if (x.readyState == XMLHttpRequest.DONE) {
+              switch (x.status) {
+                case 200:
+                  var user = JSON.parse(x.responseText)
+                  localStorage.setItem('name', user.name);
+                  localStorage.setItem('id', user.id);
+                  localStorage.setItem('role', user.role)
+                  window.location.href = "home.html";
+                  break;
+                case 400: // bad request
+                  document.getElementById("errormessage").textContent = x.responseText;
+                  break;
+                case 401: // unauthorized
+                  document.getElementById("errormessage").textContent = x.responseText;
+                  break;
+                case 500: // server error
+                  document.getElementById("errormessage").textContent = x.responseText;
+                  break;
+              }
+            }
+          }
+        );
+
+
+      });
+      this.listcontainer.style.display = "";
+
+
+
+    }
+  }
   function Navbar(_navbarList) {
     this.navbarList = _navbarList;
 
@@ -770,7 +866,6 @@
     }
 
   }
-
 })();
 
 
