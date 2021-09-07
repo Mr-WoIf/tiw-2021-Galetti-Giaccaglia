@@ -687,14 +687,13 @@
         data.append("examId", examid);
         data.append("courseId", courseid);
         data.append("studentsMap", JSON.stringify(map));
-        let self = this;
         makeCall("POST", 'GetStudentExamInfo', data,
           function (x) {
             if (x.readyState == XMLHttpRequest.DONE) {
               switch (x.status) {
                 case 200:
                   let listOfStudents = JSON.parse(x.responseText);
-                  sself.update(listOfStudents);
+                  pageOrchestrator.registeredStudentsView(listOfStudents);
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
