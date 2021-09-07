@@ -288,6 +288,7 @@ public class GetRegisteredStudents extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Chosen course ID is not a number, when modifying exams' grade state");
 			return;
 		}
+		
 
 		HttpSession session = request.getSession(false);
 		Professor professor = (Professor)session.getAttribute("professor");

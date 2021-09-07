@@ -158,6 +158,8 @@ public class GetStudentExamInfo extends HttpServlet {
 			return;	
 		}
 		
+		System.out.println(courseId);
+		
 		if(multipleGrades) {	
 			
 			String studentsMapJsonString = request.getParameter("studentsMap");	
@@ -170,6 +172,7 @@ public class GetStudentExamInfo extends HttpServlet {
 				
 			Gson gson = new Gson();	
 			Type integerIntegerMap = new TypeToken<Map<Integer, Integer>>(){}.getType();	
+			System.out.println(studentsMapJsonString);
 			Map<Integer,Integer> studentsMap = gson.fromJson(studentsMapJsonString, integerIntegerMap);	
 				
 				
@@ -178,6 +181,7 @@ public class GetStudentExamInfo extends HttpServlet {
 				return;		
 			}	
 			
+			System.out.println(studentsMap.size());
 
 			ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
 			
@@ -188,13 +192,13 @@ public class GetStudentExamInfo extends HttpServlet {
 				if(!isValidGrade(studentGrade)) {
 					String error = studentGrade + " is not a valid grade! Please submit a value between 18 and 31 (laude)";
 					request.setAttribute("error", error);
-					response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId);
+					response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId="+ courseId + "&examId=" + examId);
 					return;
 			}
 				
 				studentId = entry.getKey();
 				MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
-				request.getSession(false);
+				session = request.getSession(false);
 				Professor professor = (Professor)session.getAttribute("professor");
 				
 				if(!DaoUtils.verifyRequestCommonConstraints(connection, request,response, studentId, examId, courseId, studentInfo, professor))
@@ -231,14 +235,16 @@ public class GetStudentExamInfo extends HttpServlet {
 		if(!isValidGrade(studentGrade)) {
 				String error = studentGrade + " is not a valid grade! Please submit a value between 18 and 31 (laude)";
 				request.setAttribute("error", error);
-				response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId);
+				response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId="+ courseId + "&examId=" + examId);
 				return;
 		}
 		
 			
 		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
 		request.getSession(false);
+		session = request.getSession(false);
 		Professor professor = (Professor)session.getAttribute("professor");
+		
 		
 		if(!DaoUtils.verifyRequestCommonConstraints(connection, request,response, studentId, examId, courseId, studentInfo, professor))
 			return;
@@ -256,9 +262,9 @@ public class GetStudentExamInfo extends HttpServlet {
 		
 	}
 		
+		response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId=" + courseId + "&examId=" + examId + "&requestType='load'");
 		
-		response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load'");
-		}
+	}
 		
 	
 	private boolean isValidGrade(int studentGrade) {	

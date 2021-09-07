@@ -21,7 +21,7 @@ public class ExamRegisterDAO {
 		
 		StringBuilder builder = new StringBuilder();
 		
-		builder.append("INSERT INTO unidb,exam_register (student_id, exam_id, grade, id_report, state) VALUES ");
+		builder.append("INSERT INTO unidb.exam_register (student_id, exam_id, grade, id_report, state) VALUES ");
 		
 		for (Map.Entry<Integer, Integer> entry : studentsMap.entrySet()) {
 			
@@ -40,7 +40,7 @@ public class ExamRegisterDAO {
 			
 		}
 		
-		builder.setLength(builder.length() - 1); //removes last comma
+		builder.setLength(builder.length() - 2); //removes last comma
 		
 		builder.append(" ON DUPLICATE KEY UPDATE student_id=VALUES(student_id), exam_id=VALUES(exam_id), grade=VALUES(grade), id_report=VALUES(id_report), state = VALUES(state);");
 		
@@ -51,7 +51,8 @@ public class ExamRegisterDAO {
 	
 	public void setMultipleGrades(Map<Integer, Integer> studentsMap, int examId) throws SQLException {
 		
-		String queryString =buildMultipleInsertionQueryString(studentsMap, examId);
+		String queryString = buildMultipleInsertionQueryString(studentsMap, examId);
+		System.out.println(queryString);
 		String performedAction = " setting student grade in the database through multiple insertion";
 		
 		PreparedStatement preparedStatementMultipleInsertion = null;	
@@ -59,6 +60,8 @@ public class ExamRegisterDAO {
 		try {
 			
 			preparedStatementMultipleInsertion = connection.prepareStatement(queryString);
+			preparedStatementMultipleInsertion.executeUpdate();
+			
 			
 			
 		}catch(SQLException e) {
