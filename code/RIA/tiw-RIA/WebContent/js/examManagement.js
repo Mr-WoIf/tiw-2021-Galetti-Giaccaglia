@@ -1,6 +1,6 @@
 (function () {
 
-  let coursesList, examDetails, studentsList, navbar, pageOrchestrator = new PageOrchestrator();
+  let coursesList, examDetails, studentsList, navbar, errorPage, pageOrchestrator = new PageOrchestrator();
 
   window.addEventListener("load", () => {
     if (localStorage.getItem("name") == null) {
@@ -17,6 +17,7 @@
     examDetails = new ExamDetails(document.getElementById("exam_details_section"));
     report = new Report(document.getElementById("report_section"), document.getElementById("report_list"));
     multiInput = new MultiInput(document.getElementById("modal_section"), document.getElementById("modal_students_list"));
+    errorPage = new errorPage(document.getElementById("error_section"), document.getElementById("errormessage"));
     navbar = new Navbar(document.getElementById("navbar_list"));
 
     this.reset = function () {
@@ -54,6 +55,11 @@
     this.reportView = function (report) {
       this.reset();
       report.update(report);
+    }
+
+    this.errorView = function (message) {
+      this.reset();
+      errorPage.update();
     }
   }
 
@@ -566,7 +572,7 @@
       let row, idcell, linkcell, anchor;
       this.listbody.innerHTML = "";
       let self = this;
-      listOfCourses.forEach(function (course) {
+      report.forEach(function (course) {
         row = document.createElement("tr");
         namecell = document.createElement("td");
         namecell.className = "column1";
@@ -644,7 +650,7 @@
       document.getElementById("modal_button").addEventListener("click", (e) => {
         for(let i = 0; i < length; i++) {
           if(document.getElementById(i).value != "") {
-            map.set(document.getElementById(i + 100).textContent, document.getElementById(i).value);
+            map[document.getElementById(i + 100).textContent] = document.getElementById(i).value);
           }
         }
 
@@ -717,6 +723,17 @@
 
   }
 
+  function ErrorPage(_listcontainer, _listbody) {
+    this.listcontainer = _listcontainer;
+    this.listbody = _listbody;
+
+    this.reset = function () {
+      this.listcontainer.style.display = "none";
+    }
+
+    this.update = function(e)
+
+  }
 
 })();
 
