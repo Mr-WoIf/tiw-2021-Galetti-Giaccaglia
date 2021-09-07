@@ -399,7 +399,7 @@
               switch (x.status) {
                 case 200:
                   let listOfStudents = JSON.parse(x.responseText);
-                  multiInput.update(self.modallist(listOfStudents));
+                  multiInput.update(self.modallist(listOfStudents), courseid, examid);
                   break;
                 case 400: // bad request
                   document.getElementById("errormessage").textContent = x.responseText;
@@ -603,15 +603,17 @@
       this.listcontainer.style.display = "none";
     }
 
-    this.update = function (listOfStudents) {
+    this.update = function (listOfStudents, courseid, examid) {
       let row, idcell, surnamecell, namecell, emailcell, degreecell, input;
       this.listbody.innerHTML = "";
       let self = this;
+      let map = new Map();
       let counter = 0;
+      let length = listOfStudents.length;
       listOfStudents.forEach(function (student) {
         row = document.createElement("tr");
         idcell = document.createElement("td");
-        idcell.setAttribute("id", counter + "id");
+        idcell.setAttribute("id", counter + 100);
         idcell.className = "column1";
         idcell.textContent = student[0][0].id;
         row.appendChild(idcell);
@@ -632,16 +634,17 @@
         degreecell.textContent = student[0][0].degree;
         row.appendChild(degreecell);
         input = document.createElement("input");
-        input.setAttribute("id", counter + "input");
+        input.setAttribute("id", counter);
+        input.setAttribute("placeholder", "grade");
+        input.setAttribute("class", "input100");
         row.appendChild(input);
         self.listbody.appendChild(row);
         counter++;
       });
       document.getElementById("modal_button").addEventListener("click", (e) => {
-        let map = new Map();
-        for(let i = 0; i < listOfStudents.lenght; i++) {
-          if(document.getElementById(i + "input").value != "") {
-            map[document.getElementById(i + "id").value] = document.getElementById("i" + "input").value;
+        for(let i = 0; i < length; i++) {
+          if(document.getElementById(i).value != "") {
+            map.set(document.getElementById(i + 100).textContent, document.getElementById(i).value);
           }
         }
 
