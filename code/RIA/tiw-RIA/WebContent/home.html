@@ -78,6 +78,32 @@ nav ul li {
 			</div>
 		</nav>
 
+		<section id="error_section">
+
+			<div class="limiter">
+				<div class="container-error">
+					<div id="notfound">
+						<div class="notfound">
+						
+							<h2>We are sorry, an error occurred</h2>
+							
+							<p>
+								Your error is: <b><span id="errormessage">sample error</span></b>
+							</p>
+							
+							<div>
+								<form class="form">
+									<button id="error_button" class="btn btn-light my-2 my-sm-0" type="submit">Login</button>
+								</form>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</section>
+
 		<section id="courses_section">
 
 			<div class="container-table">
@@ -352,53 +378,54 @@ nav ul li {
 		</section>
 
 		<section id="modal_section">
-	
+
 			<!-- Modal -->
-			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div role="document">
-				 <div class="modal-dialog modal-lg">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-							<button type="button" class="close" data-dismiss="modal"
-								aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
+					<div class="modal-dialog modal-lg">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<div class="modal-body">
 
-							<table id="students_list_table" class="boxed">
-								<thead>
-									<tr class="table-head">
+								<table id="students_list_table" class="boxed">
+									<thead>
+										<tr class="table-head">
 
-										<th id="modal_studentid" class="column1">Student</th>
+											<th id="modal_studentid" class="column1">Student</th>
 
-										<th id="modal_surname" class="column2">Surname</th>
+											<th id="modal_surname" class="column2">Surname</th>
 
-										<th id="modal_name" class="column3">Name</th>
+											<th id="modal_name" class="column3">Name</th>
 
-										<th id="modal_mail" class="column4">E-mail</th>
+											<th id="modal_mail" class="column4">E-mail</th>
 
-										<th id="modal_degree" class="column5">Degree</th>
+											<th id="modal_degree" class="column5">Degree</th>
 
-										<th id="modal_input" class="column8">Input</th>
-									</tr>
-								</thead>
+											<th id="modal_input" class="column8">Input</th>
+										</tr>
+									</thead>
 
-								<tbody id="modal_students_list">
-								</tbody>
+									<tbody id="modal_students_list">
+									</tbody>
 
-							</table>
-						</div>
-						<div class="modal-footer">
+								</table>
+							</div>
+							<div class="modal-footer">
 								<form id="modal_button" method="get" class="button2">
-							<input type="hidden" name="courseId" />
-							<button type="submit" class="btn btn-secondary"
-								data-dismiss="modal" class="btn btn-light">Send</button>
-						</form>
+									<input type="hidden" name="courseId" />
+									<button type="submit" class="btn btn-secondary"
+										data-dismiss="modal" class="btn btn-light">Send</button>
+								</form>
+							</div>
 						</div>
 					</div>
-				</div>
 				</div>
 			</div>
 
