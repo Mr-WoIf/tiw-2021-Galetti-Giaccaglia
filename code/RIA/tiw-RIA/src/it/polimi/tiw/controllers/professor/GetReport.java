@@ -169,7 +169,7 @@ public class GetReport extends HttpServlet {
 	//	request.setAttribute("courseId", courseId);
 	//	request.setAttribute("examId", examId);
 		
-		Gson gson = new GsonBuilder().setDateFormat("yyy/MM/dd").create();
+		Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setDateFormat("yyy/MM/dd").create();
 		String json = gson.toJson(new ReportInfo(report, courseId, examId));
 		
 		response.setContentType("application/json");
