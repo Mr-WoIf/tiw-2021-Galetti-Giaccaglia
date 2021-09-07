@@ -211,9 +211,15 @@ nav ul li {
 						<form id="record_button" class="button2" action="#">
 							<input type="hidden" name="requestType" /> <input type="hidden"
 								name="examId" /> <input type="hidden" name="courseId" />
-
 							<button type="submit" class="btn btn-light">Record
 								Grades</button>
+						</form>
+
+						<form id="multipleinput_button" class="button2" action="#">
+
+							<button type="submit" class="btn btn-primary" data-toggle="modal"
+								data-target="#exampleModal" class="btn btn-light">Multiple
+								Input</button>
 						</form>
 
 					</div>
@@ -345,6 +351,63 @@ nav ul li {
 			</div>
 
 		</section>
+
+		<section id="modal_section">
+	
+			<!-- Modal -->
+			<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+				aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+							<button type="button" class="close" data-dismiss="modal"
+								aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+
+							<table id="students_list_table" class="boxed">
+								<thead>
+									<tr class="table-head">
+
+										<th id="modal_studentid" class="column1">Student</th>
+
+										<th id="modal_surname" class="column2">Surname</th>
+
+										<th id="modal_name" class="column3">Name</th>
+
+										<th id="modal_mail" class="column4">E-mail</th>
+
+										<th id="modal_degree" class="column5">Degree</th>
+
+										<th id="modal_grade" class="column6">Grade</th>
+
+										<th id="modal_gradestate" class="column7">Grade state</th>
+
+										<th id="modal_input" class="column8">Input</th>
+									</tr>
+								</thead>
+
+								<tbody id="students_list">
+								</tbody>
+
+							</table>
+						</div>
+						<div class="modal-footer">
+								<form id="modal_button" method="get" class="button2">
+							<input type="hidden" name="courseId" />
+							<button type="submit" class="btn btn-secondary"
+								data-dismiss="modal" class="btn btn-light">Send</button>
+						</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</section>
+
 	</div>
 
 </body>

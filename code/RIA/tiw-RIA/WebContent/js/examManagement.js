@@ -13,9 +13,10 @@
   function PageOrchestrator() {
     coursesList = new CoursesList(document.getElementById("courses_section"), document.getElementById("courses_list"));
     examsList = new ExamsList(document.getElementById("course_section"), document.getElementById("exams_list"));
-    studentsList = new StudentsList(document.getElementById("prof_exam_section"), document.getElementById("students_list"))
+    studentsList = new StudentsList(document.getElementById("prof_exam_section"), document.getElementById("students_list"));
     examDetails = new ExamDetails(document.getElementById("exam_details_section"));
     report = new Report(document.getElementById("report_section"), document.getElementById("report_list"));
+    multiInput = new MultiInput(document.getElementById("modal_section"), document.getElementById("students_list"));
     navbar = new Navbar(document.getElementById("navbar_list"));
 
     this.reset = function () {
@@ -221,6 +222,7 @@
     this.listbody = _listbody;
     let publishgradebutton = document.getElementById("publish_button");
     let recordgradebutton = document.getElementById("record_button");
+    let multipleinputbutton = document.getElementById("multipleinput_button")
     let sself = this;
     this.reset = function () {
       this.listcontainer.style.display = "none";
@@ -365,6 +367,44 @@
             }
           })
       })
+
+      multipleinputbutton.addEventListener("click", (e) => {
+        let data = new FormData();
+        data.append("examId", examid);
+        data.append("courseId", courseid);
+        let self = this;
+
+        makeCall("GET", 'GetRegisteredStudents?courseId=' + courseid + '&examId=' + examid + '&requestType=load', null,
+          function (x) {
+            if (x.readyState == XMLHttpRequest.DONE) {
+              switch (x.status) {
+                case 200:
+                  let listOfStudents = JSON.parse(x.responseText);
+                  multiInput.update(self.modallilst(listOfStudents));
+                  break;
+                case 400: // bad request
+                  document.getElementById("errormessage").textContent = x.responseText;
+                  break;
+                case 401: // unauthorized
+                  document.getElementById("errormessage").textContent = x.responseText;
+                  break;
+                case 500: // server error
+                  document.getElementById("errormessage").textContent = x.responseText;
+                  break;
+              }
+            }
+          })
+
+          this.modallist = function(listOfStudents) {
+            let tempList = Object.keys(listOfStudents.registerMap).map((key) => [listOfStudents.registerMap[key]]);
+            let finalList = new Array(1);
+            tempList.forEach(function(student) {
+              if (student[0][1].right == "not inserted")
+                finalList.push(student);
+            })
+            return finalList;
+          }
+      })
     }
   }
 
@@ -479,6 +519,30 @@
       this.listcontainer.style.display = "none";
     }
 
+    this.show = function () {
+      let self = this;
+      makeCall("GET", 'GetCoursesList', null,
+        function (x) {
+          if (x.readyState == XMLHttpRequest.DONE) {
+            switch (x.status) {
+              case 200:
+                let listOfCourses = JSON.parse(x.responseText);
+                self.update(listOfCourses);
+                break;
+              case 400: // bad request
+                document.getElementById("errormessage").textContent = x.responseText;
+                break;
+              case 401: // unauthorized
+                document.getElementById("errormessage").textContent = x.responseText;
+                break;
+              case 500: // server error
+                document.getElementById("errormessage").textContent = x.responseText;
+                break;
+            }
+          }
+        })
+    }
+
     this.update = function (report) {
       let row, idcell, linkcell, anchor;
       this.listbody.innerHTML = "";
@@ -510,6 +574,89 @@
       });
       this.listcontainer.style.display = "";
     }
+  }
+
+  function MultiInput(_listcontainer, _listbody) {
+    this.listcontainer = _listcontainer;
+    this.listbody = _listbody;
+
+    this.reset = function () {
+      this.listcontainer.style.display = "none";
+    }
+
+    this.update = function (listOfStudents) {
+      let row, idcell, surnamecell, namecell, emailcell, degreecell, input;
+      this.listbody.innerHTML = "";
+      let self = this;
+      let counter = 0;
+      listOfStudents.forEach(function (student) {
+        row = document.createElement("tr");
+        idcell = document.createElement("td");
+        idcell.setAttribute("id", "counter" + "id");
+        idcell.className = "column1";
+        idcell.textContent = student[0][0].id;
+        row.appendChild(idcell);
+        surnamecell = document.createElement("td");
+        surnamecell.className = "column2";
+        surnamecell.textContent = student[0][0].surname;
+        row.appendChild(surnamecell);
+        namecell = document.createElement("td");
+        namecell.className = "column3";
+        namecell.textContent = student[0][0].name;
+        row.appendChild(namecell);
+        emailcell = document.createElement("td");
+        emailcell.className = "column4";
+        emailcell.textContent = student[0][0].email;
+        row.appendChild(emailcell);
+        degreecell = document.createElement("td");
+        degreecell.className = "column5";
+        degreecell.textContent = student[0][0].degree;
+        row.appendChild(degreecell);
+        input = document.createElement("input");
+        input.setAttribute("id", "counter" + "input");
+        row.appendChild(input);
+        self.listbody.appendChild(row);
+        counter++;
+      });
+      document.getElementById("modal_button").addEventListener("click", (e) => {
+        let map = new Map();
+        for(let i = 0; i < listOfStudents.lenght; i++) {
+          if(document.getElementById("i" + "input").value != "") {
+            map[document.getElementById("i" + "id").value] = document.getElementById("i" + "input").value;
+          }
+        }
+
+        let data = new FormData();
+        data.append("multipleGrades", true);
+        data.append("examId", examid);
+        data.append("courseId", courseid);
+        data.append("studentsMap", map);
+        let self = this;
+        makeCall("POST", 'GetStudentExamInfo', data,
+          function (x) {
+            if (x.readyState == XMLHttpRequest.DONE) {
+              switch (x.status) {
+                case 200:
+                  let listOfStudents = JSON.parse(x.responseText);
+                  sself.update(listOfStudents);
+                  break;
+                case 400: // bad request
+                  document.getElementById("errormessage").textContent = x.responseText;
+                  break;
+                case 401: // unauthorized
+                  document.getElementById("errormessage").textContent = x.responseText;
+                  break;
+                case 500: // server error
+                  document.getElementById("errormessage").textContent = x.responseText;
+                  break;
+              }
+            }
+          })
+      })
+
+      this.listcontainer.style.display = "";
+    }
+    
   }
 
   function Navbar(_navbarList) {
@@ -547,6 +694,8 @@
 
 
   }
+
+
 })();
 
 
