@@ -775,7 +775,7 @@
 
       this.listbody.addEventListener('click', (e) => {
         let data = new FormData();
-        data.append("grade", document.getElementById("grade_button").value);
+        data.append("grade", document.getElementById("grade_input").textContent);
         data.append("multipleGrades", false);
         data.append("examId", examId);
         data.append("courseId", courseId);

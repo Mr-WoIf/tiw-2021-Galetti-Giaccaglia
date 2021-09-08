@@ -167,8 +167,6 @@ public class GetRegisteredStudents extends HttpServlet {
 		Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setDateFormat("yyy/MM/dd").create();
 		
 		if(students.size()==0) {
-		//	request.setAttribute("noSubs", true);  //TODO HANDLE NO SUBS HTML PAGE
-		//	request.setAttribute("courseId", courseId);
 			
 			String json = gson.toJson(new ExamRegisteredStudents(examId, true, courseId, false, false, new LinkedHashMap<Student, MutablePair<Integer, String>>()));
 			
@@ -208,14 +206,7 @@ public class GetRegisteredStudents extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			return;
 		}
-
-	//	request.setAttribute("noSubs", false);
-    //	request.setAttribute("registerMap", registerMap);
-	//	request.setAttribute("courseId", courseId);
-	//	request.setAttribute("areAllRecorded", areAllRecorded);
-	//	request.setAttribute("areAllPublished", areAllPublished);
 		
-	
 	
 		String json = gson.toJson(new ExamRegisteredStudents(examId, false, courseId, areAllRecorded, areAllPublished, registerMap));
 		

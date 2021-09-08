@@ -41,7 +41,6 @@ public class ExamRegisterDAO {
 		}
 		
 		builder.setLength(builder.length() - 2); //removes last comma
-		
 		builder.append(" ON DUPLICATE KEY UPDATE student_id=VALUES(student_id), exam_id=VALUES(exam_id), grade=VALUES(grade), id_report=VALUES(id_report), state = VALUES(state);");
 		
 		return builder.toString();

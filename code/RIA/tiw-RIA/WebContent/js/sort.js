@@ -56,7 +56,7 @@ function resetArrows(rowHeaders){
     };
   }
 
-  // For all table headers f class sortable
+  // For all table headers of class sortable
   function sortTable(clicked_id) {
     
     var th = document.getElementById(clicked_id);

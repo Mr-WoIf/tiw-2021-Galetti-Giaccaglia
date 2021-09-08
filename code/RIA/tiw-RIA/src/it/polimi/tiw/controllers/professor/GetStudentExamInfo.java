@@ -85,6 +85,7 @@ public class GetStudentExamInfo extends HttpServlet {
 		try {
 			examId = Integer.parseInt(examIdString);
 		}catch (NumberFormatException e) {
+			System.out.print(e.getMessage());
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Chosen exam id is not a number, when accessing exam details");
 			return;	
 		}
@@ -133,6 +134,7 @@ public class GetStudentExamInfo extends HttpServlet {
 		String courseIdString = request.getParameter("courseId");
 		String studentIdString = request.getParameter("studentId");		
 		String studentGradeString = request.getParameter("grade");
+		
 
 		int studentGrade;
 		int courseId;
@@ -141,20 +143,21 @@ public class GetStudentExamInfo extends HttpServlet {
 		boolean multipleGrades;	
 		
 		multipleGrades = Boolean.parseBoolean(multipleGradesString);	
-			
 		
+		System.out.println(studentGradeString);
 		
 		try {
 			courseId = Integer.parseInt(courseIdString);
 		}catch(NumberFormatException e) {
-			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid course Id related to exam Id");
+			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid course ID related to exam Id");
 			return;	
 		}
 		
 		try {
 			examId = Integer.parseInt(examIdString);
 		}catch (NumberFormatException e) {
-			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST,  "Chosen exam id is not a number, when accessing exam details");
+			System.out.print(e.getMessage());
+			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST,  "Chosen exam ID is not a number, when accessing exam details");
 			return;	
 		}
 		
@@ -195,11 +198,12 @@ public class GetStudentExamInfo extends HttpServlet {
 				MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
 				session = request.getSession(false);
 				Professor professor = (Professor)session.getAttribute("professor");
-				
 				if(!DaoUtils.verifyRequestCommonConstraints(connection, request,response, studentId, examId, courseId, studentInfo, professor))
 					return;
 				
 		}
+			
+			
 			
 			try {
 				examRegisterDAO.setMultipleGrades(studentsMap, examId);
@@ -209,9 +213,7 @@ public class GetStudentExamInfo extends HttpServlet {
 			}
 
 		} else {
-		
-		
-		
+			
 		try {
 			studentId = Integer.parseInt(studentIdString);
 		}catch (NumberFormatException e) {
@@ -226,7 +228,7 @@ public class GetStudentExamInfo extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Submitted grade is not valid");
 			return;	
 		}
-			
+		
 		if(!isValidGrade(studentGrade)) {
 				String error = studentGrade + " is not a valid grade! Please submit a value between 18 and 31 (laude)";
 				request.setAttribute("error", error);
@@ -234,6 +236,7 @@ public class GetStudentExamInfo extends HttpServlet {
 				return;
 		}
 		
+		System.out.println(examId);
 			
 		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
 		request.getSession(false);
@@ -244,6 +247,7 @@ public class GetStudentExamInfo extends HttpServlet {
 		if(!DaoUtils.verifyRequestCommonConstraints(connection, request,response, studentId, examId, courseId, studentInfo, professor))
 			return;
 		
+		System.out.println(examId);
 		
 		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
 
@@ -256,8 +260,11 @@ public class GetStudentExamInfo extends HttpServlet {
 		}
 		
 	}
+		int val1 = courseId;
+		int val2 = examId;
 		
-		response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load'");
+		
+		response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId=" + val1 + "&examId=" + val2 + "&requestType='load'");
 		return;
 	}
 		
