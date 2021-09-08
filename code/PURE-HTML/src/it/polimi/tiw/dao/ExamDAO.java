@@ -27,18 +27,15 @@ public class ExamDAO {
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-
 		List<Exam> exams = new ArrayList<>();
 
 		try {
 
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, courseId);
-
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-
 				Exam exam = new Exam(new Date(resultSet.getDate("date").getTime()), resultSet.getInt("id"), courseId);
 				exams.add(exam);
 			}
@@ -48,6 +45,7 @@ public class ExamDAO {
 
 		} finally {
 			try {
+				assert resultSet != null;
 				resultSet.close();
 			} catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -86,7 +84,6 @@ public class ExamDAO {
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-
 				Exam exam = new Exam(new Date(resultSet.getDate("date").getTime()), resultSet.getInt("id"),
 						resultSet.getInt("course_id"));
 				exams.add(exam);
@@ -97,6 +94,7 @@ public class ExamDAO {
 
 		} finally {
 			try {
+				assert resultSet != null;
 				resultSet.close();
 			} catch (SQLException e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -115,23 +113,19 @@ public class ExamDAO {
 	public Optional<Exam> getExamById(int examId) throws SQLException {
 
 		String performedAction = " finding exam by id";
-
 		String query = "SELECT date, course_id  FROM unidb.exam WHERE id = ?";
-
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-
-		Exam exam = null;
+		Exam exam;
 
 		try {
 
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, examId);
-
 			resultSet = preparedStatement.executeQuery();
 
 			if (!resultSet.isBeforeFirst())
-				return Optional.ofNullable(exam);
+				return Optional.empty();
 
 			resultSet.next();
 			exam = new Exam(new Date(resultSet.getDate("date").getTime()), examId, resultSet.getInt("course_id"));
@@ -141,6 +135,7 @@ public class ExamDAO {
 
 		} finally {
 			try {
+				assert resultSet != null;
 				resultSet.close();
 			} catch (SQLException e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -151,8 +146,7 @@ public class ExamDAO {
 				throw new SQLException("Error closing the statement when" + performedAction);
 			}
 		}
-
-		return Optional.ofNullable(exam);
+		return Optional.of(exam);
 
 	}
 

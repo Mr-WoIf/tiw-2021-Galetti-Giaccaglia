@@ -1,6 +1,5 @@
 package it.polimi.tiw.filters;
 
-
 import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -26,19 +25,11 @@ import it.polimi.tiw.utils.TemplateHandler;
 public class CheckStudent implements Filter {
 
 	private TemplateEngine templateEngine;
-	/**
-	 * Default constructor.
-	 */
-	public CheckStudent() {
-		// TODO Auto-generated constructor stub
-	}
 
 	/**
 	 * @see Filter#destroy()
 	 */
-	public void destroy() {
-		// TODO Auto-generated method stub
-	}
+	public void destroy() {}
 
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
@@ -47,7 +38,7 @@ public class CheckStudent implements Filter {
 		
 		System.out.print("Student filter executing ..\n");		
 		
-		if(!(FilterHandler.doFilterHandler(request, response, chain, Student.class))) {
+		if(!(FilterHandler.doFilterHandler(request, Student.class))) {
 			
 			String error = "You are not authorized to access this page";
 			HttpServletRequest httpRequest = (HttpServletRequest) request;

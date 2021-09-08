@@ -1,7 +1,7 @@
 package it.polimi.tiw.controllers.login;
 
-
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
@@ -26,20 +26,11 @@ import it.polimi.tiw.utils.*;
 @WebServlet("/CheckLogin")
 public class CheckLogin extends HttpServlet {
 	
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 	private TemplateEngine templateEngine;
 
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public CheckLogin() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-    
-    
     @Override
     public void init() throws ServletException {
     	ServletContext servletContext = getServletContext();
@@ -59,6 +50,7 @@ public class CheckLogin extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
@@ -66,62 +58,60 @@ public class CheckLogin extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
-		String id_param = request.getParameter("id");
-		String password_param = request.getParameter("password");
-		int id;
+		String idParam = request.getParameter("id");
+		String passwordParam = request.getParameter("password");
 		String password;
+		String warningAttribute = "warning";
+		int id;
 		
-		if(id_param == null){
-			request.setAttribute("warning", "Null id");		
+		if(idParam == null){
+			request.setAttribute(warningAttribute, "Null id");
 			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
-		if(password_param == null){
-			request.setAttribute("warning", "Null password");		
+		if(passwordParam == null){
+			request.setAttribute(warningAttribute, "Null password");
 			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
-		if(id_param.isEmpty()) {
-			request.setAttribute("warning", "Empty id field!");		
+		if(idParam.isEmpty()) {
+			request.setAttribute(warningAttribute, "Empty id field!");
 			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
-		if(password_param.isEmpty()) {
-			request.setAttribute("warning", "Empty password field");		
+		if(passwordParam.isEmpty()) {
+			request.setAttribute(warningAttribute, "Empty password field");
 			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
 		
 		try {
-			id = Integer.parseInt(id_param);
-			password = password_param;
-			
+			id = Integer.parseInt(idParam);
+			password = passwordParam;
 
 			if (id < 10600000 || id > 10800000) {
-				request.setAttribute( "warning", "The id is invalid, make sure to use the one provided");
+				request.setAttribute(warningAttribute, "The id is invalid, make sure to use the one provided");
 				ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 				return;
 			}
 			
 		} catch (NumberFormatException e) {
-			request.setAttribute( "warning", "Parameter id with format number is required");
+			request.setAttribute(warningAttribute, "Parameter id with format number is required");
 			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
-		
-		
-			
+
 		UserDAO userDAO = new UserDAO(connection);
-		Optional<User> optUser = null;
-		User user = null;
+		Optional<User> optUser;
+		User user;
 		
 		try {
-			
 			optUser = userDAO.findUser(id, password);
 			
 		} catch (SQLException e) {
@@ -131,7 +121,7 @@ public class CheckLogin extends HttpServlet {
 		}
 		
 		if(optUser.isEmpty()) {
-			request.setAttribute("warning", "id or password incorrect!");
+			request.setAttribute(warningAttribute, "id or password incorrect!");
 			ForwardHandler.forward(request, response, PathUtils.pathToLoginPage, templateEngine);
 			return;
 		}
@@ -141,6 +131,5 @@ public class CheckLogin extends HttpServlet {
 		session.setAttribute("user", user);
 		response.sendRedirect(getServletContext().getContextPath() + PathUtils.goToHomeServletPath);		
 	}
-	
 
 }

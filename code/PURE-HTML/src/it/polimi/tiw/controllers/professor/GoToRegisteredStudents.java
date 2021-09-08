@@ -1,6 +1,7 @@
 package it.polimi.tiw.controllers.professor;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.thymeleaf.TemplateEngine;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -17,8 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.thymeleaf.TemplateEngine;
 
 import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Professor;
@@ -35,25 +35,17 @@ import it.polimi.tiw.utils.SORTING_TYPE;
 import it.polimi.tiw.utils.SortingHistory;
 import it.polimi.tiw.utils.TemplateHandler;
 
-
-
 /**
  * Servlet implementation class ToRegisteredStudentsPage
  */
 @WebServlet("/GoToRegisteredStudents")
 public class GoToRegisteredStudents extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection;
 	private SortingHistory sortingHistory;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GoToRegisteredStudents() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -75,6 +67,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String examIdString = request.getParameter("examId");
@@ -95,18 +88,18 @@ public class GoToRegisteredStudents extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Null request type, when accessing exam details", templateEngine);
 			return;
 		}
-		
 
 		int examId;
 		int courseId;
 
 		ExamDAO examDAO = new ExamDAO(connection);
 		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
-		Exam exam = null;
-		Optional<Exam> optExam = null;
-		List<Student> students = null;
-
-		LinkedHashMap<Student, MutablePair<Integer, String>> registerMap = null;
+		Exam exam;
+		Optional<Exam> optExam;
+		List<Student> students;
+		LinkedHashMap<Student, MutablePair<Integer, String>> registerMap;
+		HttpSession session = request.getSession(false);
+		Professor professor;
 
 		try {
 			examId = Integer.parseInt(examIdString);
@@ -121,11 +114,7 @@ public class GoToRegisteredStudents extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam's course ID is not a number, when accessing exam details", templateEngine);
 			return;
 		}
-		
 
-		HttpSession session = request.getSession(false);
-		Professor professor;
-		
 		try {
 			professor = (Professor)session.getAttribute("professor");
 		}catch(NullPointerException e) {
@@ -164,19 +153,16 @@ public class GoToRegisteredStudents extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;		
 		}
-		
-		
+
 		request.setAttribute("examId", examId);
-		
-		
+
 		if(students.size()==0) {
-			request.setAttribute("noSubs", true);  //TODO HANDLE NO SUBS HTML PAGE
+			request.setAttribute("noSubs", true);
 			request.setAttribute("courseId", courseId);
 			ForwardHandler.forward(request, response, PathUtils.pathToRegisteredStudents, templateEngine);
 			return;
 		}
-		
-		
+
 		registerMap = students.stream().collect(Collectors.toMap(
                 Function.identity(),
                 student -> getExamRegister(examRegisterDAO, student.getId(), examId, request, response),
@@ -185,7 +171,6 @@ public class GoToRegisteredStudents extends HttpServlet {
                 },
                 LinkedHashMap::new
         ));
-		
 		
        if(requestType.equals("sort")) {
 			
@@ -238,21 +223,15 @@ public class GoToRegisteredStudents extends HttpServlet {
 	
 	private MutablePair<Integer, String> getExamRegister(ExamRegisterDAO examRegisterDAO, int studentId, int examId, HttpServletRequest request, HttpServletResponse response){
 
-
 		try {
 			return examRegisterDAO.getExamRegisterByStudentID(studentId, examId);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			try {
 				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-			} catch (ServletException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			return new MutablePair<Integer, String>(-1, "fail");	
+			return new MutablePair<>(-1 , "fail");
 
 		}
 
@@ -261,13 +240,12 @@ public class GoToRegisteredStudents extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 
 		String examIdString = request.getParameter("examId");
 		String requestType = request.getParameter("requestType");
 		String courseIdString = request.getParameter("courseId");
-		
 		
 		if(requestType == null) {
 			ForwardHandler.forwardToErrorPage(request, response, "Null request type, when modifying exams' grade state", templateEngine);
@@ -286,10 +264,9 @@ public class GoToRegisteredStudents extends HttpServlet {
 
 		int examId;
 		int courseId;
-
 		ExamDAO examDAO = new ExamDAO(connection);
-		Exam exam = null;
-		Optional<Exam> optExam = null;
+		Exam exam;
+		Optional<Exam> optExam;
 
 
 		try {
@@ -355,14 +332,12 @@ public class GoToRegisteredStudents extends HttpServlet {
 			try {	
 				examRegisterDAO.publishGradeByExamID(examId);
 				response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load");
-				return;
-				
+
 			}catch (SQLException e) {
 				
 				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-				return;
-				
 			}
+
 		}else if(requestType.equals("record")) {
 			
 			boolean areAllRecorded;
@@ -383,8 +358,6 @@ public class GoToRegisteredStudents extends HttpServlet {
 				
 				ReportDAO reportDAO = new ReportDAO(connection);
 				Report report = reportDAO.createReport(examId);
-				
-
 				RequestDispatcher rd = request.getRequestDispatcher("GoToReport");
 				request.setAttribute("reportID", report.getReportId());
 				request.setAttribute("courseId", courseId);
@@ -393,12 +366,10 @@ public class GoToRegisteredStudents extends HttpServlet {
 				
 			}catch (SQLException e) {
 				ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-				return;
 			}
 			
 		}else{
 			ForwardHandler.forwardToErrorPage(request, response, "Invalid request type", templateEngine);
-			return;
 		}
 		
 	}

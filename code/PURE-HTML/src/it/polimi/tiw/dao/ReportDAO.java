@@ -12,7 +12,7 @@ import it.polimi.tiw.beans.Student;
 
 public class ReportDAO {
 	
-	private Connection connection;
+	private final Connection connection;
 
 	public ReportDAO(Connection connection) {
 		this.connection = connection;
@@ -36,19 +36,14 @@ public class ReportDAO {
 		
 		Random rand = new Random(System.nanoTime());
 		int reportId = rand.nextInt(2000-1000) + 1000;
-		
-		Report report = null;
-		
-		List<Student> students = null;
-		
+		Report report;
+		List<Student> students;
 		Map<Integer, Integer> studentsGrades = new HashMap<>();
-		
-		
+
 		PreparedStatement preparedStatementReport = null;
 		PreparedStatement preparedStatementUpdateState = null;
 		ExamRegisterDAO registerDAO = new ExamRegisterDAO(connection);
-		
-		
+
 		try {
 			
 			//Delimit the transaction explicitly, not to leave the db in inconsistent state
@@ -71,17 +66,16 @@ public class ReportDAO {
 			connection.commit();
 			
 		}catch(SQLException e) {
-			
+
 			connection.rollback();
-		//	System.out.println(e.toString()); //for debug
-			
 			throw new SQLException(e.getMessage());
 			
 		}finally {
 			
 			connection.setAutoCommit(true);
 			try {
-				
+				assert preparedStatementReport != null;
+				assert preparedStatementUpdateState != null;
 				preparedStatementReport.close();
 				preparedStatementUpdateState.close();
 				
@@ -93,12 +87,8 @@ public class ReportDAO {
 		}
 		
 		try {
-			
 		students = registerDAO.getStudentsByReportId(examId, reportId);
-		
-		
 		}catch(SQLException e) {
-			
 			throw new SQLException(e);
 		}
 		
@@ -106,8 +96,7 @@ public class ReportDAO {
 		int studentGrade;
 		
 		for(Student student : students) {
-			
-			
+
 			try {
 				
 				studentGrade = registerDAO.getExamRegisterByStudentID(student.getId(), examId).getLeft();
@@ -121,28 +110,22 @@ public class ReportDAO {
 		}
 		
 		report = new Report(students, reportId, date, studentsGrades);
-		
 		return report;
-		
 	}
 	
 	public Report getReport(int reportId) throws SQLException {
 		
-		Report report = null;
-		
-		List<Student> students = null;
+		Report report;
+		List<Student> students;
 		Map<Integer, Integer> studentsGrades = new HashMap<>();
 		Date date = null;
 		int examId = 0;
-		
 		ExamRegisterDAO registerDAO = new ExamRegisterDAO(connection);
-		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		String performedAction = " getting from database the newly created report";
 		String query = "SELECT * FROM unidb.report WHERE id = ?";
-		
-		
+
 		try {
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, reportId);
@@ -160,6 +143,7 @@ public class ReportDAO {
 			
 		} finally {
 			try {
+				assert resultSet != null;
 				resultSet.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -172,25 +156,18 @@ public class ReportDAO {
 		}
 		
 		try {
-			
 		students = registerDAO.getStudentsByReportId(examId, reportId);
-		
-		
 		}catch(SQLException e) {
-			
 			throw new SQLException(e);
 		}
 		
 		if(students.isEmpty()) 
 			throw new SQLException("Requested report doesn't exists");
-		
-		
-		
+
 		int studentGrade;
 		
 		for(Student student : students) {
-			
-			
+
 			try {
 				
 				studentGrade = registerDAO.getExamRegisterByStudentID(student.getId(), examId).getLeft();
@@ -204,7 +181,6 @@ public class ReportDAO {
 		}
 		
 		report = new Report(students, reportId, date, studentsGrades);
-		
 		return report;
 		
 	}

@@ -1,9 +1,11 @@
 package it.polimi.tiw.controllers.professor;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
+import org.thymeleaf.TemplateEngine;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -12,8 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.thymeleaf.TemplateEngine;
 
 import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Professor;
@@ -31,17 +31,11 @@ import it.polimi.tiw.utils.TemplateHandler;
  */
 @WebServlet("/GoToReport")
 public class GoToReport extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection;
-	
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GoToReport() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -62,12 +56,12 @@ public class GoToReport extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
 		String reportIdString = request.getParameter("reportID");
-		
 		int examId;
 		int courseId;
 		int reportId;
@@ -103,7 +97,6 @@ public class GoToReport extends HttpServlet {
 		}
 			
 		CourseDAO courseDAO = new CourseDAO(connection);
-			
 
 		//fetching professor courses to get updated courses list
 		try {
@@ -114,7 +107,7 @@ public class GoToReport extends HttpServlet {
 		}
 		
 		try {
-			if(!courseDAO.isCourseIdValid(courseId)) {
+			if(courseDAO.isCourseIdNotValid(courseId)) {
 				ForwardHandler.forwardToErrorPage(request, response,  "Course id doesn't match any currently active course" , templateEngine);
 				return;
 			}
@@ -127,11 +120,10 @@ public class GoToReport extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Course is not held by you", templateEngine);
 			return;
 		}
-		
-		
+
 		ExamDAO examDAO = new ExamDAO(connection);
-		Optional<Exam> optExam = null;
-		Exam exam = null;
+		Optional<Exam> optExam;
+		Exam exam;
 		
 		try {
 			optExam = examDAO.getExamById(examId);
@@ -150,11 +142,9 @@ public class GoToReport extends HttpServlet {
 				ForwardHandler.forwardToErrorPage(request, response, "Exam's course not hold by you!", templateEngine);
 				return;
 			}
-				
-		
-		
 
 		ReportDAO reportDAO = new ReportDAO(connection);
+
 		try {
 			report = reportDAO.getReport(reportId);
 			
@@ -162,9 +152,7 @@ public class GoToReport extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;
 		}
-		
-		
-		
+
 		request.setAttribute("report", report);
 		request.setAttribute("courseId", courseId);
 		request.setAttribute("examId", examId);
@@ -175,6 +163,7 @@ public class GoToReport extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		int examId;
@@ -203,8 +192,6 @@ public class GoToReport extends HttpServlet {
 		}
 	
 		response.sendRedirect(getServletContext().getContextPath() + "/GoToReport?courseId="+ courseId + "&examId=" + examId + "&reportID=" + reportId);
-		
-		
-		
+
 	}
 }

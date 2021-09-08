@@ -1,8 +1,10 @@
 package it.polimi.tiw.controllers.professor;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
+import org.thymeleaf.TemplateEngine;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -11,8 +13,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.thymeleaf.TemplateEngine;
 
 import it.polimi.tiw.beans.Professor;
 import it.polimi.tiw.beans.Student;
@@ -29,18 +29,12 @@ import it.polimi.tiw.utils.TemplateHandler;
 	
 @WebServlet("/GoToModifyStudentGrade")
 public class GoToModifyStudentGrade extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection;
 	HttpSession session = null;
-	
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GoToModifyStudentGrade() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -61,8 +55,8 @@ public class GoToModifyStudentGrade extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
@@ -71,10 +65,8 @@ public class GoToModifyStudentGrade extends HttpServlet {
 		int examId;
 		int courseId;
 		int studentId;
-		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
-		
-		
-		
+
+		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <> (null, null);
 		session = request.getSession(false);
 		Professor professor = (Professor)session.getAttribute("professor");
 		
@@ -99,8 +91,7 @@ public class GoToModifyStudentGrade extends HttpServlet {
 			return;
 		}
 
-		
-		if(!DaoUtils.verifyRequestCommonConstraints(connection, templateEngine, request,response, studentId,examId, courseId, studentInfo, professor))
+		if(DaoUtils.verifyRequestCommonConstraints(connection , templateEngine , request , response , studentId , examId , courseId , studentInfo , professor))
 			return;
 
 		request.setAttribute("studentInfo", studentInfo);
@@ -114,7 +105,9 @@ public class GoToModifyStudentGrade extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
 		String studentIdString = request.getParameter("studentId");		
@@ -146,7 +139,6 @@ public class GoToModifyStudentGrade extends HttpServlet {
 			return;
 		}
 
-
 		try {
 				studentGrade = Integer.parseInt(studentGradeString);
 		}catch (NumberFormatException e) {
@@ -160,27 +152,23 @@ public class GoToModifyStudentGrade extends HttpServlet {
 				response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId);
 				return;
 		}
-		
-			
-		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
+
+		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <> (null, null);
 		request.getSession(false);
 		Professor professor = (Professor)session.getAttribute("professor");
 		
-		if(!DaoUtils.verifyRequestCommonConstraints(connection, templateEngine, request,response, studentId, examId, courseId, studentInfo, professor))
+		if(DaoUtils.verifyRequestCommonConstraints(connection , templateEngine , request , response , studentId , examId , courseId , studentInfo , professor))
 			return;
-		
-		
+
 		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
 
-		
 		try {
 			examRegisterDAO.setGradeByStudentId(studentInfo.getLeft().getId(), examId, studentGrade);
 		} catch (SQLException e) {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;	
 		}
-		
-		
+
 		response.sendRedirect(getServletContext().getContextPath() + "/GoToRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load'");
 		
 	}

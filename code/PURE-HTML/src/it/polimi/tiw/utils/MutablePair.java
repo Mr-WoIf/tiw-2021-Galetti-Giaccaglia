@@ -12,6 +12,7 @@ public class MutablePair<A, B> {
 	    
 	    public MutablePair() {}
 
+	    @Override
 	    public boolean equals(Object other) {
 	        if (other instanceof MutablePair) {
 	            MutablePair<?, ?> otherPair = (MutablePair<?, ?>) other;
@@ -27,6 +28,7 @@ public class MutablePair<A, B> {
 	        return false;
 	    }
 
+	    @Override
 	    public String toString()
 	    { 
 	           return "(" + left + ", " + right + ")"; 

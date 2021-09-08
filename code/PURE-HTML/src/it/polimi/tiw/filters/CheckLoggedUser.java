@@ -2,7 +2,6 @@ package it.polimi.tiw.filters;
 
 import java.io.IOException;
 
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -25,20 +24,10 @@ public class CheckLoggedUser implements Filter {
 	
 	private TemplateEngine templateEngine;
 
-    /**
-     * Default constructor. 
-     */
-    public CheckLoggedUser() {
-        // TODO Auto-generated constructor stub
-    }
-    
-
 	/**
 	 * @see Filter#destroy()
 	 */
-	public void destroy() {
-		// TODO Auto-generated method stub
-	}
+	public void destroy() {}
 
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)

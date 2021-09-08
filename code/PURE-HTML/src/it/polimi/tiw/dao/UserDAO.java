@@ -22,19 +22,13 @@ public class UserDAO {
 		String studentQuery = "SELECT * FROM unidb.student WHERE id = ? AND password = ?";
 		String professorQuery = "Select * FROM unidb.professor WHERE id = ? AND password = ?";
 		Optional<User> optUser;
-		
-		try {	
-			optUser = executeCredentialsQuery(id, pwd, "student", studentQuery);
-			if(optUser.isPresent())
-				return optUser;
-			
-			else return executeCredentialsQuery(id, pwd, "professor", professorQuery);	
-			
-		}
-		finally{ 
-			
-		}
-			
+
+		optUser = executeCredentialsQuery(id, pwd, "student", studentQuery);
+		if(optUser.isPresent())
+			return optUser;
+
+		else return executeCredentialsQuery(id, pwd, "professor", professorQuery);
+
 	}
 	
 	private Optional<User> executeCredentialsQuery(int id, String pwd, String role, String query) throws SQLException {
@@ -66,8 +60,8 @@ public class UserDAO {
 			}
 				finally {
 					try {
+						  assert result != null;
 						result.close();
-						
 					}
 				catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + action);
@@ -129,6 +123,7 @@ public class UserDAO {
 				finally {
 				
 				try {
+					assert result != null;
 					result.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + action);
@@ -180,6 +175,7 @@ public class UserDAO {
 			
 		} finally {
 			try {
+				   assert resultSet != null;
 				resultSet.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -228,6 +224,7 @@ public class UserDAO {
 			
 		} finally {
 			try {
+				   assert resultSet != null;
 				resultSet.close();
 				
 			}catch (Exception e) {

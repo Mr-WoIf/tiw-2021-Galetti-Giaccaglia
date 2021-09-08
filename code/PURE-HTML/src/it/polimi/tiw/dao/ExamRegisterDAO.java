@@ -8,9 +8,8 @@ import it.polimi.tiw.beans.Student;
 import it.polimi.tiw.utils.MutablePair;
 
 public class ExamRegisterDAO {
-	
-	
-	private Connection connection;
+
+	private final Connection connection;
 
 	public ExamRegisterDAO(Connection connection) {
 		this.connection = connection;
@@ -19,10 +18,7 @@ public class ExamRegisterDAO {
 	public void setGradeByStudentId(int studentId, int examId, int grade) throws SQLException {
 		
 		String performedAction = " setting student grade in the database";
-		
 		String queryAddGrade = "UPDATE unidb.exam_register SET grade = ?, state = 'inserted' WHERE exam_id = ? AND student_id = ?";
-		
-		
 		PreparedStatement preparedStatementAddUser = null;	
 		
 		try {
@@ -32,20 +28,15 @@ public class ExamRegisterDAO {
 			preparedStatementAddUser.setInt(2, examId);
 			preparedStatementAddUser.setInt(3, studentId);
 			preparedStatementAddUser.executeUpdate();
-			
-			
+
 		}catch(SQLException e) {
-			
 			throw new SQLException("Error accessing the DB when" + performedAction);
-			
 		}finally {
-			
 			try {
-				
+				assert preparedStatementAddUser != null;
 				preparedStatementAddUser.close();
 				
 			}catch (Exception e) {
-				
 				throw new SQLException("Error closing the statement when" + performedAction);
 				
 			}
@@ -56,10 +47,7 @@ public class ExamRegisterDAO {
 
 		
 		String performedAction = " setting student grade state in the database";
-		
 		String queryAddGrade =  "UPDATE unidb.exam_register SET state = ? WHERE exam_id = ? AND student_id = ?";
-		
-		
 		PreparedStatement preparedStatementAddUser = null;	
 		
 		try {
@@ -72,11 +60,9 @@ public class ExamRegisterDAO {
 			
 		}catch(SQLException e) {
 			throw new SQLException("Error accessing the DB when" + performedAction);
-			
 		}finally {
-			
 			try {
-				
+				assert preparedStatementAddUser != null;
 				preparedStatementAddUser.close();
 				
 			}catch (Exception e) {
@@ -99,27 +85,21 @@ public class ExamRegisterDAO {
 				+ "WHERE exam_register.exam_id = ? "
 				+ "ORDER BY student.surname DESC";
 		
-		PreparedStatement preparedStatement = null;
+		PreparedStatement preparedStatement;
 		ResultSet resultSet = null;
-		
 		List<Student> students = new ArrayList<>();
+		preparedStatement = connection.prepareStatement(query);
+		preparedStatement.setInt(1, examId);
 
-		
-			
-			preparedStatement = connection.prepareStatement(query);
-			preparedStatement.setInt(1, examId);
-			
-			
-		try {	
-			
+		try {
+
 			resultSet = preparedStatement.executeQuery();
-			
+
 			if(!resultSet.isBeforeFirst())
 				return students;
-			
+
 			while(resultSet.next()) {
-		
-				
+
 				Student student = new Student(resultSet.getInt("student_id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "student", resultSet.getString("school"), resultSet.getString("degree"));
 				students.add(student);
 			}
@@ -131,7 +111,7 @@ public class ExamRegisterDAO {
 		} finally {
 			try {
 				if(resultSet!=null)
-				resultSet.close();
+					resultSet.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
 			}
@@ -159,7 +139,6 @@ public class ExamRegisterDAO {
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		
 		List<Student> students = new ArrayList<>();
 		
 		try {
@@ -167,11 +146,9 @@ public class ExamRegisterDAO {
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, examId);
 			preparedStatement.setInt(2, reportId);
-			
 			resultSet = preparedStatement.executeQuery();
 			
 			while(resultSet.next()) {
-		
 				Student student = new Student(resultSet.getInt("student_id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "student", resultSet.getString("school"), resultSet.getString("degree"));
 				students.add(student);
 			}
@@ -187,6 +164,7 @@ public class ExamRegisterDAO {
 				throw new SQLException("Error closing the result set when" + performedAction);
 			}
 			try {
+				assert preparedStatement != null;
 				preparedStatement.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the statement when" + performedAction);
@@ -199,15 +177,13 @@ public class ExamRegisterDAO {
 	public void publishGradeByExamID(int examId) throws SQLException {
 		
 		String performedAction = " changing all students grade state in the database from insterted to published";
-		
-		String queryAddGrade =  "UPDATE unidb.exam_register SET state = 'published' WHERE state = 'inserted'";
-		
-		
+		String queryAddGrade =  "UPDATE unidb.exam_register SET state = 'published' WHERE state = 'inserted' AND exam_id = ?";
 		PreparedStatement preparedStatementAddUser = null;	
 		
 		try {
-			
+
 			preparedStatementAddUser = connection.prepareStatement(queryAddGrade);
+			preparedStatementAddUser.setInt(1, examId);
 			preparedStatementAddUser.executeUpdate();
 			
 		}catch(SQLException e) {
@@ -216,13 +192,11 @@ public class ExamRegisterDAO {
 		}finally {
 			
 			try {
-				
+				assert preparedStatementAddUser != null;
 				preparedStatementAddUser.close();
 				
 			}catch (Exception e) {
-				
 				throw new SQLException("Error closing the statement when" + performedAction);
-				
 			}
 		}
 		
@@ -232,14 +206,11 @@ public class ExamRegisterDAO {
 		
 
 		String performedAction = " finding student's exam grade and state by exam id and student id";
-		
 		String query = "SELECT grade, state FROM unidb.exam_register WHERE student_id = ? AND exam_id = ? ";
-			
-		
+
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		
-		MutablePair<Integer, String> examRegister = null;
+		MutablePair<Integer, String> examRegister;
 		
 		try {
 			
@@ -256,6 +227,7 @@ public class ExamRegisterDAO {
 			
 		} finally {
 			try {
+				assert resultSet != null;
 				resultSet.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -273,16 +245,14 @@ public class ExamRegisterDAO {
 	}
 	
 	public boolean areAllGradesRecorded(int examId) throws SQLException {
-	List<String> gradeStates = getGradeStates(examId);	
-	boolean areAllRecorded = gradeStates.stream().allMatch(state -> state.equals("recorded")) || (gradeStates.stream().noneMatch(state -> state.equals("refused")) && gradeStates.stream().noneMatch(state -> state.equals("published")));
-	return areAllRecorded;
+	List<String> gradeStates = getGradeStates(examId);
+		return gradeStates.stream().allMatch(state -> state.equals("recorded")) || (gradeStates.stream().noneMatch(state -> state.equals("refused")) && gradeStates.stream().noneMatch(state -> state.equals("published")));
 	}
 	
 	
 	public boolean areAllGradesPublished(int examId) throws SQLException {
-		List<String> gradeStates = getGradeStates(examId);	
-		boolean areAllPublished = (gradeStates.stream().allMatch(state -> state.equals("published"))) || gradeStates.stream().noneMatch(state -> state.equals("inserted"));
-		return areAllPublished;
+		List<String> gradeStates = getGradeStates(examId);
+		return (gradeStates.stream().allMatch(state -> state.equals("published"))) || gradeStates.stream().noneMatch(state -> state.equals("inserted"));
 	}
 	
 	
@@ -314,7 +284,7 @@ public class ExamRegisterDAO {
 		}finally {
 			
 			try {
-				
+				assert preparedStatement!=null;
 				preparedStatement.close();
 				
 			}catch (Exception e) {
@@ -354,6 +324,7 @@ public class ExamRegisterDAO {
 			
 		} finally {
 			try {
+				assert resultSet !=null;
 				resultSet.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);

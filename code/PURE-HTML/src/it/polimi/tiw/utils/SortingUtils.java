@@ -10,9 +10,9 @@ import it.polimi.tiw.beans.Student;
 
 public class SortingUtils {
 
+    private SortingUtils(){}
 
     public static class NaturalComparator<T extends Comparable<? super T>> implements Comparator<T> {
-
         public int compare(T a, T b) {
             return a.compareTo(b);
         }
@@ -20,108 +20,106 @@ public class SortingUtils {
     
     //currently unused method (sql query is doing the job)
     public static void sortCoursesListByNameDescending(List<Course> list) {
-      	 Comparator<String> cmp = new NaturalComparator<String>();
-      	list.sort((o1, o2) -> {
-      		return cmp.compare(o2.getName(), o1.getName());
-      	});
+      	 Comparator<String> cmp = new NaturalComparator<>();
+      	list.sort((o1, o2) -> cmp.compare(o2.getName(), o1.getName()));
       }
-    
+
 
     public static void sortByNameAscending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsNames(list, new NaturalComparator<String>(), true);
+        sortStudentsNames(list, new NaturalComparator<>(), true);
         fillMap(list, unsortedMap);
     }
     
     public static void sortByNameDescending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsNames(list, new NaturalComparator<String>(), false);
+        sortStudentsNames(list, new NaturalComparator<>(), false);
         fillMap(list, unsortedMap);
     }
 
     public static void sortBySurnameAscending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsSurnames(list, new NaturalComparator<String>(), true);
+        sortStudentsSurnames(list, new NaturalComparator<>(), true);
         fillMap(list, unsortedMap);
     }
 
     public static void sortBySurnameDescending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsSurnames(list, new NaturalComparator<String>(), false);
+        sortStudentsSurnames(list, new NaturalComparator<>(), false);
         fillMap(list, unsortedMap);
     }
 
     public static void sortByIDsAscending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsIDs(list, new NaturalComparator<Integer>(), true);
+        sortStudentsIDs(list, new NaturalComparator<>(), true);
         fillMap(list, unsortedMap);
     }
 
     public static void sortByIDsDescending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsIDs(list, new NaturalComparator<Integer>(), false);
+        sortStudentsIDs(list, new NaturalComparator<>(), false);
         fillMap(list, unsortedMap);
     }
 
     public static void sortByEmailAscending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsEmails(list, new NaturalComparator<String>(), true);
+        sortStudentsEmails(list, new NaturalComparator<>(), true);
         fillMap(list, unsortedMap);
     }
 
     public static void sortByEmailDescending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsEmails(list, new NaturalComparator<String>(), false);
+        sortStudentsEmails(list, new NaturalComparator<>(), false);
         fillMap(list, unsortedMap);
     }
 
     public static void sortByDegreeAscending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsDegrees(list, new NaturalComparator<String>(), true);
+        sortStudentsDegrees(list, new NaturalComparator<>(), true);
         fillMap(list, unsortedMap);
     }
 
     public static void sortByDegreeDescending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsDegrees(list, new NaturalComparator<String>(), false);
+        sortStudentsDegrees(list, new NaturalComparator<>(), false);
         fillMap(list, unsortedMap);
     }
 
     public static void sortByGradeAscending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsGrades(list, new NaturalComparator<Integer>(), true);
+        sortStudentsGrades(list, new NaturalComparator<>(), true);
         fillMap(list, unsortedMap);
     }
 
     public static void sortByGradeDescending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsGrades(list, new NaturalComparator<Integer>(), false);
+        sortStudentsGrades(list, new NaturalComparator<>(), false);
         fillMap(list, unsortedMap);
     }
 
     public static void sortByGradeStateAscending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsGradeStates(list, new NaturalComparator<String>(), true);
+        sortStudentsGradeStates(list, new NaturalComparator<>(), true);
         fillMap(list, unsortedMap);
     }
 
     public static void sortByGradeStateDescending(Map<Student, MutablePair<Integer,String>> unsortedMap) {
 
         List<Map.Entry<Student, MutablePair<Integer, String>>> list = new LinkedList<>(unsortedMap.entrySet());
-        sortStudentsGradeStates(list, new NaturalComparator<String>(), false);
+        sortStudentsGradeStates(list, new NaturalComparator<>(), false);
         fillMap(list, unsortedMap);
     }
  
@@ -155,17 +153,16 @@ public class SortingUtils {
         });
     }
 
-    private static <T> Map<Student, MutablePair<Integer,String>> fillMap( List<Map.Entry<Student, MutablePair<Integer, String>>> list ,Map<Student, MutablePair<Integer,String>> unsortedMap)
+    private static void fillMap(List<Map.Entry<Student, MutablePair<Integer, String>>> list , Map<Student, MutablePair<Integer,String>> unsortedMap)
     {
 
-// Maintaining insertion order with the help of LinkedList
+        // Maintaining insertion order with the help of LinkedList
         unsortedMap.clear();
         for (Map.Entry<Student, MutablePair<Integer,String>> entry : list)
         {
             unsortedMap.put(entry.getKey(), entry.getValue());
         }
 
-        return unsortedMap; //now sorted
     }
 
     private static void sortStudentsEmails(List<Map.Entry<Student, MutablePair<Integer, String>>> list, Comparator<String> cmp, final boolean ascendingOrder) {

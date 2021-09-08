@@ -59,8 +59,7 @@ public enum SORTING_TYPE {
         }
        
     },
-        
-        
+
     GRADE{
         @Override
         public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state){
@@ -88,7 +87,7 @@ public enum SORTING_TYPE {
     INVALID{
         @Override
         public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state){
-
+        //no sorting handling needed
         }
     };
 
@@ -100,5 +99,4 @@ public enum SORTING_TYPE {
 
     public abstract void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, ThreeState state);
 
-   
 }

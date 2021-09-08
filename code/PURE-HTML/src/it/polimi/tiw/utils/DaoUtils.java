@@ -20,6 +20,8 @@ import it.polimi.tiw.dao.ExamDAO;
 import it.polimi.tiw.dao.ExamRegisterDAO;
 
 public class DaoUtils {
+
+	private DaoUtils(){}
 	
 	public static boolean verifyRequestCommonConstraints(	
 			
@@ -35,78 +37,77 @@ public class DaoUtils {
 			
 ) throws ServletException, IOException {
 
-Optional<Exam> optExam = null;
-Student student;
-MutablePair<Integer, String> studentExamInfo;
-CourseDAO courseDAO = new CourseDAO(connection);
-ExamDAO examDAO = new ExamDAO(connection);
-ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
-Exam exam = null;
+	Optional<Exam> optExam;
+	Student student;
+	MutablePair<Integer, String> studentExamInfo;
+	CourseDAO courseDAO = new CourseDAO(connection);
+	ExamDAO examDAO = new ExamDAO(connection);
+	ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
+	Exam exam;
 
 
-try {
-	if(!courseDAO.isCourseIdValid(courseId)) {
-		ForwardHandler.forwardToErrorPage(request, response, "Course id doesn't match any currently active course", templateEngine);
-		return false;
+	try {
+		if(courseDAO.isCourseIdNotValid(courseId)) {
+			ForwardHandler.forwardToErrorPage(request, response, "Course id doesn't match any currently active course", templateEngine);
+			return true;
+		}
+	} catch (SQLException e) {
+		ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+		return true;
 	}
-} catch (SQLException e) {
+
+	//fetching professor courses to get updated courses list
+	try {
+	optExam = examDAO.getExamById(examId);
+	} catch (SQLException e) {
 	ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-	return false;		
-}
+	return true;
+	}
 
-//fetching professor courses to get updated courses list
-try {
-optExam = examDAO.getExamById(examId);
-} catch (SQLException e) {
-ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-return false;		
-}
+	if(optExam.isEmpty()) {
+	ForwardHandler.forwardToErrorPage(request, response, "Exam not existing", templateEngine);
+	return true;
+	}
 
-if(optExam.isEmpty()) {
-ForwardHandler.forwardToErrorPage(request, response, "Exam not existing", templateEngine);
-return false;
-}
+	exam = optExam.get();
 
-exam = optExam.get();
+	if(user instanceof Professor) {
 
-if(user instanceof Professor) {
-	
-	Professor professor = (Professor)user;
-	if(professor.getCourseById(exam.getCourseId()).isEmpty()) {
-	ForwardHandler.forwardToErrorPage(request, response, "Exam's course not hold by you!", templateEngine);
+		Professor professor = (Professor)user;
+		if(professor.getCourseById(exam.getCourseId()).isEmpty()) {
+		ForwardHandler.forwardToErrorPage(request, response, "Exam's course not hold by you!", templateEngine);
+		return true;
+		}
+
+	}
+
+	try {
+		student = examRegisterDAO.getStudentsByExamId(examId).stream().filter(studentBean -> studentBean.getId()== studentId).findFirst().orElseThrow();
+	} catch (SQLException e) {
+		ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+		return true;
+	} catch(NoSuchElementException e) {
+		String customErrorMessage = user instanceof Professor ? "Student is not subscribed to this exam!" : "You are not subscribed to this exam!";
+		ForwardHandler.forwardToErrorPage(request, response, customErrorMessage , templateEngine);
+	return true;
+	}
+
+	try {
+		studentExamInfo = examRegisterDAO.getExamRegisterByStudentID(studentId, examId);
+	} catch(SQLException e) {
+		ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
+		return true;
+	}
+
+	if((user instanceof Professor) && (studentExamInfo.getRight().equals("published") || studentExamInfo.getRight().equals("refused") || studentExamInfo.getRight().equals("recorded"))) {
+		ForwardHandler.forwardToErrorPage(request, response, "You can't modify this student's exam data, because exam grade state is not 'inserted'", templateEngine);
+		return true;
+	}
+
+	studentInfo.setLeft(student);
+	studentInfo.setRight(studentExamInfo);
+
 	return false;
 	}
-	
-}
-
-try {
-student = examRegisterDAO.getStudentsByExamId(examId).stream().filter(studentBean -> studentBean.getId()== studentId).findFirst().orElseThrow();
-} catch (SQLException e) {
-ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-return false;		
-} catch(NoSuchElementException e) {
-String customErrorMessage = user instanceof Professor ? "Student is not subscribed to this exam!" : "You are not subscribed to this exam!";
-ForwardHandler.forwardToErrorPage(request, response, customErrorMessage , templateEngine);
-return false;	
-}
-
-
-try {
-studentExamInfo = examRegisterDAO.getExamRegisterByStudentID(studentId, examId);
-} catch(SQLException e) {
-ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
-return false;		
-}
-
-if((user instanceof Professor) && (studentExamInfo.getRight().equals("published") || studentExamInfo.getRight().equals("refused") || studentExamInfo.getRight().equals("recorded"))) {
-ForwardHandler.forwardToErrorPage(request, response, "You can't modify this student's exam data, because exam grade state is not 'inserted'", templateEngine);
-return false;		
-}
-
-studentInfo.setLeft(student);
-studentInfo.setRight(studentExamInfo);
-
-return true;	
-}
 
 }

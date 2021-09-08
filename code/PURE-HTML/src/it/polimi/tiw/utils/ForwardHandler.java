@@ -10,17 +10,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
-
 public final class ForwardHandler {
+
+	private ForwardHandler(){}
 	
-	public static void forwardToErrorPage(HttpServletRequest request, HttpServletResponse response, String error, TemplateEngine templateEngine) throws ServletException, IOException{
+	public static void forwardToErrorPage(HttpServletRequest request, HttpServletResponse response, String error, TemplateEngine templateEngine) throws IOException{
 		
 		request.setAttribute("error", error);
 		forward(request, response, PathUtils.pathToErrorPage, templateEngine);
-		return;
+
 	}
 	
-	public static void forward(HttpServletRequest request, HttpServletResponse response, String path, TemplateEngine templateEngine) throws ServletException, IOException{
+	public static void forward(HttpServletRequest request, HttpServletResponse response, String path, TemplateEngine templateEngine) throws IOException{
 		
 		ServletContext servletContext = request.getServletContext();
 		WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());

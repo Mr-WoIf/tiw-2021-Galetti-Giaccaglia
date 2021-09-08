@@ -9,10 +9,10 @@ import it.polimi.tiw.utils.SORTING_TYPE.ThreeState;
 
 public class SortingHistory {
 	
-	private Map<SORTING_TYPE, SORTING_TYPE.ThreeState> typesMap;
+	private final Map<SORTING_TYPE, SORTING_TYPE.ThreeState> typesMap;
 	
 	public SortingHistory() {
-		typesMap = Arrays.asList(SORTING_TYPE.values()).stream().collect(Collectors.toMap(type -> type, type -> SORTING_TYPE.ThreeState.UNSET));
+		typesMap = Arrays.stream(SORTING_TYPE.values()).collect(Collectors.toMap(type -> type, type -> SORTING_TYPE.ThreeState.UNSET));
 	}
 	
 	public void sort(Map<Student, MutablePair<Integer,String>> unsortedMap, SORTING_TYPE type) {
@@ -20,8 +20,7 @@ public class SortingHistory {
 		type.sort(unsortedMap, state);
 		toggleState(type);
 	}
-	
-	
+
 	private void toggleState(SORTING_TYPE type){ 
 		 SORTING_TYPE.ThreeState prevState = typesMap.get(type);
 		 SORTING_TYPE.ThreeState newState = prevState.equals(SORTING_TYPE.ThreeState.ASCENDING)? SORTING_TYPE.ThreeState.DESCENDING : SORTING_TYPE.ThreeState.ASCENDING;

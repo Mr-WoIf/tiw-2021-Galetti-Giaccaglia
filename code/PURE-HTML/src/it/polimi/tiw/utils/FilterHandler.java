@@ -1,13 +1,8 @@
 package it.polimi.tiw.utils;
 
-import java.io.IOException;
-
-import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -19,10 +14,10 @@ import it.polimi.tiw.beans.Professor;
 import it.polimi.tiw.beans.Student;
 
 public class FilterHandler {
-	
 
-		
-	public static TemplateEngine initHandler(FilterConfig filterConfig) throws ServletException {
+	private FilterHandler(){}
+
+	public static TemplateEngine initHandler(FilterConfig filterConfig) {
 
 		ServletContext servletContext = filterConfig.getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
@@ -31,7 +26,7 @@ public class FilterHandler {
 		
 	}
 	
-	public static <T> boolean doFilterHandler(ServletRequest request, ServletResponse response, FilterChain chain, Class<T> expectedClass)  throws IOException, ServletException {
+	public static <T> boolean doFilterHandler(ServletRequest request , Class<T> expectedClass) {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		
@@ -40,11 +35,10 @@ public class FilterHandler {
 		
 		if(session!=null) {
 			Object user = session.getAttribute("user");
-			
-			
-			if( user==null ||
-					( !(expectedClass.getClass().getTypeName().equals(Professor.class.getTypeName())) && (user instanceof Professor)) || (!(expectedClass.getClass().getTypeName().equals(Student.class.getTypeName())) && (user instanceof Student))) 
-					return false;
+
+
+			return user != null &&
+					(expectedClass.getTypeName().equals(Professor.class.getTypeName()) || (!(user instanceof Professor))) && (expectedClass.getTypeName().equals(Student.class.getTypeName()) || (!(user instanceof Student)));
 				
 		}	    
 		

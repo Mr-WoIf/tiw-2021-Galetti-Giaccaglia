@@ -1,9 +1,11 @@
 package it.polimi.tiw.controllers.student;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
+import org.thymeleaf.TemplateEngine;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -12,8 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.thymeleaf.TemplateEngine;
 
 import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Student;
@@ -32,18 +32,11 @@ import it.polimi.tiw.utils.TemplateHandler;
  */
 @WebServlet("/GoToExam")
 public class GoToExam extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private TemplateEngine templateEngine;
 	private Connection connection;
-	private HttpSession session;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GoToExam() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -65,15 +58,16 @@ public class GoToExam extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
-		
+
 		int examId;
 		int courseId;
 		boolean hasBeenPublished = false;
-		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
+		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <> (null, null);
 		
 		if(courseIdString == null) {
 			ForwardHandler.forwardToErrorPage(request, response, "Null course ID, when accessing course exams details", templateEngine);
@@ -84,15 +78,12 @@ public class GoToExam extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Null exam ID, when accessing course exams details", templateEngine);
 			return;
 		}
-		
-		session = request.getSession(false);
-		Student student = (Student)session.getAttribute("student");
-		int studentId = student.getId();
-		
-		CourseDAO courseDAO = new CourseDAO(connection);
-	
 
-		
+		HttpSession session = request.getSession(false);
+		Student student = (Student) session.getAttribute("student");
+		int studentId = student.getId();
+		CourseDAO courseDAO = new CourseDAO(connection);
+
 		try {
 		examId = Integer.parseInt(examIdString);
 		}catch (NumberFormatException e) {
@@ -106,11 +97,9 @@ public class GoToExam extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Chosen exam's course id is not a number, when accessing exam details", templateEngine);
 			return;
 		}
-	
-		
-		if(!DaoUtils.verifyRequestCommonConstraints(connection, templateEngine, request,response,studentId, examId, courseId, studentInfo, student))
-			return;
 
+		if(DaoUtils.verifyRequestCommonConstraints(connection , templateEngine , request , response , studentId , examId , courseId , studentInfo , student))
+			return;
 
 		//fetching professor courses to get updated courses list
 		try {
@@ -119,16 +108,12 @@ public class GoToExam extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, e.getMessage(), templateEngine);
 			return;		
 		}
-		
 
 		if(student.getCourseById(courseId).isEmpty()) {
 			ForwardHandler.forwardToErrorPage(request, response, "You are not subscribed to this course!", templateEngine);
 			return;
 		}
-		
-		
 
-		
 		if(!(studentInfo.getRight().getRight().equals("inserted") || studentInfo.getRight().getRight().equals("not inserted"))) {
 			hasBeenPublished = true;
 			request.setAttribute("studentInfo", studentInfo);
@@ -141,23 +126,22 @@ public class GoToExam extends HttpServlet {
 		
 		ForwardHandler.forward(request, response, PathUtils.pathToGradePageStudent, templateEngine);
 
-
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		int examId;
 		int courseId;
 		ExamDAO examDAO = new ExamDAO(connection);
 		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
-		Exam exam = null;
-		Optional<Exam> optExam = null;
-		MutablePair<Integer, String> register = null;
+		Exam exam;
+		Optional<Exam> optExam;
+		MutablePair<Integer, String> register;
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
 
@@ -170,7 +154,6 @@ public class GoToExam extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Null course ID, when accessing course exams details", templateEngine);
 			return;
 		}
-		
 		
 		try {
 			examId = Integer.parseInt(examIdString);
@@ -186,7 +169,6 @@ public class GoToExam extends HttpServlet {
 			ForwardHandler.forwardToErrorPage(request, response, "Invalid course Id related to exam Id", templateEngine);
 			return;
 		}
-		
 
 		HttpSession session = request.getSession(false);
 		Student student = (Student) session.getAttribute("student");
