@@ -10,31 +10,24 @@ import it.polimi.tiw.beans.*;
 
 public class UserDAO {
 	
-	private Connection con;
+	private final Connection con;
 
 	public UserDAO(Connection connection) {
 		this.con = connection;
 	}
-	
 
 	public Optional<User> findUser(int id, String pwd) throws SQLException {
 		
 		String studentQuery = "SELECT * FROM unidb.student WHERE id = ? AND password = ?";
 		String professorQuery = "Select * FROM unidb.professor WHERE id = ? AND password = ?";
 		Optional<User> optUser;
-		
-		try {	
-			optUser = executeCredentialsQuery(id, pwd, "student", studentQuery);
-			if(optUser.isPresent())
-				return optUser;
-			
-			else return executeCredentialsQuery(id, pwd, "professor", professorQuery);	
-			
-		}
-		finally{ 
-			
-		}
-			
+
+		optUser = executeCredentialsQuery(id, pwd, "student", studentQuery);
+		if(optUser.isPresent())
+			return optUser;
+
+		else return executeCredentialsQuery(id, pwd, "professor", professorQuery);
+
 	}
 	
 	private Optional<User> executeCredentialsQuery(int id, String pwd, String role, String query) throws SQLException {
@@ -57,7 +50,7 @@ public class UserDAO {
 					while(result.next()) {
 					
 					User user = new User(result.getInt("id"), result.getString("mail"), result.getString("name"), result.getString("surname"), role);
-					return Optional.ofNullable(user);	
+					return Optional.of(user);
 					}
 				}
 				
@@ -66,13 +59,14 @@ public class UserDAO {
 			}
 				finally {
 					try {
+						assert result != null;
 						result.close();
 						
 					}
 				catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + action);
+
 			}try {
-				
 				preparedStatement.close();
 			
 			}catch (Exception e) {
@@ -88,19 +82,15 @@ public class UserDAO {
 		
 	public Optional<User> getUserById(int id) throws SQLException{
 
-			
 			String studentQuery = "SELECT  * FROM unidb.student WHERE id = ?";
 			String professorQuery = "Select * FROM unidb.professor WHERE id = ?";
 			Optional<User> optUser;
-			
 			optUser = executeIdQuery(id , "student", studentQuery);
 				
 			if(optUser.isPresent())
 					return optUser;
 				
-			else return executeIdQuery(id, "professor", professorQuery);	
-				
-				
+			else return executeIdQuery(id, "professor", professorQuery);
 		}
 
 	private Optional<User> executeIdQuery(int id, String role, String query) throws SQLException {
@@ -119,7 +109,7 @@ public class UserDAO {
 				else {
 					result.next();
 					User user = new User(result.getInt("id"), result.getString("mail"), result.getString("name"), result.getString("surname"), role);
-					return Optional.ofNullable(user);
+					return Optional.of(user);
 					
 				}
 				
@@ -127,8 +117,9 @@ public class UserDAO {
 				throw new SQLException("Error accessing the DB when" + action);
 			}
 				finally {
-				
+
 				try {
+					assert result != null;
 					result.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + action);
@@ -144,16 +135,11 @@ public class UserDAO {
 		}
 			
 		}
-			
-	
-	
+
 	public Student findStudentById(int studentId) throws SQLException{
-		
 
 		String performedAction = " finding student by id";
-		
 		String query = "SELECT * FROM unidb.student WHERE id = ?";
-		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		Student student = null;
@@ -169,17 +155,15 @@ public class UserDAO {
 				return null;
 			
 			while(resultSet.next()) {
-		
-				
 				student = new Student(resultSet.getInt("id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "student", resultSet.getString("school"), resultSet.getString("degree"));
 			}
-			
 			
 		} catch(SQLException e) {
 			throw new SQLException("Error accessing the DB when" + performedAction);
 			
 		} finally {
 			try {
+				assert resultSet != null;
 				resultSet.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -195,12 +179,9 @@ public class UserDAO {
 	}
 	
 	public Professor findProfessorById(int professorId) throws SQLException{
-		
 
 		String performedAction = " finding professor by id";
-		
 		String query = "SELECT id, mail, name, surname, department FROM unidb.professor WHERE id = ?";
-		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		Professor professor = null;
@@ -209,8 +190,7 @@ public class UserDAO {
 			
 			preparedStatement = con.prepareStatement(query);
 			preparedStatement.setInt(1, professorId);
-			
-			
+
 			resultSet = preparedStatement.executeQuery();
 			
 			if (!resultSet.isBeforeFirst()) // no results
@@ -220,14 +200,13 @@ public class UserDAO {
 				professor = new Professor(resultSet.getInt("id"), resultSet.getString("mail"),resultSet.getString("name"), resultSet.getString("surname"),  "professor", resultSet.getString("department"));
 				
 			}
-			
-			
-			
+
 		} catch(SQLException e) {
 			throw new SQLException("Error accessing the DB when" + performedAction);
 			
 		} finally {
 			try {
+				assert resultSet != null;
 				resultSet.close();
 				
 			}catch (Exception e) {
@@ -242,6 +221,5 @@ public class UserDAO {
 		
 		return professor;
 	}
-	
-	
+
 }

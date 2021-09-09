@@ -6,19 +6,16 @@ import it.polimi.tiw.beans.Student;
 import it.polimi.tiw.utils.MutablePair;
 
 public class ExamRegisteredStudents {
-	
-	
-	private int examId;
-	private boolean noSubs;
-	private int courseId;
-	private boolean areAllRecorded;
-	private boolean areAllPublished;
+
+	private final int examId;
+	private final boolean noSubs;
+	private final int courseId;
+	private final boolean areAllRecorded;
+	private final boolean areAllPublished;
 	LinkedHashMap<Student, MutablePair<Integer, String>> registerMap;
-	
-	
-	
+
 	public ExamRegisteredStudents(int examId, boolean noSubs, int courseId, boolean areAllRecorded,
-			boolean areAllPublished, LinkedHashMap<Student, MutablePair<Integer, String>> registerMap) {
+								  boolean areAllPublished, LinkedHashMap<Student, MutablePair<Integer, String>> registerMap) {
 		this.examId = examId;
 		this.noSubs = noSubs;
 		this.courseId = courseId;
@@ -35,29 +32,20 @@ public class ExamRegisteredStudents {
 		return noSubs;
 	}
 	
-	
 	public int getCourseId() {
 		return courseId;
 	}
 	
-	
 	public boolean isAreAllRecorded() {
 		return areAllRecorded;
 	}
-	
-	
+
 	public boolean isAreAllPublished() {
 		return areAllPublished;
 	}
-	
-	
+
 	public LinkedHashMap<Student, MutablePair<Integer, String>> getRegisterMap() {
 		return registerMap;
 	}
-
-	
-	
-	
-	
 
 }

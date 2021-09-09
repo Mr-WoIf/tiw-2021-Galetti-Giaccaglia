@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ResponseUtils {
 
+	private ResponseUtils(){}
+
 	public static void handleResponseCreation(HttpServletResponse httpResponse, int responseCode, String message) throws IOException {
 		httpResponse.setStatus(responseCode);
 		httpResponse.getWriter().println(message);

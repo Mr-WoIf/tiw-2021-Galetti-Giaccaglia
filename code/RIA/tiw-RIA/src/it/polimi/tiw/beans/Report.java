@@ -8,10 +8,10 @@ import java.util.Objects;
 
 public class Report {
 	
-	private List<Student> students;
-	private int reportId;
-	private Date reportDate;
-	private Map<Integer, Integer> studentsGrades;
+	private final List<Student> students;
+	private final int reportId;
+	private final Date reportDate;
+	private final Map<Integer, Integer> studentsGrades;
 	
 	public Report(List<Student> students, int reportId, Date reportDate, Map<Integer, Integer> studentsGrades) {
 		
@@ -21,7 +21,6 @@ public class Report {
 		this.studentsGrades = studentsGrades;
 
 	}
-	
 
 	public List<Student> getStudents() {
 		return students;
@@ -38,14 +37,11 @@ public class Report {
 	public String getPrettyPrintedDate() {
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		String format = formatter.format(reportDate);
-		return format;
+		return formatter.format(reportDate);
 	}
 
 	public int getStudentGrade(int studentId) {
 		return Objects.nonNull(studentsGrades.get(studentId)) ? studentsGrades.get(studentId) : -1;
 	}
-	
-	
 
 }

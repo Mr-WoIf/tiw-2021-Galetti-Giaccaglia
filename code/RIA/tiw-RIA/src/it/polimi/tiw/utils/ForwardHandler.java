@@ -10,8 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
-
 public final class ForwardHandler {
+
+	private ForwardHandler(){}
 	
 	public static void forward(HttpServletRequest request, HttpServletResponse response, String path, TemplateEngine templateEngine) throws ServletException, IOException{
 		

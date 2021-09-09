@@ -1,9 +1,13 @@
 package it.polimi.tiw.controllers.professor;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,9 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import it.polimi.tiw.beans.Course;
 import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Professor;
@@ -26,24 +27,16 @@ import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.MutablePair;
 import it.polimi.tiw.utils.ResponseUtils;
 
-
-
 /**
  * Servlet implementation class ToHoldCoursePage
  */
 @WebServlet("/GetHoldCourse")
 @MultipartConfig
 public class GetHoldCourse extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GetHoldCourse() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -63,8 +56,8 @@ public class GetHoldCourse extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 
 		String courseIdString = request.getParameter("courseId");
 
@@ -74,11 +67,10 @@ public class GetHoldCourse extends HttpServlet {
 		}
 
 		int courseId;
-
 		CourseDAO courseDAO = new CourseDAO(connection);
-		Course course = null;
+		Course course;
 		ExamDAO examDAO = new ExamDAO(connection);
-		List<Exam> exams = null;
+		List<Exam> exams;
 
 		try {
 			courseId = Integer.parseInt(courseIdString);
@@ -94,8 +86,6 @@ public class GetHoldCourse extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_UNAUTHORIZED, "You are not authorized to perform this action!");
 			return;	
 		}
-			
-			
 
 		//fetching professor courses to get updated courses list
 		try {
@@ -106,7 +96,7 @@ public class GetHoldCourse extends HttpServlet {
 		}
 		
 		try {
-			if(!courseDAO.isCourseIdValid(courseId)) {
+			if(courseDAO.isCourseIdInvalid(courseId)) {
 				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_NOT_FOUND, "Course id doesn't match any currently active course");
 				return;	
 			}
@@ -130,13 +120,8 @@ public class GetHoldCourse extends HttpServlet {
 			return;	
 		}
 
-		
-				
-	//	request.setAttribute("course", course);
-	//	request.setAttribute("exams", exams);
-		
 		Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy").create();
-		String json = gson.toJson(new MutablePair<Course, List<Exam>>(course, exams));
+		String json = gson.toJson(new MutablePair<>(course , exams));
 		
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -147,8 +132,8 @@ public class GetHoldCourse extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

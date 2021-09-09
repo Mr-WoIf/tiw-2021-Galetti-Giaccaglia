@@ -7,6 +7,8 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 public class TemplateHandler {
+
+	private TemplateHandler(){}
 	
 	public static TemplateEngine getEngine(ServletContext context, String suffix) {
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);

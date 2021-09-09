@@ -13,7 +13,7 @@ import it.polimi.tiw.beans.*;
 
 public class ExamDAO {
 
-	private Connection connection;
+	private final Connection connection;
 
 	public ExamDAO(Connection connection) {
 		this.connection = connection;
@@ -22,23 +22,18 @@ public class ExamDAO {
 	public List<Exam> getExamsByCourseId(int courseId) throws SQLException {
 
 		String performedAction = " finding exams by course id";
-
 		String query = "SELECT date, id  FROM unidb.exam WHERE course_id = ? ORDER BY date DESC";
-
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-
 		List<Exam> exams = new ArrayList<>();
 
 		try {
 
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setInt(1, courseId);
-
 			resultSet = preparedStatement.executeQuery();
 
 			while (resultSet.next()) {
-
 				Exam exam = new Exam(new Date(resultSet.getDate("date").getTime()), resultSet.getInt("id"), courseId);
 				exams.add(exam);
 			}
@@ -48,6 +43,7 @@ public class ExamDAO {
 
 		} finally {
 			try {
+				assert resultSet != null;
 				resultSet.close();
 			} catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -58,9 +54,7 @@ public class ExamDAO {
 				throw new SQLException("Error closing the statement when" + performedAction);
 			}
 		}
-
 		return exams;
-
 	}
 
 	public List<Exam> getSubscribedExamsByStudentID(int studentId, int courseId) throws SQLException {
@@ -97,6 +91,7 @@ public class ExamDAO {
 
 		} finally {
 			try {
+				assert resultSet != null;
 				resultSet.close();
 			} catch (SQLException e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -107,20 +102,16 @@ public class ExamDAO {
 				throw new SQLException("Error closing the statement when" + performedAction);
 			}
 		}
-
 		return exams;
-
 	}
 
 	public Optional<Exam> getExamById(int examId) throws SQLException {
 
 		String performedAction = " finding exam by id";
-
 		String query = "SELECT date, course_id  FROM unidb.exam WHERE id = ?";
 
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-
 		Exam exam = null;
 
 		try {
@@ -140,7 +131,9 @@ public class ExamDAO {
 			throw new SQLException("Error accessing the DB when" + performedAction);
 
 		} finally {
+
 			try {
+				assert resultSet != null;
 				resultSet.close();
 			} catch (SQLException e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -152,7 +145,7 @@ public class ExamDAO {
 			}
 		}
 
-		return Optional.ofNullable(exam);
+		return Optional.of(exam);
 
 	}
 

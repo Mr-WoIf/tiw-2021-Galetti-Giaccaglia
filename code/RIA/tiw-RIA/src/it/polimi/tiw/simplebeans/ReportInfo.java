@@ -4,9 +4,9 @@ import it.polimi.tiw.beans.Report;
 
 public class ReportInfo {
 
-	private Report report;
-	private int courseId;
-	private int examId;
+	private final Report report;
+	private final int courseId;
+	private final int examId;
 	
 	public ReportInfo(Report report, int courseId, int examId) {
 		this.report = report;
@@ -23,6 +23,5 @@ public class ReportInfo {
 	public int getExamId() {
 		return examId;
 	}
-	
 	
 }

@@ -1,6 +1,7 @@
 package it.polimi.tiw.utils;
 
 public class MutablePair<A, B> {
+
 	    private A left;
 	    private B right; 
 
@@ -9,13 +10,11 @@ public class MutablePair<A, B> {
 	        this.left = left;
 	        this.right = right;
 	    }
-	    
-	    public MutablePair() {}
 
-	    public boolean equals(Object other) {
-	        if (other instanceof MutablePair) {
-	            MutablePair<?, ?> otherPair = (MutablePair<?, ?>) other;
-	            return 
+		public boolean equals(Object other) {
+
+	        if (other instanceof MutablePair<?, ?> otherPair) {
+				return
 	            ((  this.left == otherPair.left ||
 	                ( this.left != null && otherPair.left != null &&
 	                  this.left.equals(otherPair.left))) &&

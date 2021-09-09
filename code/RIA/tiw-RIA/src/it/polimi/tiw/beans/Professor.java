@@ -3,9 +3,9 @@ package it.polimi.tiw.beans;
 import java.util.List;
 import java.util.Optional;
 
-public class Professor extends User {
+public class Professor extends User{
 	
-	private String department;
+	private final String department;
 	private List<Course> courses;
 
 	public Professor(int id, String email, String name, String surname, String role, String department) {

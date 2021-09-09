@@ -1,6 +1,5 @@
 package it.polimi.tiw.beans;
 
-
 public class User {
 	
 	private int id;
@@ -23,8 +22,7 @@ public class User {
 		this.surname = "";
 		this.role = "";
 	}
-	
-	
+
 	public int getId() {
 		return id;
 	}
@@ -44,7 +42,6 @@ public class User {
 	public String getRole() {
 		return role;
 	}
-	
-	
+
 }
 

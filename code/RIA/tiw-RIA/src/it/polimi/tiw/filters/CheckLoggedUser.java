@@ -2,12 +2,7 @@ package it.polimi.tiw.filters;
 
 import java.io.IOException;
 
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,19 +14,16 @@ import it.polimi.tiw.utils.ResponseUtils;
  */
 public class CheckLoggedUser implements Filter {
 
-    /**
-     * Default constructor. 
-     */
-    public CheckLoggedUser() {
-        // TODO Auto-generated constructor stub
-    }
-    
-
 	/**
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
+		//
+	}
+
+	@Override
+	public void init(FilterConfig filterConfig) throws ServletException {
+		//
 	}
 
 	/**
@@ -51,7 +43,6 @@ public class CheckLoggedUser implements Filter {
 			}
 		} 
 		ResponseUtils.handleResponseCreation(httpResponse, HttpServletResponse.SC_UNAUTHORIZED, "You are not authorized to access this page");
-		return;	
 
 	}
 

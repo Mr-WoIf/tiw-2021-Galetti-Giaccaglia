@@ -2,8 +2,6 @@ package it.polimi.tiw.utils;
 
 import java.io.IOException;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -15,8 +13,9 @@ import it.polimi.tiw.beans.Student;
 
 public class FilterHandler {
 
+	private FilterHandler(){}
 	
-	public static <T> boolean doFilterHandler(ServletRequest request, ServletResponse response, FilterChain chain, Class<T> expectedClass)  throws IOException, ServletException {
+	public static <T> boolean doFilterHandler(ServletRequest request, ServletResponse response, Class<T> expectedClass)  throws IOException {
 		
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -27,8 +26,7 @@ public class FilterHandler {
 		
 		if(session!=null) {
 			Object user = session.getAttribute("user");
-			
-			
+
 			if( user==null ||
 					( !(expectedClass.getClass().getTypeName().equals(Professor.class.getTypeName())) && (user instanceof Professor)) || (!(expectedClass.getClass().getTypeName().equals(Student.class.getTypeName())) && (user instanceof Student))) {
 				

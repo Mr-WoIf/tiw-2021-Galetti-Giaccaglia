@@ -1,9 +1,13 @@
 package it.polimi.tiw.controllers.student;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -13,9 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Student;
@@ -34,17 +35,10 @@ import it.polimi.tiw.utils.ResponseUtils;
 @WebServlet("/GetExamDetails")
 @MultipartConfig
 public class GetExamDetails extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-	private HttpSession session;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GetExamDetails() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -65,16 +59,15 @@ public class GetExamDetails extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
-		
 		int examId;
 		int courseId;
 		boolean hasBeenPublished = false;
-		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
+		MutablePair<Student, MutablePair<Integer, String>> studentInfo = new MutablePair<>(null , null);
 		
 		if(courseIdString == null) {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Missing course ID, when accessing course exams details");
@@ -85,15 +78,12 @@ public class GetExamDetails extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Missing exam ID, when accessing course exams details");
 			return;	
 		}
-		
-		session = request.getSession(false);
-		Student student = (Student)session.getAttribute("student");
-		int studentId = student.getId();
-		
-		CourseDAO courseDAO = new CourseDAO(connection);
-	
 
-		
+		HttpSession session = request.getSession(false);
+		Student student = (Student) session.getAttribute("student");
+		int studentId = student.getId();
+		CourseDAO courseDAO = new CourseDAO(connection);
+
 		try {
 		examId = Integer.parseInt(examIdString);
 		}catch (NumberFormatException e) {
@@ -107,11 +97,9 @@ public class GetExamDetails extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Chosen exam's course ID is not a number, when accessing exam details");
 			return;	
 		}
-	
 		
-		if(!DaoUtils.verifyRequestCommonConstraints(connection, request,response,studentId, examId, courseId, studentInfo, student))
+		if(!DaoUtils.verifyRequestCommonConstraints(connection, response,studentId, examId, courseId, studentInfo, student))
 			return;
-
 
 		//fetching professor courses to get updated courses list
 		try {
@@ -120,7 +108,6 @@ public class GetExamDetails extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			return;		
 		}
-		
 
 		if(student.getCourseById(courseId).isEmpty()) {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_UNAUTHORIZED, "You are not subscribed to this course!");
@@ -129,13 +116,6 @@ public class GetExamDetails extends HttpServlet {
 		
 		if(!(studentInfo.getRight().getRight().equals("inserted") || studentInfo.getRight().getRight().equals("not inserted")))
 			hasBeenPublished = true;
-		//	request.setAttribute("studentInfo", studentInfo);
-		
-		
-		
-		//request.setAttribute("examId", examId);
-		//request.setAttribute("courseId", courseId);
-		//request.setAttribute("hasBeenPublished", hasBeenPublished);
 		
 		Gson gson = new GsonBuilder().setDateFormat("yyy/MM/dd").create();
 		String json = gson.toJson(new StudentExamInfo(studentInfo, examId, courseId, hasBeenPublished));
@@ -150,21 +130,20 @@ public class GetExamDetails extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		int examId;
 		int courseId;
 		ExamDAO examDAO = new ExamDAO(connection);
 		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
-		Exam exam = null;
-		Optional<Exam> optExam = null;
-		MutablePair<Integer, String> register = null;
+		Exam exam;
+		Optional<Exam> optExam;
+		MutablePair<Integer, String> register;
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
 
 		if (examIdString == null) {
-			
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Missing exam ID, nothing to refuse here!");
 			return;	
 		}
@@ -173,8 +152,7 @@ public class GetExamDetails extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Missing course ID, when accessing course exams details");
 			return;	
 		}
-		
-		
+
 		try {
 			examId = Integer.parseInt(examIdString);
 		} catch (NumberFormatException e) {
@@ -188,7 +166,6 @@ public class GetExamDetails extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid course Id related to exam Id");
 			return;	
 		}
-		
 
 		HttpSession session = request.getSession(false);
 		Student student = (Student) session.getAttribute("student");

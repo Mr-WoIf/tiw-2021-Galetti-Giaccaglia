@@ -2,7 +2,6 @@ package it.polimi.tiw.filters;
 
 import java.io.IOException;
 
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -18,22 +17,20 @@ import it.polimi.tiw.utils.PathUtils;
 /**
  * Servlet Filter implementation class UserFilter
  */
-
 public class CheckNotLoggedUser implements Filter {
-	
-    /**
-     * Default constructor. 
-     */
-    public CheckNotLoggedUser() {
-        // TODO Auto-generated constructor stub
-    }
-    
+
+	/**
+	 * @see Filter#init(FilterConfig)
+	 */
+	public void init(FilterConfig filterConfig) throws ServletException {
+		//
+	}
 
 	/**
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
+		//
 	}
 
 	/**
@@ -56,17 +53,8 @@ public class CheckNotLoggedUser implements Filter {
 		} 
 
 		System.out.println("user is not logged");
-		
 		httpResponse.sendRedirect(request.getServletContext().getContextPath() + PathUtils.pathToLoginPage);
-		
-	
-	}
 
-	/**
-	 * @see Filter#init(FilterConfig)
-	 */
-	public void init(FilterConfig filterConfig) throws ServletException {
-		
 	}
 
 }

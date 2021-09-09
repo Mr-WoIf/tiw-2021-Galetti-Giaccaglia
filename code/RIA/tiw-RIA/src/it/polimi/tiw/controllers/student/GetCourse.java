@@ -1,7 +1,7 @@
 package it.polimi.tiw.controllers.student;
 
-
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -27,24 +27,16 @@ import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.MutablePair;
 import it.polimi.tiw.utils.ResponseUtils;
 
-
-
 /**
  * Servlet implementation class ToHoldCoursePage
  */
 @WebServlet("/GetCourse")
 @MultipartConfig
 public class GetCourse extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GetCourse() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -64,6 +56,7 @@ public class GetCourse extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 
@@ -74,11 +67,10 @@ public class GetCourse extends HttpServlet {
 		}
 
 		int courseId;
-
 		CourseDAO courseDAO = new CourseDAO(connection);
-		Course course = null;
+		Course course;
 		ExamDAO examDAO = new ExamDAO(connection);
-		List<Exam> exams = null;
+		List<Exam> exams;
 
 		try {
 			courseId = Integer.parseInt(courseIdString);
@@ -100,7 +92,7 @@ public class GetCourse extends HttpServlet {
 		}
 		
 		try {
-			if(!courseDAO.isCourseIdValid(courseId)) {
+			if(courseDAO.isCourseIdInvalid(courseId)) {
 				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Course ID doesn't match any currently active course");
 				return;
 			}
@@ -115,14 +107,6 @@ public class GetCourse extends HttpServlet {
 		}
 	
 		course = currentStudent.getCourseById(courseId).get();
-		
-
-		try {
-			exams = examDAO.getSubscribedExamsByStudentID(studentId, courseId);
-		} catch (SQLException e) {
-			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-			return;	
-		}
 
 		try {
 			exams = examDAO.getSubscribedExamsByStudentID(studentId, courseId);
@@ -130,12 +114,6 @@ public class GetCourse extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			return;			
 		}
-		
-		
-		
-
-	//	request.setAttribute("course", course);
-	//	request.setAttribute("exams", exams);
 		
 		Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy").create();
 		String json = gson.toJson(new MutablePair<Course, List<Exam>>(course, exams));
@@ -149,8 +127,8 @@ public class GetCourse extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

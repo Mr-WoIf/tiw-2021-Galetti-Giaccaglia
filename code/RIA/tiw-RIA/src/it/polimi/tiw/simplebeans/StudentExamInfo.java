@@ -5,10 +5,10 @@ import it.polimi.tiw.utils.MutablePair;
 
 public class StudentExamInfo {
 	
-	private MutablePair<Student, MutablePair<Integer, String>> studentInfo;
-	private int examId;
-	private int courseId;
-	private boolean hasBeenPublished;
+	private final MutablePair<Student, MutablePair<Integer, String>> studentInfo;
+	private final int examId;
+	private final int courseId;
+	private final boolean hasBeenPublished;
 	
 	public StudentExamInfo( MutablePair<Student, MutablePair<Integer, String>> studentInfo, int examId, int courseId, boolean hasBeenPublished) {
 		this.studentInfo = studentInfo;

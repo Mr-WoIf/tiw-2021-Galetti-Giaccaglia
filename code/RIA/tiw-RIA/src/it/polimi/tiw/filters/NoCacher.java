@@ -9,24 +9,23 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
  * Servlet Filter implementation class LoginChecker
  */
 public class NoCacher implements Filter {
 
-    /**
-     * Default constructor. 
-     */
-    public NoCacher() {
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * @see Filter#init(FilterConfig)
+	 */
+	public void init(FilterConfig fConfig) throws ServletException {
+		//
+	}
 
 	/**
 	 * @see Filter#destroy()
 	 */
 	public void destroy() {
-		// TODO Auto-generated method stub
+		//
 	}
 	
 	/**
@@ -42,13 +41,4 @@ public class NoCacher implements Filter {
 		// pass the request along the filter chain
 		chain.doFilter(request, response);
 	}
-	
-
-	/**
-	 * @see Filter#init(FilterConfig)
-	 */
-	public void init(FilterConfig fConfig) throws ServletException {
-		// TODO Auto-generated method stub
-	}
-
 }

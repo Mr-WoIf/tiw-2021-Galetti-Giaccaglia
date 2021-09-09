@@ -9,15 +9,13 @@ import java.util.List;
 
 import it.polimi.tiw.beans.*;
 
-
 public class CourseDAO {
 	
-	private Connection connection;
+	private final Connection connection;
 
 	public CourseDAO(Connection connection) {
 		this.connection = connection;
 	}
-	
 	
 	public List<Course> getCoursesByStudentId(int studentId) throws SQLException{
 		
@@ -38,13 +36,11 @@ public class CourseDAO {
 		return executeQuery(performedAction, query, professorId);
 		
 	}
-	
-	
+
 	private List<Course> executeQuery(String performedAction, String query, int id) throws SQLException{
 		
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
-		
 		List<Course> courses = new ArrayList<>();
 		
 		try {
@@ -56,13 +52,13 @@ public class CourseDAO {
 				Course course = new Course(resultSet.getInt("id"), resultSet.getString("name") );
 				courses.add(course);
 			}
-			
-			
+
 		} catch(SQLException e) {
 			throw new SQLException("Error accessing the DB when" + performedAction);
 			
 		} finally {
 			try {
+				assert resultSet != null;
 				resultSet.close();
 			}catch (Exception e) {
 				throw new SQLException("Error closing the result set when" + performedAction);
@@ -78,12 +74,10 @@ public class CourseDAO {
 		
 	}
 	
-	public boolean isCourseIdValid(int courseId) throws SQLException {
+	public boolean isCourseIdInvalid(int courseId) throws SQLException {
 		
 			String performedAction = " finding course by id";
-			
 			String query = "SELECT * FROM unidb.course WHERE id = ?";
-			
 			PreparedStatement preparedStatement = null;
 			ResultSet resultSet = null;
 			
@@ -95,15 +89,14 @@ public class CourseDAO {
 				resultSet = preparedStatement.executeQuery();
 				
 				if(resultSet.isBeforeFirst())
-					return true;
-				
-				
+					return false;
 				
 			} catch(SQLException e) {
 				throw new SQLException("Error accessing the DB when" + performedAction);
 				
 			} finally {
 				try {
+					assert resultSet != null;
 					resultSet.close();
 				}catch (SQLException e) {
 					throw new SQLException("Error closing the result set when" + performedAction);
@@ -115,10 +108,10 @@ public class CourseDAO {
 				}
 			}
 			
-			return false;
+			return true;
 		 
 	 }
-	}
+}
 
 	
 

@@ -1,6 +1,7 @@
 package it.polimi.tiw.controllers.professor;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
@@ -8,6 +9,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -18,9 +22,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Professor;
@@ -41,16 +42,10 @@ import it.polimi.tiw.utils.ResponseUtils;
 @WebServlet("/GetRegisteredStudents")
 @MultipartConfig
 public class GetRegisteredStudents extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GetRegisteredStudents() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -70,6 +65,7 @@ public class GetRegisteredStudents extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		String examIdString = request.getParameter("examId");
@@ -90,18 +86,15 @@ public class GetRegisteredStudents extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Missing request type, when accessing exam details");
 			return;
 		}
-		
 
 		int examId;
 		int courseId;
-
 		ExamDAO examDAO = new ExamDAO(connection);
 		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
-		Exam exam = null;
-		Optional<Exam> optExam = null;
-		List<Student> students = null;
-
-		LinkedHashMap<Student, MutablePair<Integer, String>> registerMap = null;
+		Exam exam;
+		Optional<Exam> optExam;
+		List<Student> students;
+		LinkedHashMap<Student, MutablePair<Integer, String>> registerMap;
 
 		try {
 			examId = Integer.parseInt(examIdString);
@@ -116,7 +109,6 @@ public class GetRegisteredStudents extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Chosen exam's course ID is not a number, when accessing exam details");
 			return;
 		}
-		
 
 		HttpSession session = request.getSession(false);
 		Professor professor;
@@ -149,7 +141,6 @@ public class GetRegisteredStudents extends HttpServlet {
 		exam = optExam.get();
 
 		if(professor.getCourseById(exam.getCourseId()).isEmpty()) {
-			
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_UNAUTHORIZED, "Exam's course not hold by you!");
 			return;
 		}
@@ -161,35 +152,26 @@ public class GetRegisteredStudents extends HttpServlet {
 			return;
 		}
 		
-		
-	//	request.setAttribute("examId", examId);
-		
 		Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setDateFormat("yyy/MM/dd").create();
 		
-		if(students.size()==0) {
+		if(students.isEmpty()) {
 			
 			String json = gson.toJson(new ExamRegisteredStudents(examId, true, courseId, false, false, new LinkedHashMap<Student, MutablePair<Integer, String>>()));
-			
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(json);
-			
 			return;
 		}
-		
-		
+
 		registerMap = students.stream().collect(Collectors.toMap(
                 Function.identity(),
-                student -> getExamRegister(examRegisterDAO, student.getId(), examId, request, response),
+                student -> getExamRegister(examRegisterDAO, student.getId(), examId, response),
                 (student, register) -> {
                     throw new IllegalStateException(String.format("Duplicate key %s", student));
                 },
                 LinkedHashMap::new
         ));
-		
-		
-		
-		
+
 		boolean areAllRecorded;
 		
 		try {
@@ -200,14 +182,14 @@ public class GetRegisteredStudents extends HttpServlet {
 		}
 		
 		boolean areAllPublished;
+
 		try {
 			areAllPublished = examRegisterDAO.areAllGradesPublished(examId);
 		} catch (SQLException e) {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
 			return;
 		}
-		
-	
+
 		String json = gson.toJson(new ExamRegisteredStudents(examId, false, courseId, areAllRecorded, areAllPublished, registerMap));
 		
 		response.setContentType("application/json");
@@ -215,10 +197,8 @@ public class GetRegisteredStudents extends HttpServlet {
 		response.getWriter().write(json);
 
 	}
-	
-	
-	private MutablePair<Integer, String> getExamRegister(ExamRegisterDAO examRegisterDAO, int studentId, int examId, HttpServletRequest request, HttpServletResponse response){
 
+	private MutablePair<Integer, String> getExamRegister(ExamRegisterDAO examRegisterDAO, int studentId, int examId, HttpServletResponse response){
 
 		try {
 			return examRegisterDAO.getExamRegisterByStudentID(studentId, examId);
@@ -228,21 +208,20 @@ public class GetRegisteredStudents extends HttpServlet {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			return new MutablePair<Integer, String>(-1, "fail");	
+			return new MutablePair<>(-1 , "fail");
 		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 
 		String examIdString = request.getParameter("examId");
 		String requestType = request.getParameter("requestType");
 		String courseIdString = request.getParameter("courseId");
-		
-		
+
 		if(requestType == null) {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Missing request type, when modifying exams' grade state");
 			return;
@@ -260,11 +239,9 @@ public class GetRegisteredStudents extends HttpServlet {
 
 		int examId;
 		int courseId;
-
 		ExamDAO examDAO = new ExamDAO(connection);
-		Exam exam = null;
-		Optional<Exam> optExam = null;
-
+		Exam exam;
+		Optional<Exam> optExam;
 
 		try {
 			examId = Integer.parseInt(examIdString);
@@ -279,7 +256,6 @@ public class GetRegisteredStudents extends HttpServlet {
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Chosen course ID is not a number, when modifying exams' grade state");
 			return;
 		}
-		
 
 		HttpSession session = request.getSession(false);
 		Professor professor = (Professor)session.getAttribute("professor");
@@ -330,12 +306,10 @@ public class GetRegisteredStudents extends HttpServlet {
 			try {	
 				examRegisterDAO.publishGradeByExamID(examId);
 				response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId="+ courseId + "&examId=" + examId + "&requestType='load");
-				return;
-				
+
 			}catch (SQLException e) {
 				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-				return;	
-				
+
 			}
 		}else if(requestType.equals("record")) {
 			
@@ -357,7 +331,6 @@ public class GetRegisteredStudents extends HttpServlet {
 				
 				ReportDAO reportDAO = new ReportDAO(connection);
 				Report report = reportDAO.createReport(examId);
-				
 
 				RequestDispatcher rd = request.getRequestDispatcher("GetReport");
 				request.setAttribute("reportID", report.getReportId());
@@ -367,14 +340,11 @@ public class GetRegisteredStudents extends HttpServlet {
 				
 			}catch (SQLException e) {
 				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
-				return;	
 			}
 			
 		}else{
 			ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid request type");
-			return;	
 		}
 		
 	}
-
 }

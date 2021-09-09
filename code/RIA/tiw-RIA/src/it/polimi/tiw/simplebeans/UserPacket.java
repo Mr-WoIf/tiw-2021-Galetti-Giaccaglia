@@ -1,9 +1,10 @@
 package it.polimi.tiw.simplebeans;
 
 public class UserPacket {
-	private String name;
-	private int id;
-	private String role;
+
+	private final String name;
+	private final int id;
+	private final String role;
 	
 	public UserPacket(String name, int id, String role) {
 		this.name = name;

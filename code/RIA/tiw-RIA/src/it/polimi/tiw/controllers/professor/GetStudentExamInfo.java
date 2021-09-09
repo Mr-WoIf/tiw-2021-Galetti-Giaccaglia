@@ -1,10 +1,15 @@
 package it.polimi.tiw.controllers.professor;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -14,10 +19,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 import it.polimi.tiw.beans.Professor;
 import it.polimi.tiw.beans.Student;
@@ -34,17 +35,11 @@ import it.polimi.tiw.utils.ResponseUtils;
 @WebServlet("/GetStudentExamInfo")
 @MultipartConfig
 public class GetStudentExamInfo extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 	HttpSession session = null;
-	
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GetStudentExamInfo() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -64,21 +59,17 @@ public class GetStudentExamInfo extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
 		String studentIdString = request.getParameter("studentId");
-	
 		int examId;
 		int courseId;
 		int studentId;
 		boolean hasBeenPublished = false;
-		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
-		
-		
-		
+		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <> (null, null);
 		session = request.getSession(false);
 		Professor professor = (Professor)session.getAttribute("professor");
 		
@@ -105,11 +96,8 @@ public class GetStudentExamInfo extends HttpServlet {
 		}
 
 		
-		if(!DaoUtils.verifyRequestCommonConstraints(connection, request,response, studentId,examId, courseId, studentInfo, professor))	
+		if(!DaoUtils.verifyRequestCommonConstraints(connection, response, studentId,examId, courseId, studentInfo, professor))
 			return;
-		//request.setAttribute("studentInfo", studentInfo);
-		//request.setAttribute("examId", examId);
-		//request.setAttribute("courseId", courseId);
 		
 		if(!(studentInfo.getRight().getRight().equals("inserted") || studentInfo.getRight().getRight().equals("not inserted")))
 			hasBeenPublished = true;
@@ -126,25 +114,20 @@ public class GetStudentExamInfo extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		
+
 		String multipleGradesString = request.getParameter("multipleGrades");
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
 		String studentIdString = request.getParameter("studentId");		
 		String studentGradeString = request.getParameter("grade");
-		
-
 		int studentGrade;
 		int courseId;
 		int examId;
 		int studentId;
-		boolean multipleGrades;	
-		
-		multipleGrades = Boolean.parseBoolean(multipleGradesString);	
-		
-		System.out.println(studentGradeString);
+		boolean multipleGrades;
+		multipleGrades = Boolean.parseBoolean(multipleGradesString);
 		
 		try {
 			courseId = Integer.parseInt(courseIdString);
@@ -174,8 +157,7 @@ public class GetStudentExamInfo extends HttpServlet {
 			Gson gson = new Gson();	
 			Type integerIntegerMap = new TypeToken<Map<Integer, Integer>>(){}.getType();	
 			Map<Integer,Integer> studentsMap = gson.fromJson(studentsMapJsonString, integerIntegerMap);	
-				
-				
+
 			if(studentsMap == null || studentsMap.isEmpty() || studentsMap.size()==0) {	
 				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST,  "List of students is missing when doing multiple grades insertion");	
 				return;		
@@ -195,15 +177,13 @@ public class GetStudentExamInfo extends HttpServlet {
 			}
 				
 				studentId = entry.getKey();
-				MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
+				MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <> (null, null);
 				session = request.getSession(false);
 				Professor professor = (Professor)session.getAttribute("professor");
-				if(!DaoUtils.verifyRequestCommonConstraints(connection, request,response, studentId, examId, courseId, studentInfo, professor))
+				if(!DaoUtils.verifyRequestCommonConstraints(connection, response, studentId, examId, courseId, studentInfo, professor))
 					return;
 				
 		}
-			
-			
 			
 			try {
 				examRegisterDAO.setMultipleGrades(studentsMap, examId);
@@ -221,7 +201,6 @@ public class GetStudentExamInfo extends HttpServlet {
 			return;	
 		}
 
-
 		try {
 			studentGrade = Integer.parseInt(studentGradeString);
 		}catch (NumberFormatException e) {
@@ -235,23 +214,17 @@ public class GetStudentExamInfo extends HttpServlet {
 				response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId="+ courseId + "&examId=" + examId);
 				return;
 		}
-		
-		System.out.println(examId);
 			
 		MutablePair<Student, MutablePair<Integer, String>> studentInfo =  new MutablePair <Student, MutablePair<Integer, String>> (null, null);
 		request.getSession(false);
 		session = request.getSession(false);
 		Professor professor = (Professor)session.getAttribute("professor");
-		
-		
-		if(!DaoUtils.verifyRequestCommonConstraints(connection, request,response, studentId, examId, courseId, studentInfo, professor))
+
+		if(!DaoUtils.verifyRequestCommonConstraints(connection, response, studentId, examId, courseId, studentInfo, professor))
 			return;
-		
-		System.out.println(examId);
-		
+
 		ExamRegisterDAO examRegisterDAO = new ExamRegisterDAO(connection);
 
-		
 		try {
 			examRegisterDAO.setGradeByStudentId(studentInfo.getLeft().getId(), examId, studentGrade);
 		} catch (SQLException e) {
@@ -260,21 +233,12 @@ public class GetStudentExamInfo extends HttpServlet {
 		}
 		
 	}
-		int val1 = courseId;
-		int val2 = examId;
-		
-		
-		response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId=" + val1 + "&examId=" + val2 + "&requestType='load'");
-		return;
+
+		response.sendRedirect(getServletContext().getContextPath() + "/GetRegisteredStudents?courseId=" + courseId + "&examId=" + examId + "&requestType='load'");
 	}
-		
-	
-	private boolean isValidGrade(int studentGrade) {	
-		
-		if(studentGrade > 2 && (studentGrade <18 || studentGrade>31))	
-			return false;	
-		else	
-			return true;	
+
+	private boolean isValidGrade(int studentGrade) {
+		return studentGrade <= 2 || (studentGrade >= 18 && studentGrade <= 31);
 	}
 
   }

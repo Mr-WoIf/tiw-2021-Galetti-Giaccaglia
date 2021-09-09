@@ -1,9 +1,11 @@
 package it.polimi.tiw.controllers.login;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
+import com.google.gson.Gson;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -13,8 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.google.gson.Gson;
 
 import it.polimi.tiw.beans.*;
 import it.polimi.tiw.dao.UserDAO;
@@ -28,19 +28,11 @@ import it.polimi.tiw.utils.*;
 @MultipartConfig
 
 public class CheckLogin extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
 
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public CheckLogin() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-    
-    
     @Override
     public void init() throws ServletException {
     	ServletContext servletContext = getServletContext();
@@ -59,6 +51,7 @@ public class CheckLogin extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
@@ -66,6 +59,7 @@ public class CheckLogin extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	
 		String id_param = request.getParameter("id");
@@ -100,7 +94,6 @@ public class CheckLogin extends HttpServlet {
 		try {
 			id = Integer.parseInt(id_param);
 			password = password_param;
-			
 
 			if (id < 10600000 || id > 10800000) {
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -113,19 +106,15 @@ public class CheckLogin extends HttpServlet {
 			response.getWriter().println("Parameter id with format number is required");
 			return;
 		}
-		
-		
-			
+
 		UserDAO userDAO = new UserDAO(connection);
-		Optional<User> optUser = null;
-		User user = null;
+		Optional<User> optUser;
+		User user;
 		
 		try {
-			
 			optUser = userDAO.findUser(id, password);
 			
 		} catch (SQLException e) {
-			
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Internal server error, retry later");
 			return;
@@ -136,8 +125,7 @@ public class CheckLogin extends HttpServlet {
 			response.getWriter().println("Incorrect credentials");
 			return;
 		}
-		
-			
+
 		user = optUser.get();
 		HttpSession session = request.getSession();
 		session.setAttribute("user", user);
@@ -149,6 +137,5 @@ public class CheckLogin extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().println(userPacket);
 	}
-	
 
 }

@@ -31,12 +31,12 @@
   
     <filter>
   	<filter-name>CheckProfessor</filter-name>
-  	<filter-class>it.polimi.tiw.filters.CheckLoggedUser</filter-class>
+  	<filter-class>it.polimi.tiw.filters.CheckProfessor</filter-class>
   </filter>
   
   <filter>
   	<filter-name>CheckStudent</filter-name>
-  	<filter-class>it.polimi.tiw.filters.CheckLoggedUser</filter-class>
+  	<filter-class>it.polimi.tiw.filters.CheckStudent</filter-class>
   </filter>
   
    <filter>

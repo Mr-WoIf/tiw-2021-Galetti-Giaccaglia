@@ -1,9 +1,13 @@
 package it.polimi.tiw.controllers.professor;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -13,9 +17,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import it.polimi.tiw.beans.Exam;
 import it.polimi.tiw.beans.Professor;
@@ -33,16 +34,10 @@ import it.polimi.tiw.utils.ResponseUtils;
 @WebServlet("/GetReport")
 @MultipartConfig
 public class GetReport extends HttpServlet {
+
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-	
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public GetReport() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
 
 	@Override
 	public void init() throws ServletException {
@@ -62,12 +57,12 @@ public class GetReport extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		String examIdString = request.getParameter("examId");
 		String courseIdString = request.getParameter("courseId");
 		String reportIdString = request.getParameter("reportID");
-		
 		int examId;
 		int courseId;
 		int reportId;
@@ -103,7 +98,6 @@ public class GetReport extends HttpServlet {
 		}
 			
 		CourseDAO courseDAO = new CourseDAO(connection);
-			
 
 		//fetching professor courses to get updated courses list
 		try {
@@ -114,7 +108,7 @@ public class GetReport extends HttpServlet {
 		}
 		
 		try {
-			if(!courseDAO.isCourseIdValid(courseId)) {
+			if(courseDAO.isCourseIdInvalid(courseId)) {
 				ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_BAD_REQUEST,  "Course id doesn't match any currently active course");
 				return;
 				
@@ -131,8 +125,8 @@ public class GetReport extends HttpServlet {
 		
 		
 		ExamDAO examDAO = new ExamDAO(connection);
-		Optional<Exam> optExam = null;
-		Exam exam = null;
+		Optional<Exam> optExam;
+		Exam exam;
 		
 		try {
 			optExam = examDAO.getExamById(examId);
@@ -152,8 +146,6 @@ public class GetReport extends HttpServlet {
 					ResponseUtils.handleResponseCreation(response, HttpServletResponse.SC_UNAUTHORIZED, "Exam's course not hold by you!");
 					return;
 			}
-				
-		
 
 		ReportDAO reportDAO = new ReportDAO(connection);
 		try {
@@ -164,10 +156,6 @@ public class GetReport extends HttpServlet {
 			return;
 		
 		}
-		
-	//	request.setAttribute("report", report);
-	//	request.setAttribute("courseId", courseId);
-	//	request.setAttribute("examId", examId);
 		
 		Gson gson = new GsonBuilder().enableComplexMapKeySerialization().setDateFormat("yyy/MM/dd").create();
 		String json = gson.toJson(new ReportInfo(report, courseId, examId));
@@ -180,6 +168,7 @@ public class GetReport extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		int examId;
@@ -208,8 +197,6 @@ public class GetReport extends HttpServlet {
 		}
 	
 		response.sendRedirect(getServletContext().getContextPath() + "/GetReport?courseId="+ courseId + "&examId=" + examId + "&reportID=" + reportId);
-		
-		
-		
+
 	}
 }
